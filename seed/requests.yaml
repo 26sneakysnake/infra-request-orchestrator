@@ -15,6 +15,7 @@
     exposure: interne
     vm_required: false
     vm_size: ""
+    urgent: false
 
 - title: Externe, prod
   variables:
@@ -28,6 +29,7 @@
     exposure: externe
     vm_required: false
     vm_size: ""
+    urgent: false
 
 - title: Avec VM, recette
   variables:
@@ -41,6 +43,7 @@
     exposure: interne
     vm_required: true
     vm_size: M
+    urgent: false
 
 - title: Environnement manquant
   variables:
@@ -54,6 +57,7 @@
     exposure: interne
     vm_required: false
     vm_size: ""
+    urgent: false
 
 - title: Port interdit
   variables:
@@ -67,3 +71,4 @@
     exposure: externe
     vm_required: false
     vm_size: ""
+    urgent: false

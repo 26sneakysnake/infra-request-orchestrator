@@ -48,6 +48,7 @@ class JiraClient:
         transport: httpx.BaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
+        self.base_url = base_url
         self._http = httpx.Client(
             base_url=f"{base_url}/rest/api/3",
             auth=(email, api_token),
@@ -80,15 +81,26 @@ class JiraClient:
         raise JiraError(404, f"issue type {untranslated_name!r} not found in {project_key}")
 
     def create_issue(
-        self, project_key: str, summary: str, description: str, issue_type: str = "Task"
+        self,
+        project_key: str,
+        summary: str,
+        description: str,
+        issue_type: str = "Task",
+        labels: list[str] | None = None,
     ) -> dict[str, Any]:
-        fields = {
+        fields: dict[str, Any] = {
             "project": {"key": project_key},
             "summary": summary,
             "description": to_adf(description),
             "issuetype": {"id": self.issue_type_id(project_key, issue_type)},
         }
+        if labels:
+            fields["labels"] = labels
         return self._request("POST", "/issue", json={"fields": fields})
+
+    def find_issues(self, jql: str, limit: int = 10) -> list[dict[str, Any]]:
+        body = {"jql": jql, "fields": ["summary", "status"], "maxResults": limit}
+        return self._request("POST", "/search/jql", json=body)["issues"]
 
     def get_issue(self, key: str, fields: list[str] | None = None) -> dict[str, Any]:
         params = {"fields": ",".join(fields)} if fields else None
@@ -106,6 +118,17 @@ class JiraClient:
             files={"file": (filename, content, content_type)},
             headers={"X-Atlassian-Token": "no-check"},
         )
+
+    def add_remote_link(self, key: str, url: str, title: str) -> dict[str, Any]:
+        """Link the issue to a record in another tool (shown under "Web links").
+
+        The URL doubles as globalId, so linking twice updates the link instead of adding one.
+        """
+        body = {"globalId": url, "object": {"url": url, "title": title}}
+        return self._request("POST", f"/issue/{key}/remotelink", json=body)
+
+    def browse_url(self, key: str) -> str:
+        return f"{self.base_url}/browse/{key}"
 
     def transition(self, key: str, category: str = "done") -> str:
         """Move the issue to a status of the given category; return the new status name."""

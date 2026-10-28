@@ -1,0 +1,7 @@
+# kind lab cluster: the local stand-in for the container platform (not a production cluster).
+# kind >= 0.24 enforces NetworkPolicy out of the box (kube-network-policies), which models the firewall.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: netco
+nodes:
+  - role: control-plane

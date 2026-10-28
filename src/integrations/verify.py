@@ -24,10 +24,10 @@ def check_servicenow(client: ServiceNowClient) -> str:
 
 
 def check_jira(client: JiraClient, project_key: str) -> str:
-    me = client.myself()
+    client.myself()
     project = client.get_project(project_key)
     client.issue_type_id(project["key"], "Task")
-    return f"signed in as {me.get('displayName', '?')}, project {project['key']} has a Task type"
+    return f"authenticated, project {project['key']} has a Task type"
 
 
 def run_check(name: str, check: Callable[[], str]) -> bool:

@@ -13,3 +13,6 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+# Local run outputs (e2e report, worker logs)
+out/

@@ -1,0 +1,66 @@
+# NetCo network zones (referentiel/zones.md) modelled as namespaces, each with a curl probe pod.
+# A NetworkPolicy selects zones by the netco.io/zone label; the probes prove what is allowed or blocked.
+apiVersion: v1
+kind: Namespace
+metadata: {name: zone-dev, labels: {netco.io/zone: dev}}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: zone-data, labels: {netco.io/zone: data}}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: zone-finance, labels: {netco.io/zone: finance}}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: zone-bureautique, labels: {netco.io/zone: bureautique}}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: zone-internet, labels: {netco.io/zone: internet}}
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: probe, namespace: zone-dev, labels: {app.kubernetes.io/name: probe}}
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.22.0
+      command: ["sleep", "infinity"]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: probe, namespace: zone-data, labels: {app.kubernetes.io/name: probe}}
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.22.0
+      command: ["sleep", "infinity"]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: probe, namespace: zone-finance, labels: {app.kubernetes.io/name: probe}}
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.22.0
+      command: ["sleep", "infinity"]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: probe, namespace: zone-bureautique, labels: {app.kubernetes.io/name: probe}}
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.22.0
+      command: ["sleep", "infinity"]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: probe, namespace: zone-internet, labels: {app.kubernetes.io/name: probe}}
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:8.22.0
+      command: ["sleep", "infinity"]

@@ -1,0 +1,32 @@
+{
+  "id": "change-approval",
+  "type": "default",
+  "schemaVersion": 16,
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.10.0",
+  "exporter": { "name": "infra-request-orchestrator", "version": "0.1.0" },
+  "components": [
+    {
+      "id": "Text_summary",
+      "type": "text",
+      "text": "### Demande {{ritmNumber}} : {{serviceName}}\n\n- Environnement : **{{environment}}**\n- Exposition : **{{exposure}}**, port **{{port}}**/tcp\n- Zones autorisées : **{{zones}}**\n- Namespace : `{{namespace}}`\n- Classe de changement (table DMN) : **{{changeClass}}**\n\n> {{requestText}}"
+    },
+    {
+      "id": "Field_decision",
+      "type": "radio",
+      "key": "decision",
+      "label": "Décision",
+      "values": [
+        { "label": "Approuver", "value": "approve" },
+        { "label": "Refuser", "value": "reject" }
+      ],
+      "validate": { "required": true }
+    },
+    {
+      "id": "Field_approvalComment",
+      "type": "textarea",
+      "key": "approvalComment",
+      "label": "Commentaire (motif obligatoire en cas de refus)"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "verification-fix",
+  "type": "default",
+  "schemaVersion": 16,
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.10.0",
+  "exporter": { "name": "infra-request-orchestrator", "version": "0.1.0" },
+  "components": [
+    {
+      "id": "Text_failure",
+      "type": "text",
+      "text": "### Vérification en échec : {{serviceName}} ({{ritmNumber}})\n\n- Namespace : `{{namespace}}`\n- Port : **{{port}}**/tcp, zones autorisées : **{{zones}}**\n- Constat : **{{verification.summary}}**\n\nCorrigez la configuration dans le namespace, puis validez pour relancer la vérification. En phase P4, un agent de diagnostic proposera la correction et vous la ferez valider ici."
+    },
+    {
+      "id": "Field_fixConfirmed",
+      "type": "checkbox",
+      "key": "fixConfirmed",
+      "label": "La configuration est corrigée, relancer la vérification",
+      "validate": { "required": true }
+    },
+    {
+      "id": "Field_fixComment",
+      "type": "textarea",
+      "key": "fixComment",
+      "label": "Ce qui a été corrigé"
+    }
+  ]
+}

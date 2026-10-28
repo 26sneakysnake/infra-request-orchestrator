@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_change_class" name="Classement des changements" namespace="http://camunda.org/schema/1.0/dmn" exporter="infra-request-orchestrator" exporterVersion="0.1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <decision id="change_class" name="Classer le changement">
+    <decisionTable id="DecisionTable_change_class" hitPolicy="FIRST">
+      <input id="Input_urgent" label="Urgent demandé">
+        <inputExpression id="InputExpression_urgent" typeRef="boolean">
+          <text>urgent</text>
+        </inputExpression>
+      </input>
+      <input id="Input_environment" label="Environnement">
+        <inputExpression id="InputExpression_environment" typeRef="string">
+          <text>environment</text>
+        </inputExpression>
+      </input>
+      <input id="Input_exposure" label="Exposition">
+        <inputExpression id="InputExpression_exposure" typeRef="string">
+          <text>exposure</text>
+        </inputExpression>
+      </input>
+      <input id="Input_sensitivePort" label="Port sensible">
+        <inputExpression id="InputExpression_sensitivePort" typeRef="boolean">
+          <text>sensitivePort</text>
+        </inputExpression>
+      </input>
+      <output id="Output_changeClass" label="Classe de changement" name="changeClass" typeRef="string" />
+      <rule id="Rule_urgent">
+        <description>CHG-01 : changement urgent demandé (incident en cours)</description>
+        <inputEntry id="Rule_urgent_urgent"><text>true</text></inputEntry>
+        <inputEntry id="Rule_urgent_environment"><text>-</text></inputEntry>
+        <inputEntry id="Rule_urgent_exposure"><text>-</text></inputEntry>
+        <inputEntry id="Rule_urgent_sensitivePort"><text>-</text></inputEntry>
+        <outputEntry id="Rule_urgent_out"><text>"urgent"</text></outputEntry>
+      </rule>
+      <rule id="Rule_prod">
+        <description>CHG-01 : environnement de production</description>
+        <inputEntry id="Rule_prod_urgent"><text>-</text></inputEntry>
+        <inputEntry id="Rule_prod_environment"><text>"prod"</text></inputEntry>
+        <inputEntry id="Rule_prod_exposure"><text>-</text></inputEntry>
+        <inputEntry id="Rule_prod_sensitivePort"><text>-</text></inputEntry>
+        <outputEntry id="Rule_prod_out"><text>"normal"</text></outputEntry>
+      </rule>
+      <rule id="Rule_external">
+        <description>CHG-01 : exposition externe</description>
+        <inputEntry id="Rule_external_urgent"><text>-</text></inputEntry>
+        <inputEntry id="Rule_external_environment"><text>-</text></inputEntry>
+        <inputEntry id="Rule_external_exposure"><text>"externe"</text></inputEntry>
+        <inputEntry id="Rule_external_sensitivePort"><text>-</text></inputEntry>
+        <outputEntry id="Rule_external_out"><text>"normal"</text></outputEntry>
+      </rule>
+      <rule id="Rule_sensitive">
+        <description>CHG-01 et PORT-05 : port sensible</description>
+        <inputEntry id="Rule_sensitive_urgent"><text>-</text></inputEntry>
+        <inputEntry id="Rule_sensitive_environment"><text>-</text></inputEntry>
+        <inputEntry id="Rule_sensitive_exposure"><text>-</text></inputEntry>
+        <inputEntry id="Rule_sensitive_sensitivePort"><text>true</text></inputEntry>
+        <outputEntry id="Rule_sensitive_out"><text>"normal"</text></outputEntry>
+      </rule>
+      <rule id="Rule_standard">
+        <description>CHG-01 : autres cas, changement pré-approuvé</description>
+        <inputEntry id="Rule_standard_urgent"><text>-</text></inputEntry>
+        <inputEntry id="Rule_standard_environment"><text>-</text></inputEntry>
+        <inputEntry id="Rule_standard_exposure"><text>-</text></inputEntry>
+        <inputEntry id="Rule_standard_sensitivePort"><text>-</text></inputEntry>
+        <outputEntry id="Rule_standard_out"><text>"standard"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_change_class">
+      <dmndi:DMNShape id="DMNShape_change_class" dmnElementRef="change_class">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

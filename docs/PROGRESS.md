@@ -104,3 +104,71 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 - Secrets GitHub : inutiles en P1, puisque la CI rejoue les cassettes. À créer avant le job e2e de P2.
 - Clé Anthropic : à créer avant P3.
 - Prochaine phase : P2, seulement avec l'accord de Seif.
+
+## P2 : Processus BPMN de base, sans IA
+
+### Fait
+- **Test préalable ServiceNow.** Un changement « Normal » ne passe de Assess à Authorize qu'avec l'approbation
+  ServiceNow des membres du groupe d'affectation. Les approuver par l'API reviendrait à agir au nom de ces
+  personnes. Le processus enregistre donc le changement avec le modèle « Change Registration », que ServiceNow
+  décrit ainsi : *« a record of an automated change. There are no approvals associated with this change
+  model. »* C'est cohérent avec une approbation faite dans Camunda. La clôture exige `close_code=successful` et une
+  description non vide. Le test a laissé 3 changements : CHG0030001 (annulé), CHG0030002 et CHG0030003 (clos).
+- **Référentiel NetCo `referentiel/`** : `netco.yaml` (source de vérité pour le code) et 5 pages Markdown. Chaque
+  règle a un identifiant : NOM, ENV, EXP, PORT, ZONE, CHG.
+- **Modèles** :
+  - `bpmn/expose_service.bpmn`, avec le diagramme complet ;
+  - `bpmn/change_class.dmn`, en hit policy FIRST avec 5 règles ;
+  - les formulaires Tasklist `change-approval` et `verification-fix`.
+- **Workers Python** sur le SDK officiel `camunda-orchestration-sdk` 10.0.0, pour 7 types de job :
+  - un poller ServiceNow ;
+  - le provisionnement Kubernetes (Namespace, Deployment, Service, NetworkPolicy) ;
+  - la vérification par des sondes dans chaque zone.
+- **Workers idempotents.** Zeebe livre un job « au moins une fois ». Un job rejoué retrouve son changement (par
+  `correlation_id` = numéro de la demande) et son ticket Jira (par un label du même numéro), au lieu de les
+  recréer.
+- **Commandes** : `make kind-up`, `deploy-bpmn`, `workers`, `e2e`, et le workflow `.github/workflows/e2e.yml`.
+- Catalogue ServiceNow : nouvelle variable `urgent`.
+
+### Mesuré (sur le PC de Seif, à titre indicatif)
+- Tests unitaires : 64 sur 64.
+- DMN évaluée par le moteur : 5 cas attendus sur 5.
+- `make e2e` : 3 exécutions, et à chaque fois 2 demandes sur 2 menées au bout avec 5 contrôles sur 5. Les deux
+  demandes sont une standard sans approbation et une normale avec approbation simulée. Durée de la commande à la
+  clôture lors de la 1re exécution : 13,9 s et 30,0 s.
+- NetworkPolicy :
+  - la zone demandée joint le service, une zone non demandée est bloquée ;
+  - contre-épreuve, sans la NetworkPolicy : les deux zones joignent le service.
+- **Refus** : une demande avec un port interdit termine son instance, et le RITM passe en Closed Incomplete avec la
+  règle PORT-01 en commentaire.
+- **Incident** :
+  - avec un jeton Jira faux, 3 échecs, puis un incident « JOB_NO_RETRIES » apparaît avec le message de Jira ;
+  - après correction du jeton et relance, l'instance se termine.
+- **Idempotence** : en rejouant les deux handlers sur une demande déjà traitée, on retrouve les mêmes
+  enregistrements (CHG0030010, NETOPS-13).
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` | vert | à compléter après le push |
+| `make e2e` | vert (3 exécutions) | à compléter après le push |
+| Refus, incident, idempotence | vérifiés par des scripts ponctuels | non couverts |
+| Chemin « vérification en échec » (erreur BPMN) | test unitaire seulement | non couvert : les pannes injectées arrivent en P4 |
+| Instance complète visible dans Operate | à faire par Seif | sans objet |
+
+### Écarts et incidents
+- Le changement ServiceNow utilise le modèle « Change Registration », et non Normal ou Standard (voir plus haut).
+  La classe calculée par la DMN figure dans sa description.
+- **Bug de concurrence corrigé.** Pendant un `exec`, `kubernetes.stream` bascule son ApiClient en WebSocket. Un
+  provisionnement qui tournait en parallèle échouait donc, puis réussissait au 2e essai. Un client dédié par `exec`
+  règle le problème : 0 échec aux exécutions suivantes.
+- **Job capté par un worker arrêté.** Le long polling d'un worker arrêté brutalement peut encore capter un job, qui
+  reste alors réservé jusqu'à son délai. Ce délai passe à 1 min (3 min pour la vérification). C'est en observant ce
+  cas qu'on a constaté un ticket Jira en double (NETOPS-11, resté ouvert), d'où l'idempotence ci-dessus.
+- Un seul port par demande (PORT-03), et `traefik/whoami` tient lieu de vrai service.
+- **Données de test créées dans les instances** : RITM0010007 à RITM0010016, CHG0030004 à CHG0030011, NETOPS-6 à
+  NETOPS-14.
+
+### Reste
+- Job e2e vert en CI : c'est le critère de fin, avec l'instance visible dans Operate chez Seif.
+- Prochaine phase : P3, seulement avec l'accord de Seif.

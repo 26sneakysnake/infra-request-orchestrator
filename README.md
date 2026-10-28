@@ -10,9 +10,10 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 et P1 : outillage, CI, pile locale, et connecteurs ServiceNow et Jira (vérification d'accès, demandes
-synthétiques commandées dans le catalogue ServiceNow). Le processus BPMN et les agents ne sont pas encore écrits.
-Suivi détaillé : [docs/PROGRESS.md](docs/PROGRESS.md).
+Phases P0 à P2 : le processus BPMN tourne de bout en bout, sans IA, de la demande ServiceNow jusqu'aux tickets
+clos, avec une table DMN, une approbation dans Tasklist et un vrai provisionnement sur un cluster kind local. Les
+agents IA (qualification, diagnostic, documentation) ne sont pas encore écrits. Suivi détaillé :
+[docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Démarrer en local
 
@@ -31,6 +32,24 @@ Avec un fichier `.env` rempli (modèle : [.env.example](.env.example)) :
 make verify     # vérifie l'accès aux API ServiceNow et Jira, en lecture seule
 make seed       # crée l'article de catalogue NetCo et commande 5 demandes synthétiques
 ```
+
+## Démo locale du processus
+
+Prérequis supplémentaire : [kind](https://kind.sigs.k8s.io/).
+
+```sh
+make up kind-up deploy-bpmn   # Camunda, cluster kind avec les zones réseau, déploiement des modèles
+make seed                     # 5 demandes NetCo dans ServiceNow
+make workers                  # workers et interrogation de ServiceNow (laisser tourner, Ctrl+C pour arrêter)
+```
+
+Dans Operate, on suit les 5 instances :
+- 1 standard, terminée sans approbation ;
+- 2 normales, en attente d'approbation dans Tasklist (groupe `cab`) ;
+- 2 refusées par le référentiel, avec un commentaire dans ServiceNow.
+
+`make e2e` rejoue le scénario complet de façon automatique, avec une approbation simulée. `make kind-down` et
+`make down` arrêtent tout.
 
 | Service | Adresse | Accès |
 |---|---|---|

@@ -28,6 +28,7 @@ VARIABLES = [
     ("exposure", "Exposition (interne ou externe)", SINGLE_LINE_TEXT),
     ("vm_required", "Une VM est-elle nécessaire ?", CHECKBOX),
     ("vm_size", "Taille de la VM (S, M ou L)", SINGLE_LINE_TEXT),
+    ("urgent", "Changement urgent (incident en cours)", CHECKBOX),
 ]
 
 

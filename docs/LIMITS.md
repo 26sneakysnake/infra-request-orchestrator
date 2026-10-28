@@ -12,7 +12,25 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
   plateforme.
 - VMware est simulé par vcsim, le simulateur de l'API vSphere du projet govmomi. Aucun serveur VMware réel n'est
   utilisé.
-- Pas encore de Kubernetes (kind arrive en P2), ni d'appel à un LLM (pas avant P3).
+- Kubernetes tourne sur kind : un cluster local d'un seul nœud, pas une plateforme de conteneurs d'entreprise.
+- Le pare-feu est modélisé par des NetworkPolicy Kubernetes. Une zone réseau NetCo est un namespace, et une demande
+  ouvre la zone entière, pas seulement le sous-réseau demandé.
+- La charge déployée est un petit serveur HTTP (`traefik/whoami`) qui écoute sur le port demandé, pas le vrai
+  service. Une demande = un port TCP.
+- Aucun appel à un LLM avant P3.
+
+## Processus
+- Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile
+  locale n'a pas d'adresse publique.
+- Dans l'e2e, l'approbation du CAB est **simulée** par le script, sans humain. En démonstration, elle se fait dans
+  Tasklist.
+- Le changement ServiceNow suit le modèle « Change Registration » (changement automatisé, sans approbation
+  ServiceNow) : l'approbation a lieu dans Camunda.
+- Il ne faut pas lancer `make workers` en local pendant un e2e en CI : les deux visent la même instance
+  ServiceNow.
+- Chaque exécution de l'e2e crée de vrais enregistrements de test (demandes, changements, tickets Jira). Si
+  l'instance ServiceNow est en veille, le job échoue dès la première étape (`make verify`).
+- Une vérification en échec ouvre une tâche humaine de correction. Le diagnostic assisté arrive en P4.
 
 ## ServiceNow et Jira
 - ServiceNow tourne sur une instance développeur personnelle, réservée à l'apprentissage. ServiceNow peut la
