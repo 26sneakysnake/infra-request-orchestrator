@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUwxWnuf7B8y38ruiBqi",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"service_port\",\"action\":\"reapply_service\",\"runbook\":\"RB-02\",\"explanation\":\"Le Service stocks-api redirige le port 8443 vers le targetPort 8444. Le conteneur écoute sur 8443. La NetworkPolicy est conforme (zone finance, 8443/TCP) et le pod est prêt. La zone finance est donc bloquée à cause du targetPort incohérent. Il faut réappliquer le Service avec targetPort 8443 (RB-02).\",\"evidence\":[\"Service stocks-api: ports 8443 -> targetPort 8444, selector app.kubernetes.io/name=stocks-api, ready endpoints 1\",\"containerPorts:\\n- 8443\",\"NetworkPolicy stocks-api-ingress: pods app.kubernetes.io/name=stocks-api, ingress from zones ['finance'] on ['8443/TCP']\",\"zone finance : attendue joignable, observée bloquée (ÉCHEC)\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1122,
+   "cache_read_input_tokens": 2439,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1122,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 340,
+     "cache_read_input_tokens": 2439,
+     "cache_creation_input_tokens": 1122,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1122,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 340,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

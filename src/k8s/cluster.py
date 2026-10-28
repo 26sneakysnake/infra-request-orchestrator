@@ -20,8 +20,11 @@ class Cluster:
         self._context = context
         api_client = config.new_client_from_config(context=context)
         self._dynamic = dynamic.DynamicClient(api_client)
-        self._core = client.CoreV1Api(api_client)
-        self._apps = client.AppsV1Api(api_client)
+        # Typed clients, also used read-only by k8s.observe.
+        self.core = client.CoreV1Api(api_client)
+        self.apps = client.AppsV1Api(api_client)
+        self.networking = client.NetworkingV1Api(api_client)
+        self.discovery = client.DiscoveryV1Api(api_client)
 
     def apply(self, objects: list[dict[str, Any]]) -> list[str]:
         """Server-side apply, so running the same request twice converges instead of failing."""
@@ -38,10 +41,34 @@ class Cluster:
             applied.append(f"{obj['kind']}/{obj['metadata']['name']}")
         return applied
 
+    def raise_pod_quota(self, namespace: str, headroom: int = 2) -> list[str]:
+        """Give every pod quota of the namespace room for the service's pods (allowed action)."""
+        raised = []
+        for quota in self.core.list_namespaced_resource_quota(namespace).items:
+            hard = quota.spec.hard or {}
+            if "pods" not in hard:
+                continue
+            used = int((quota.status.used or {}).get("pods", "0"))
+            target = max(used + headroom, int(hard["pods"]))
+            body = {"spec": {"hard": {"pods": str(target)}}}
+            self.core.patch_namespaced_resource_quota(quota.metadata.name, namespace, body)
+            raised.append(f"ResourceQuota/{quota.metadata.name} pods {hard['pods']} -> {target}")
+        return raised
+
+    def snapshot(
+        self, namespace: str, service: str, request: dict[str, Any], verification: dict[str, Any]
+    ) -> dict[str, Any]:
+        from k8s.observe import collect  # observe imports Cluster for typing
+
+        return collect(self, namespace, service, request, verification)
+
+    def delete_namespace(self, name: str) -> None:
+        self.core.delete_namespace(name)
+
     def wait_ready(self, namespace: str, name: str, timeout: float = 120.0) -> bool:
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
-            status = self._apps.read_namespaced_deployment_status(name, namespace).status
+            status = self.apps.read_namespaced_deployment_status(name, namespace).status
             if status.ready_replicas and status.ready_replicas >= 1:
                 return True
             time.sleep(2)
@@ -80,9 +107,11 @@ class Cluster:
         port: int,
         allowed_zones: list[str],
         all_zones: list[str],
+        ready_timeout: float = 120.0,
     ) -> dict[str, Any]:
-        if not self.wait_ready(namespace, service):
-            return {"ok": False, "checks": [], "summary": f"Déploiement {service} jamais prêt"}
+        if not self.wait_ready(namespace, service, ready_timeout):
+            summary = f"Déploiement {service} jamais prêt ({ready_timeout:.0f} s)"
+            return {"ok": False, "checks": [], "summary": summary}
         url = f"http://{service}.{namespace}.svc.cluster.local:{port}/"
         denied = [zone for zone in all_zones if zone not in allowed_zones][:1]
         checks = []

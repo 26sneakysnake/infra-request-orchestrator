@@ -1,0 +1,458 @@
+# Diagnosis agent evaluation: 10 faults captured on the kind cluster by
+# `python -m evals.capture_diagnosis`. Expected cause and action come from the
+# injected fault. Frozen by cases.sha256; never edited by hand (CLAUDE.md).
+- id: D01
+  fault: network_policy_zone
+  request:
+    service: inventaire-api
+    namespace: svc-inventaire-api-dev
+    port: 8080
+    zones:
+    - dev
+    environment: dev
+  expected:
+    cause: network_policy
+    action: reapply_network_policy
+  snapshot:
+    namespace: svc-inventaire-api-dev
+    resources: 'Deployment inventaire-api: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod inventaire-api-pod-1: Running, ready, restarts 0
+
+      Service inventaire-api: ports 8080 -> targetPort 8080, selector app.kubernetes.io/name=inventaire-api,
+      ready endpoints 1
+
+      NetworkPolicy inventaire-api-ingress: pods app.kubernetes.io/name=inventaire-api, ingress from zones
+      [''bureautique''] on [''8080/TCP'']'
+    objects:
+      Deployment/inventaire-api: "args:\n- --port\n- '8080'\ncontainerPorts:\n- 8080\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ inventaire-api\n  netco.io/environment: dev\n  netco.io/service: inventaire-api\nreplicas: 1\n\
+        selector:\n  app.kubernetes.io/name: inventaire-api"
+      Pod/inventaire-api-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n\
+        \  app.kubernetes.io/name: inventaire-api\n  netco.io/environment: dev\n  netco.io/service: inventaire-api\n\
+        phase: Running"
+      Service/inventaire-api: "ports:\n- port: 8080\n  targetPort: 8080\nselector:\n  app.kubernetes.io/name:\
+        \ inventaire-api"
+      NetworkPolicy/inventaire-api-ingress: "ingress:\n- fromZones:\n  - bureautique\n  ports:\n  - 8080/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: inventaire-api\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      inventaire-api-pod-1: Starting up on port 8080
+    verification: 'Demande validée : service inventaire-api, port 8080/tcp, zones autorisées attendues
+      : dev.
+
+      zone dev : bloquée au lieu de joignable
+
+      zone dev : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone data : attendue bloquée, observée bloquée'
+- id: D02
+  fault: network_policy_port
+  request:
+    service: budget-web
+    namespace: svc-budget-web-recette
+    port: 443
+    zones:
+    - finance
+    environment: recette
+  expected:
+    cause: network_policy
+    action: reapply_network_policy
+  snapshot:
+    namespace: svc-budget-web-recette
+    resources: 'Deployment budget-web: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod budget-web-pod-1: Running, ready, restarts 0
+
+      Service budget-web: ports 443 -> targetPort 443, selector app.kubernetes.io/name=budget-web, ready
+      endpoints 1
+
+      NetworkPolicy budget-web-ingress: pods app.kubernetes.io/name=budget-web, ingress from zones [''finance'']
+      on [''444/TCP'']'
+    objects:
+      Deployment/budget-web: "args:\n- --port\n- '443'\ncontainerPorts:\n- 443\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ budget-web\n  netco.io/environment: recette\n  netco.io/service: budget-web\nreplicas: 1\nselector:\n\
+        \  app.kubernetes.io/name: budget-web"
+      Pod/budget-web-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ budget-web\n  netco.io/environment: recette\n  netco.io/service: budget-web\nphase: Running"
+      Service/budget-web: "ports:\n- port: 443\n  targetPort: 443\nselector:\n  app.kubernetes.io/name:\
+        \ budget-web"
+      NetworkPolicy/budget-web-ingress: "ingress:\n- fromZones:\n  - finance\n  ports:\n  - 444/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: budget-web\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      budget-web-pod-1: Starting up on port 443
+    verification: 'Demande validée : service budget-web, port 443/tcp, zones autorisées attendues : finance.
+
+      zone finance : bloquée au lieu de joignable
+
+      zone finance : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone dev : attendue bloquée, observée bloquée'
+- id: D03
+  fault: service_target_port
+  request:
+    service: stocks-api
+    namespace: svc-stocks-api-recette
+    port: 8443
+    zones:
+    - finance
+    environment: recette
+  expected:
+    cause: service_port
+    action: reapply_service
+  snapshot:
+    namespace: svc-stocks-api-recette
+    resources: 'Deployment stocks-api: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod stocks-api-pod-1: Running, ready, restarts 0
+
+      Service stocks-api: ports 8443 -> targetPort 8444, selector app.kubernetes.io/name=stocks-api, ready
+      endpoints 1
+
+      NetworkPolicy stocks-api-ingress: pods app.kubernetes.io/name=stocks-api, ingress from zones [''finance'']
+      on [''8443/TCP'']'
+    objects:
+      Deployment/stocks-api: "args:\n- --port\n- '8443'\ncontainerPorts:\n- 8443\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ stocks-api\n  netco.io/environment: recette\n  netco.io/service: stocks-api\nreplicas: 1\nselector:\n\
+        \  app.kubernetes.io/name: stocks-api"
+      Pod/stocks-api-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ stocks-api\n  netco.io/environment: recette\n  netco.io/service: stocks-api\nphase: Running"
+      Service/stocks-api: "ports:\n- port: 8443\n  targetPort: 8444\nselector:\n  app.kubernetes.io/name:\
+        \ stocks-api"
+      NetworkPolicy/stocks-api-ingress: "ingress:\n- fromZones:\n  - finance\n  ports:\n  - 8443/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: stocks-api\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      stocks-api-pod-1: Starting up on port 8443
+    verification: 'Demande validée : service stocks-api, port 8443/tcp, zones autorisées attendues : finance.
+
+      zone finance : bloquée au lieu de joignable
+
+      zone finance : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone dev : attendue bloquée, observée bloquée'
+- id: D04
+  fault: service_port
+  request:
+    service: monitoring-ui
+    namespace: svc-monitoring-ui-dev
+    port: 9090
+    zones:
+    - bureautique
+    environment: dev
+  expected:
+    cause: service_port
+    action: reapply_service
+  snapshot:
+    namespace: svc-monitoring-ui-dev
+    resources: 'Deployment monitoring-ui: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod monitoring-ui-pod-1: Running, ready, restarts 0
+
+      Service monitoring-ui: ports 9091 -> targetPort 9090, selector app.kubernetes.io/name=monitoring-ui,
+      ready endpoints 1
+
+      NetworkPolicy monitoring-ui-ingress: pods app.kubernetes.io/name=monitoring-ui, ingress from zones
+      [''bureautique''] on [''9090/TCP'']'
+    objects:
+      Deployment/monitoring-ui: "args:\n- --port\n- '9090'\ncontainerPorts:\n- 9090\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ monitoring-ui\n  netco.io/environment: dev\n  netco.io/service: monitoring-ui\nreplicas: 1\n\
+        selector:\n  app.kubernetes.io/name: monitoring-ui"
+      Pod/monitoring-ui-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n\
+        \  app.kubernetes.io/name: monitoring-ui\n  netco.io/environment: dev\n  netco.io/service: monitoring-ui\n\
+        phase: Running"
+      Service/monitoring-ui: "ports:\n- port: 9091\n  targetPort: 9090\nselector:\n  app.kubernetes.io/name:\
+        \ monitoring-ui"
+      NetworkPolicy/monitoring-ui-ingress: "ingress:\n- fromZones:\n  - bureautique\n  ports:\n  - 9090/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: monitoring-ui\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      monitoring-ui-pod-1: Starting up on port 9090
+    verification: 'Demande validée : service monitoring-ui, port 9090/tcp, zones autorisées attendues
+      : bureautique.
+
+      zone bureautique : bloquée au lieu de joignable
+
+      zone bureautique : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone dev : attendue bloquée, observée bloquée'
+- id: D05
+  fault: selector_typo
+  request:
+    service: catalogue-web
+    namespace: svc-catalogue-web-dev
+    port: 8080
+    zones:
+    - dev
+    environment: dev
+  expected:
+    cause: service_selector
+    action: reapply_service
+  snapshot:
+    namespace: svc-catalogue-web-dev
+    resources: 'Deployment catalogue-web: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod catalogue-web-pod-1: Running, ready, restarts 0
+
+      Service catalogue-web: ports 8080 -> targetPort 8080, selector app.kubernetes.io/name=catalogue-web-v2,
+      ready endpoints 0
+
+      NetworkPolicy catalogue-web-ingress: pods app.kubernetes.io/name=catalogue-web, ingress from zones
+      [''dev''] on [''8080/TCP'']'
+    objects:
+      Deployment/catalogue-web: "args:\n- --port\n- '8080'\ncontainerPorts:\n- 8080\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ catalogue-web\n  netco.io/environment: dev\n  netco.io/service: catalogue-web\nreplicas: 1\n\
+        selector:\n  app.kubernetes.io/name: catalogue-web"
+      Pod/catalogue-web-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n\
+        \  app.kubernetes.io/name: catalogue-web\n  netco.io/environment: dev\n  netco.io/service: catalogue-web\n\
+        phase: Running"
+      Service/catalogue-web: "ports:\n- port: 8080\n  targetPort: 8080\nselector:\n  app.kubernetes.io/name:\
+        \ catalogue-web-v2"
+      NetworkPolicy/catalogue-web-ingress: "ingress:\n- fromZones:\n  - dev\n  ports:\n  - 8080/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: catalogue-web\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      catalogue-web-pod-1: Starting up on port 8080
+    verification: 'Demande validée : service catalogue-web, port 8080/tcp, zones autorisées attendues
+      : dev.
+
+      zone dev : bloquée au lieu de joignable
+
+      zone dev : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone data : attendue bloquée, observée bloquée'
+- id: D06
+  fault: selector_label
+  request:
+    service: ventes-db
+    namespace: svc-ventes-db-dev
+    port: 3306
+    zones:
+    - data
+    environment: dev
+  expected:
+    cause: service_selector
+    action: reapply_service
+  snapshot:
+    namespace: svc-ventes-db-dev
+    resources: 'Deployment ventes-db: image traefik/whoami:v1.12.0, ready replicas 1/1
+
+      Pod ventes-db-pod-1: Running, ready, restarts 0
+
+      Service ventes-db: ports 3306 -> targetPort 3306, selector app=ventes-db, ready endpoints 0
+
+      NetworkPolicy ventes-db-ingress: pods app.kubernetes.io/name=ventes-db, ingress from zones [''data'']
+      on [''3306/TCP'']'
+    objects:
+      Deployment/ventes-db: "args:\n- --port\n- '3306'\ncontainerPorts:\n- 3306\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ ventes-db\n  netco.io/environment: dev\n  netco.io/service: ventes-db\nreplicas: 1\nselector:\n\
+        \  app.kubernetes.io/name: ventes-db"
+      Pod/ventes-db-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ ventes-db\n  netco.io/environment: dev\n  netco.io/service: ventes-db\nphase: Running"
+      Service/ventes-db: "ports:\n- port: 3306\n  targetPort: 3306\nselector:\n  app: ventes-db"
+      NetworkPolicy/ventes-db-ingress: "ingress:\n- fromZones:\n  - data\n  ports:\n  - 3306/TCP\npodSelector:\n\
+        \  app.kubernetes.io/name: ventes-db\npolicyTypes:\n- Ingress"
+    events: (aucun événement Warning)
+    logs:
+      ventes-db-pod-1: Starting up on port 3306
+    verification: 'Demande validée : service ventes-db, port 3306/tcp, zones autorisées attendues : data.
+
+      zone data : bloquée au lieu de joignable
+
+      zone data : attendue joignable, observée bloquée (ÉCHEC)
+
+      zone dev : attendue bloquée, observée bloquée'
+- id: D07
+  fault: image_tag
+  request:
+    service: reporting-api
+    namespace: svc-reporting-api-recette
+    port: 8443
+    zones:
+    - data
+    environment: recette
+  expected:
+    cause: image
+    action: reapply_deployment
+  snapshot:
+    namespace: svc-reporting-api-recette
+    resources: 'Deployment reporting-api: image traefik/whoami:v9.9.99, ready replicas 0/1
+
+      Pod reporting-api-pod-1: Pending, not ready, restarts 0, waiting: ImagePullBackOff
+
+      Service reporting-api: ports 8443 -> targetPort 8443, selector app.kubernetes.io/name=reporting-api,
+      ready endpoints 0
+
+      NetworkPolicy reporting-api-ingress: pods app.kubernetes.io/name=reporting-api, ingress from zones
+      [''data''] on [''8443/TCP'']'
+    objects:
+      Deployment/reporting-api: "args:\n- --port\n- '8443'\ncontainerPorts:\n- 8443\nimage: traefik/whoami:v9.9.99\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ reporting-api\n  netco.io/environment: recette\n  netco.io/service: reporting-api\nreplicas:\
+        \ 1\nselector:\n  app.kubernetes.io/name: reporting-api"
+      Pod/reporting-api-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n\
+        \  app.kubernetes.io/name: reporting-api\n  netco.io/environment: recette\n  netco.io/service:\
+        \ reporting-api\nphase: Pending"
+      Service/reporting-api: "ports:\n- port: 8443\n  targetPort: 8443\nselector:\n  app.kubernetes.io/name:\
+        \ reporting-api"
+      NetworkPolicy/reporting-api-ingress: "ingress:\n- fromZones:\n  - data\n  ports:\n  - 8443/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: reporting-api\npolicyTypes:\n- Ingress"
+    events: 'Failed Pod/reporting-api-pod-1: Error: ErrImagePull
+
+      Failed Pod/reporting-api-pod-1: Error: ImagePullBackOff
+
+      Failed Pod/reporting-api-pod-1: Failed to pull image "traefik/whoami:v9.9.99": rpc error: code =
+      NotFound desc = failed to pull and unpack image "docker.io/traefik/whoami:v9.9.99": failed to resolve
+      reference "docker.io/traefik/whoami:v9.9.99": docker.io/traefik/whoami:v9.9.99: not found'
+    logs:
+      reporting-api-pod-1: '(pas de journal : le conteneur n''a pas démarré)'
+    verification: 'Demande validée : service reporting-api, port 8443/tcp, zones autorisées attendues
+      : data.
+
+      Déploiement reporting-api jamais prêt (45 s)'
+- id: D08
+  fault: image_registry
+  request:
+    service: portail-rh
+    namespace: svc-portail-rh-prod
+    port: 443
+    zones:
+    - internet
+    environment: prod
+  expected:
+    cause: image
+    action: reapply_deployment
+  snapshot:
+    namespace: svc-portail-rh-prod
+    resources: 'Deployment portail-rh: image registry.netco.invalid/whoami:v1.12.0, ready replicas 0/1
+
+      Pod portail-rh-pod-1: Pending, not ready, restarts 0, waiting: ImagePullBackOff
+
+      Service portail-rh: ports 443 -> targetPort 443, selector app.kubernetes.io/name=portail-rh, ready
+      endpoints 0
+
+      NetworkPolicy portail-rh-ingress: pods app.kubernetes.io/name=portail-rh, ingress from zones [''internet'']
+      on [''443/TCP'']'
+    objects:
+      Deployment/portail-rh: "args:\n- --port\n- '443'\ncontainerPorts:\n- 443\nimage: registry.netco.invalid/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ portail-rh\n  netco.io/environment: prod\n  netco.io/service: portail-rh\nreplicas: 1\nselector:\n\
+        \  app.kubernetes.io/name: portail-rh"
+      Pod/portail-rh-pod-1: "labels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ portail-rh\n  netco.io/environment: prod\n  netco.io/service: portail-rh\nphase: Pending"
+      Service/portail-rh: "ports:\n- port: 443\n  targetPort: 443\nselector:\n  app.kubernetes.io/name:\
+        \ portail-rh"
+      NetworkPolicy/portail-rh-ingress: "ingress:\n- fromZones:\n  - internet\n  ports:\n  - 443/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: portail-rh\npolicyTypes:\n- Ingress"
+    events: 'Failed Pod/portail-rh-pod-1: Error: ErrImagePull
+
+      Failed Pod/portail-rh-pod-1: Error: ImagePullBackOff
+
+      Failed Pod/portail-rh-pod-1: Failed to pull image "registry.netco.invalid/whoami:v1.12.0": failed
+      to pull and unpack image "registry.netco.invalid/whoami:v1.12.0": failed to resolve reference "registry.netco.invalid/whoami:v1.12.0":
+      failed to do request: Head "https://registry.netco.invalid/v2/whoami/manifests/v1.12.0": dial tcp:
+      lookup registry.netco.invalid on <ip>: no such host'
+    logs:
+      portail-rh-pod-1: '(pas de journal : le conteneur n''a pas démarré)'
+    verification: 'Demande validée : service portail-rh, port 443/tcp, zones autorisées attendues : internet.
+
+      Déploiement portail-rh jamais prêt (45 s)'
+- id: D09
+  fault: quota_zero
+  request:
+    service: cache-sessions
+    namespace: svc-cache-sessions-prod
+    port: 6379
+    zones:
+    - dev
+    environment: prod
+  expected:
+    cause: quota
+    action: raise_pod_quota
+  snapshot:
+    namespace: svc-cache-sessions-prod
+    resources: 'Deployment cache-sessions: image traefik/whoami:v1.12.0, ready replicas 0/1
+
+      Service cache-sessions: ports 6379 -> targetPort 6379, selector app.kubernetes.io/name=cache-sessions,
+      ready endpoints 0
+
+      NetworkPolicy cache-sessions-ingress: pods app.kubernetes.io/name=cache-sessions, ingress from zones
+      [''dev''] on [''6379/TCP'']
+
+      ResourceQuota pods-quota: pods 0/0'
+    objects:
+      Deployment/cache-sessions: "args:\n- --port\n- '6379'\ncontainerPorts:\n- 6379\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ cache-sessions\n  netco.io/environment: prod\n  netco.io/service: cache-sessions\nreplicas:\
+        \ 1\nselector:\n  app.kubernetes.io/name: cache-sessions"
+      Service/cache-sessions: "ports:\n- port: 6379\n  targetPort: 6379\nselector:\n  app.kubernetes.io/name:\
+        \ cache-sessions"
+      NetworkPolicy/cache-sessions-ingress: "ingress:\n- fromZones:\n  - dev\n  ports:\n  - 6379/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: cache-sessions\npolicyTypes:\n- Ingress"
+      ResourceQuota/pods-quota: "hard:\n  pods: '0'\nused:\n  pods: '0'"
+    events: 'FailedCreate ReplicaSet/cache-sessions-replicaset: (combined from similar events): Error
+      creating: pods "cache-sessions-pod" is forbidden: exceeded quota: pods-quota, requested: pods=1,
+      used: pods=0, limited: pods=0
+
+      FailedCreate ReplicaSet/cache-sessions-replicaset: Error creating: pods "cache-sessions-pod" is
+      forbidden: exceeded quota: pods-quota, requested: pods=1, used: pods=0, limited: pods=0'
+    logs: {}
+    verification: 'Demande validée : service cache-sessions, port 6379/tcp, zones autorisées attendues
+      : dev.
+
+      Déploiement cache-sessions jamais prêt (45 s)'
+- id: D10
+  fault: quota_full
+  request:
+    service: annuaire-db
+    namespace: svc-annuaire-db-recette
+    port: 5432
+    zones:
+    - bureautique
+    environment: recette
+  expected:
+    cause: quota
+    action: raise_pod_quota
+  snapshot:
+    namespace: svc-annuaire-db-recette
+    resources: 'Deployment annuaire-db: image traefik/whoami:v1.12.0, ready replicas 0/1
+
+      Pod batch-legacy: Running, ready, restarts 0
+
+      Service annuaire-db: ports 5432 -> targetPort 5432, selector app.kubernetes.io/name=annuaire-db,
+      ready endpoints 0
+
+      NetworkPolicy annuaire-db-ingress: pods app.kubernetes.io/name=annuaire-db, ingress from zones [''bureautique'']
+      on [''5432/TCP'']
+
+      ResourceQuota pods-quota: pods 1/1'
+    objects:
+      Deployment/annuaire-db: "args:\n- --port\n- '5432'\ncontainerPorts:\n- 5432\nimage: traefik/whoami:v1.12.0\n\
+        podLabels:\n  app.kubernetes.io/managed-by: infra-request-orchestrator\n  app.kubernetes.io/name:\
+        \ annuaire-db\n  netco.io/environment: recette\n  netco.io/service: annuaire-db\nreplicas: 1\n\
+        selector:\n  app.kubernetes.io/name: annuaire-db"
+      Pod/batch-legacy: "labels:\n  app.kubernetes.io/name: batch-legacy\nphase: Running"
+      Service/annuaire-db: "ports:\n- port: 5432\n  targetPort: 5432\nselector:\n  app.kubernetes.io/name:\
+        \ annuaire-db"
+      NetworkPolicy/annuaire-db-ingress: "ingress:\n- fromZones:\n  - bureautique\n  ports:\n  - 5432/TCP\n\
+        podSelector:\n  app.kubernetes.io/name: annuaire-db\npolicyTypes:\n- Ingress"
+      ResourceQuota/pods-quota: "hard:\n  pods: '1'\nused:\n  pods: '1'"
+    events: 'FailedCreate ReplicaSet/annuaire-db-replicaset: (combined from similar events): Error creating:
+      pods "annuaire-db-pod" is forbidden: exceeded quota: pods-quota, requested: pods=1, used: pods=1,
+      limited: pods=1
+
+      FailedCreate ReplicaSet/annuaire-db-replicaset: Error creating: pods "annuaire-db-pod" is forbidden:
+      exceeded quota: pods-quota, requested: pods=1, used: pods=1, limited: pods=1'
+    logs:
+      batch-legacy: (journal vide)
+    verification: 'Demande validée : service annuaire-db, port 5432/tcp, zones autorisées attendues :
+      bureautique.
+
+      Déploiement annuaire-db jamais prêt (45 s)'

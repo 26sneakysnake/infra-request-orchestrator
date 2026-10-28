@@ -222,3 +222,75 @@ def test_ask_requester_posts_the_questions_and_waits(deps: Deps) -> None:
     assert text.startswith(handlers.REQUESTER_MARKER) and "Pour quel environnement ?" in text
     assert internal is False  # visible to the requester
     assert state == ("state", ("ritm-sys", "-5"))
+
+
+class RemediationCluster(FakeCluster):
+    def __init__(self) -> None:
+        super().__init__()
+        self.quotas_raised: list[str] = []
+
+    def snapshot(self, namespace: str, service: str, request: dict, verification: dict) -> dict:
+        return {
+            "namespace": namespace,
+            "resources": "NetworkPolicy x: ingress from zones ['bureautique']",
+            "objects": {},
+            "events": "",
+            "logs": {},
+            "verification": "zone dev : observée bloquée",
+        }
+
+    def raise_pod_quota(self, namespace: str) -> list[str]:
+        self.quotas_raised.append(namespace)
+        return ["ResourceQuota/pods-quota pods 0 -> 2"]
+
+
+def test_diagnosis_is_stored_with_its_grounded_evidence(deps: Deps) -> None:
+    from agents.loop import AgentRun
+
+    deps.cluster = RemediationCluster()
+    answer = {
+        "cause": "network_policy",
+        "action": "reapply_network_policy",
+        "runbook": "RB-01",
+        "confidence": "high",
+        "explanation": "La politique n'autorise pas la zone dev.",
+        "evidence": ["ingress from zones ['bureautique']", "pas dans l'instantané"],
+    }
+    deps.diagnose = lambda snapshot, service: AgentRun(answer, "claude-sonnet-5-5", 3, {})
+    result = handlers.diagnose_failure({**VALIDATED, "verification": {"ok": False}}, deps)
+    assert result["diagnosis"]["action"] == "reapply_network_policy"
+    assert result["diagnosis"]["evidenceGrounded"] == "1/2"
+
+
+@pytest.mark.parametrize(
+    ("action", "kind"),
+    [
+        ("reapply_network_policy", "NetworkPolicy"),
+        ("reapply_service", "Service"),
+        ("reapply_deployment", "Deployment"),
+    ],
+)
+def test_remediation_reapplies_only_the_approved_object(deps: Deps, action: str, kind: str) -> None:
+    deps.cluster = RemediationCluster()
+    v = {
+        **VALIDATED,
+        "changeSysId": "chg-sys",
+        "jiraKey": "NETOPS-42",
+        "diagnosis": {"action": action, "cause": "c", "explanation": "e"},
+    }
+    assert handlers.apply_remediation(v, deps) == {"remediationsApplied": [action]}
+    assert [o["kind"] for o in deps.cluster.applied] == [kind]
+    assert ("comment", "NETOPS-42") in deps.jira.calls
+
+
+def test_quota_remediation_and_escalation(deps: Deps) -> None:
+    deps.cluster = RemediationCluster()
+    v = {**VALIDATED, "changeSysId": "c", "jiraKey": "NETOPS-42"}
+    handlers.apply_remediation(
+        {**v, "diagnosis": {"action": "raise_pod_quota", "cause": "quota"}}, deps
+    )
+    assert deps.cluster.quotas_raised == ["svc-catalogue-api-dev"]
+    with pytest.raises(ValueError, match="not in the allowed list"):
+        handlers.apply_remediation(
+            {**v, "diagnosis": {"action": "escalate", "cause": "other"}}, deps
+        )

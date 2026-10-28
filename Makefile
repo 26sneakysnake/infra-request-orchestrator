@@ -3,7 +3,7 @@
 COMPOSE := docker compose
 KUBECTL := kubectl --context kind-netco
 
-.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval eval-live eval-freeze metrics readme
+.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval eval-live eval-freeze eval-capture metrics readme
 
 all: lint test
 
@@ -70,17 +70,24 @@ workers:
 e2e:
 	uv run python -m scenario.e2e
 
-# Qualification agent evaluation on the frozen cases, replayed from cassettes/llm/ (no key, no cost).
+# Agent evaluations on the frozen cases, replayed from cassettes/llm/ (no key, no cost).
 eval:
 	uv run python -m evals.qualification
+	uv run python -m evals.diagnosis
 
-# Same evaluation calling the API for answers not recorded yet (costs money, spend guard in .env).
+# Same evaluations calling the API for answers not recorded yet (costs money, spend guard in .env).
 eval-live:
 	uv run python -m evals.qualification --live
+	uv run python -m evals.diagnosis --live
 
-# Fingerprint of eval/cases/qualification/cases.yaml, written once when the set is created.
+# Fingerprints of the case files, written once when a case set is created.
 eval-freeze:
 	uv run python -m evals.qualification --freeze
+	uv run python -m evals.diagnosis --freeze
+
+# Capture the diagnosis cases again on the kind cluster (then eval-freeze and eval-live).
+eval-capture:
+	uv run python -m evals.capture_diagnosis
 
 # Targets of later phases (see PLAN.md).
 

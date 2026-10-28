@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUx1gVQF8HCxgUhdNSRY",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"quota\",\"action\":\"raise_pod_quota\",\"runbook\":\"RB-05\",\"explanation\":\"Le déploiement annuaire-db n'est jamais prêt, car le ReplicaSet ne peut pas créer son pod. Le quota pods-quota est plein (1/1) : le pod batch-legacy utilise déjà l'unique place. Le runbook RB-05 autorise de relever le quota de pods. La NetworkPolicy, le Service et l'image sont conformes à la demande.\",\"evidence\":[\"Error creating: pods \\\"annuaire-db-pod\\\" is forbidden: exceeded quota: pods-quota, requested: pods=1, used: pods=1, limited: pods=1\",\"ResourceQuota pods-quota: pods 1/1\",\"Deployment annuaire-db: image traefik/whoami:v1.12.0, ready replicas 0/1\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 974,
+   "cache_read_input_tokens": 2424,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 974,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 305,
+     "cache_read_input_tokens": 2424,
+     "cache_creation_input_tokens": 974,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 974,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 305,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

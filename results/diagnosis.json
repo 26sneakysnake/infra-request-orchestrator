@@ -1,0 +1,193 @@
+{
+  "cases": 10,
+  "cases_sha256": "77d97c43a3f8fbdaa629c0198c7dc40a8cd584f1217ad16c0069ab77049125bf",
+  "metrics": {
+    "cause": {
+      "k": 10,
+      "n": 10,
+      "rate": 1.0,
+      "wilson95": [
+        0.7225,
+        1.0
+      ]
+    },
+    "action": {
+      "k": 10,
+      "n": 10,
+      "rate": 1.0,
+      "wilson95": [
+        0.7225,
+        1.0
+      ]
+    },
+    "cause_and_action": {
+      "k": 10,
+      "n": 10,
+      "rate": 1.0,
+      "wilson95": [
+        0.7225,
+        1.0
+      ]
+    },
+    "evidence_grounded": {
+      "k": 35,
+      "n": 35,
+      "rate": 1.0,
+      "wilson95": [
+        0.9011,
+        1.0
+      ]
+    },
+    "cost": {
+      "model": "claude-sonnet-5-5",
+      "total_usd": 0.1029,
+      "per_case_usd": 0.01029,
+      "cache_creation_input_tokens": 15228,
+      "cache_read_input_tokens": 62063,
+      "input_tokens": 80,
+      "output_tokens": 5225
+    }
+  },
+  "per_case": [
+    {
+      "id": "D01",
+      "fault": "network_policy_zone",
+      "cause_expected": "network_policy",
+      "cause_got": "network_policy",
+      "action_expected": "reapply_network_policy",
+      "action_got": "reapply_network_policy",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-01",
+      "confidence": "high",
+      "evidence": 4,
+      "evidence_grounded": 4
+    },
+    {
+      "id": "D02",
+      "fault": "network_policy_port",
+      "cause_expected": "network_policy",
+      "cause_got": "network_policy",
+      "action_expected": "reapply_network_policy",
+      "action_got": "reapply_network_policy",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-01",
+      "confidence": "high",
+      "evidence": 3,
+      "evidence_grounded": 3
+    },
+    {
+      "id": "D03",
+      "fault": "service_target_port",
+      "cause_expected": "service_port",
+      "cause_got": "service_port",
+      "action_expected": "reapply_service",
+      "action_got": "reapply_service",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-02",
+      "confidence": "high",
+      "evidence": 4,
+      "evidence_grounded": 4
+    },
+    {
+      "id": "D04",
+      "fault": "service_port",
+      "cause_expected": "service_port",
+      "cause_got": "service_port",
+      "action_expected": "reapply_service",
+      "action_got": "reapply_service",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-02",
+      "confidence": "high",
+      "evidence": 3,
+      "evidence_grounded": 3
+    },
+    {
+      "id": "D05",
+      "fault": "selector_typo",
+      "cause_expected": "service_selector",
+      "cause_got": "service_selector",
+      "action_expected": "reapply_service",
+      "action_got": "reapply_service",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-03",
+      "confidence": "high",
+      "evidence": 4,
+      "evidence_grounded": 4
+    },
+    {
+      "id": "D06",
+      "fault": "selector_label",
+      "cause_expected": "service_selector",
+      "cause_got": "service_selector",
+      "action_expected": "reapply_service",
+      "action_got": "reapply_service",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-03",
+      "confidence": "high",
+      "evidence": 4,
+      "evidence_grounded": 4
+    },
+    {
+      "id": "D07",
+      "fault": "image_tag",
+      "cause_expected": "image",
+      "cause_got": "image",
+      "action_expected": "reapply_deployment",
+      "action_got": "reapply_deployment",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-04",
+      "confidence": "high",
+      "evidence": 3,
+      "evidence_grounded": 3
+    },
+    {
+      "id": "D08",
+      "fault": "image_registry",
+      "cause_expected": "image",
+      "cause_got": "image",
+      "action_expected": "reapply_deployment",
+      "action_got": "reapply_deployment",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-04",
+      "confidence": "high",
+      "evidence": 4,
+      "evidence_grounded": 4
+    },
+    {
+      "id": "D09",
+      "fault": "quota_zero",
+      "cause_expected": "quota",
+      "cause_got": "quota",
+      "action_expected": "raise_pod_quota",
+      "action_got": "raise_pod_quota",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-05",
+      "confidence": "high",
+      "evidence": 3,
+      "evidence_grounded": 3
+    },
+    {
+      "id": "D10",
+      "fault": "quota_full",
+      "cause_expected": "quota",
+      "cause_got": "quota",
+      "action_expected": "raise_pod_quota",
+      "action_got": "raise_pod_quota",
+      "cause_ok": true,
+      "action_ok": true,
+      "runbook": "RB-05",
+      "confidence": "high",
+      "evidence": 3,
+      "evidence_grounded": 3
+    }
+  ]
+}

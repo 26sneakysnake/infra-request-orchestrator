@@ -1,0 +1,75 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUwxqjC9aAYPNbizKRAP",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSlwYKEAgTGAI4AUIIdGhpbmtpbmcSDK8khAcw+RgmzW5mmxoMDVg4s3N29V3/R0FvIjAOmEGnNRH/VNUQyc88RhaHGrkVvcC6Hy01c1Yiz32/zRmPVeTCPQU/NE1exA2WZOwqtAVIrmB6h2muS2T52a8N2OM/p72P87dC6tBj2SOYfgqRKpQ2oKLSEc88TtZXHNZ4o/6uwW/rRXMt+TxnWE7W6N6vLi8HsQ9Al1LlAc/dttFz/bwIpA8EneFHnMR2iWMhr5n4g5LuovS8RVOKUGmVfZlq/R0Dn9JcsIBNPl9Hs+JAj3hOO52w14DyYHPbyVcd4nG6JHQROCCjZu/4yRc1FgwQejagQC6HIEWvqtZ67B2F//T0NF6m/QIPhLOG8Um5pZmEroac3Gp+cTR88EnyqTgGmNXJl2lSzTYaibhWTMEyfIZPVoOKV5+2s3qd0TuJqqWE0OKkIvbWhWMJWXMX2ZwLtaLibuD+ijuVo13pHr66rdz95AmWHyTnGPLpoGQQBJrN2fLpI1e2hhFJiqGfzrUy7JyFvUJgISdTK+wWO8QdsWzQgVrtlZANdMNbSRHRcqi6QIzMu0Ck8u3BuE9XiiY9N8EnlCM+LWaf1YzsmZ3NKtXaBdWstxzL5fkpyRnPb+AfKIxDQ/+STQM0wOD6Gyf9iP2ce3dEzX7sZAoBHphm76O4W2/6zssn1Bi2L6w5fQiGa0CH5A9hmMVbp0iDvgJixZSeVFncAX1rrHdX31PgfVX6dFlhYo80gAQYd/ZD3FrCL0hsRvLY7dEvI3nVgm2WV/b/kaPWkk1nuCpSbIPfbkhXZaUOHrVndb85BnAHTvCoDQEFrarApaG1s2s5dy0MZeN2UV6Hj/dZOcFhnQaE97+Z4vVr8JUr5tx63h5Csgo2VWozP+H5+KPqmOIktMd/HH5LY3Lu2673Zrl5VWGlCBOR8ORVh4sHCyW9KCeBGF6rIDMW4yiwlHX0ZGebU4ifEdMGymJiwn3tegnBqLLJq0UCFFLH/nylsr0cEFlbhuol36E9+Re5fSx3YV0rbac5mqHhWRgB"
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01Mb4jYBjXqRTj2RzZjDuLJC",
+    "name": "search_runbooks",
+    "input": {
+     "query": "Service port incorrect injoignable"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01TBeyBJMDwW6sAREtTwbQ8v",
+    "name": "describe",
+    "input": {
+     "kind": "Service",
+     "name": "monitoring-ui"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 409,
+   "cache_read_input_tokens": 2056,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 409,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 206,
+     "cache_read_input_tokens": 2056,
+     "cache_creation_input_tokens": 409,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 409,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 206,
+   "output_tokens_details": {
+    "thinking_tokens": 73
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

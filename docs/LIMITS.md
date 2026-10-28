@@ -32,6 +32,17 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
 - Le coût affiché est calculé au tarif du modèle demandé. Une réponse produite par le modèle de repli (après un
   refus) serait facturée autrement.
 
+## Agent de diagnostic
+- Les 10 pannes sont injectées volontairement, une seule à la fois, et chacune correspond exactement à un
+  runbook. Les vraies pannes sont plus floues : causes multiples, symptômes qui changent avec le temps,
+  composants hors du namespace. Un 10/10 sur ce banc ne dit rien de ces cas-là.
+- L'agent ne voit qu'un instantané du namespace du service. Le réseau sous-jacent, les nœuds et les autres
+  namespaces ne sont pas observés.
+- L'instantané ne garde que les événements Warning, et normalise les messages. Un détail utile peut s'y perdre.
+- Les remédiations se limitent à une liste fermée : réappliquer un objet calculé, ou relever un quota. Une
+  panne qui demande autre chose se termine par « corrigé moi-même » ou `escalate`.
+- Dans l'e2e, la validation humaine de la remédiation est simulée par le script.
+
 ## Processus
 - Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile
   locale n'a pas d'adresse publique.

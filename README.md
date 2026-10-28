@@ -10,17 +10,19 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 à P3 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
+Phases P0 à P4 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
 comprend :
 - un agent IA de qualification, qui transforme le texte libre en formulaire, cite le référentiel et interroge le
   demandeur quand une information manque ;
 - une table DMN ;
 - une approbation dans Tasklist ;
-- un vrai provisionnement sur un cluster kind local.
+- un vrai provisionnement sur un cluster kind local ;
+- en cas d'échec de la vérification réseau, un agent IA de diagnostic. Il est en lecture seule et propose une
+  action d'une liste fermée, qu'un humain valide avant que le processus ne l'applique.
 
-Les agents de diagnostic et de documentation ne sont pas encore écrits. Les résultats chiffrés de
-l'évaluation sont dans [results/qualification.json](results/qualification.json), et le suivi détaillé dans
-[docs/PROGRESS.md](docs/PROGRESS.md).
+L'agent de documentation et la VM ne sont pas encore écrits. Les résultats chiffrés sont dans
+[results/qualification.json](results/qualification.json) et [results/diagnosis.json](results/diagnosis.json),
+et le suivi détaillé dans [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Démarrer en local
 
@@ -55,8 +57,13 @@ Dans Operate, on suit les 5 instances :
 - 2 normales, en attente d'approbation dans Tasklist (groupe `cab`) ;
 - 2 refusées par le référentiel, avec un commentaire dans ServiceNow.
 
-`make e2e` rejoue le scénario complet de façon automatique, avec une approbation simulée et une réponse
-simulée du demandeur. `make kind-down` et `make down` arrêtent tout.
+Pour voir le diagnostic, il faut provoquer une panne sur un service avant `make workers`. Par exemple, en
+PowerShell : `$env:NETCO_INJECT_FAULT = "network_policy_zone:catalogue-api"`. Les variantes sont listées dans
+[src/k8s/faults.py](src/k8s/faults.py). La tâche « Valider la remédiation » apparaît alors dans Tasklist, avec
+la cause, les preuves et l'action proposées par l'agent.
+
+`make e2e` rejoue le scénario complet de façon automatique : approbation simulée, réponse simulée du
+demandeur, panne injectée et remédiation validée par le script. `make kind-down` et `make down` arrêtent tout.
 
 ## Évaluation de l'agent de qualification
 

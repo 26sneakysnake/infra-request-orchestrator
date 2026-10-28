@@ -5,15 +5,12 @@ The agent proposes; the process decides. Its fields then go through the determin
 """
 
 import json
-import os
-from collections import Counter
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 import anthropic
 
-from agents.llm import anthropic_client, cost_usd, llm_model
+from agents.loop import AgentError, AgentRun, run_tool_loop
 from agents.referentiel import format_results, search
 
 MAX_TURNS = 6
@@ -36,8 +33,6 @@ DEFAULT_QUESTIONS = {
     "ports": "Quel port (et protocole) faut-il ouvrir ?",
     "source_networks": "Depuis quels réseaux ou équipes le service doit-il être joignable ?",
 }
-# Server-side fallback on refusal exists for these models (not for Haiku 5.5).
-FALLBACK_MODELS = {"claude-opus-5-5", "claude-sonnet-5-5"}
 
 SYSTEM_PROMPT = (Path(__file__).parent / "prompts" / "qualification.md").read_text(encoding="utf-8")
 
@@ -99,20 +94,9 @@ OUTPUT_SCHEMA = {
 }
 
 
-class QualificationError(RuntimeError):
-    """The agent could not produce a qualification (refusal, truncated or endless loop)."""
-
-
-@dataclass
-class Qualification:
-    answer: dict[str, Any]
-    model: str
-    turns: int
-    usage: dict[str, int] = field(default_factory=dict)
-
-    @property
-    def cost_usd(self) -> float:
-        return cost_usd(self.model, self.usage)
+# The names other modules use for the shared loop's result and error.
+Qualification = AgentRun
+QualificationError = AgentError
 
 
 def _user_message(text: str, form: dict[str, Any] | None) -> str:
@@ -134,57 +118,17 @@ def qualify(
     effort: str | None = None,
 ) -> Qualification:
     """Run the agent loop; form uses the agent field names (service_name, ports...)."""
-    client = client or anthropic_client()
-    model = model or llm_model()
-    effort = effort or os.environ.get("NETCO_LLM_EFFORT", "medium")
-    extra: dict[str, Any] = {}
-    if model in FALLBACK_MODELS:
-        extra = {"betas": ["server-side-fallback-2026-07-01"], "fallbacks": "default"}
-    messages: list[dict[str, Any]] = [{"role": "user", "content": _user_message(text, form)}]
-    usage: Counter[str] = Counter()
-    for turn in range(1, MAX_TURNS + 1):
-        response = client.beta.messages.create(
-            model=model,
-            max_tokens=8000,
-            # Explicit breakpoint: tools + system prompt are cached once and shared by all requests;
-            # the automatic one below caches the growing conversation within a request.
-            system=[
-                {"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}
-            ],
-            tools=[SEARCH_TOOL],
-            output_config={
-                "effort": effort,
-                "format": {"type": "json_schema", "schema": OUTPUT_SCHEMA},
-            },
-            cache_control={"type": "ephemeral"},
-            messages=messages,
-            **extra,
-        )
-        for name in ("input_tokens", "output_tokens"):
-            usage[name] += getattr(response.usage, name) or 0
-        for name in ("cache_creation_input_tokens", "cache_read_input_tokens"):
-            usage[name] += getattr(response.usage, name, None) or 0
-
-        if response.stop_reason == "refusal":
-            raise QualificationError(f"the model declined the request: {response.stop_details}")
-        if response.stop_reason == "max_tokens":
-            raise QualificationError("answer truncated (max_tokens)")
-        if response.stop_reason == "tool_use":
-            messages.append({"role": "assistant", "content": response.content})
-            results = [
-                {
-                    "type": "tool_result",
-                    "tool_use_id": block.id,
-                    "content": format_results(search(str(block.input.get("query", "")))),
-                }
-                for block in response.content
-                if block.type == "tool_use"
-            ]
-            messages.append({"role": "user", "content": results})
-            continue
-        answer_text = next(b.text for b in response.content if b.type == "text")
-        return Qualification(json.loads(answer_text), model, turn, dict(usage))
-    raise QualificationError(f"no answer after {MAX_TURNS} turns")
+    return run_tool_loop(
+        system=SYSTEM_PROMPT,
+        tools=[SEARCH_TOOL],
+        schema=OUTPUT_SCHEMA,
+        first_message=_user_message(text, form),
+        execute=lambda name, args: format_results(search(str(args.get("query", "")))),
+        max_turns=MAX_TURNS,
+        client=client,
+        model=model,
+        effort=effort,
+    )
 
 
 def _empty(value: Any) -> bool:

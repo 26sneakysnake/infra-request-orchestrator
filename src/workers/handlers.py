@@ -13,6 +13,8 @@ from typing import Any, Protocol
 
 from camunda_orchestration_sdk import JobError
 
+from agents.diagnosis import diagnose, grounded
+from agents.loop import AgentRun
 from agents.qualification import PROCESS_NAMES, Qualification, merge, qualify
 from integrations.jira import JiraClient
 from integrations.servicenow import (
@@ -21,6 +23,7 @@ from integrations.servicenow import (
     RITM_PENDING,
     ServiceNowClient,
 )
+from k8s.faults import inject, requested_fault
 from k8s.manifests import exposure_objects
 from netco.rules import load_rules, validate
 
@@ -42,6 +45,12 @@ class ClusterOps(Protocol):
         all_zones: list[str],
     ) -> dict[str, Any]: ...
 
+    def snapshot(
+        self, namespace: str, service: str, request: dict[str, Any], verification: dict[str, Any]
+    ) -> dict[str, Any]: ...
+
+    def raise_pod_quota(self, namespace: str) -> list[str]: ...
+
 
 @dataclass
 class Deps:
@@ -50,6 +59,7 @@ class Deps:
     jira_project: str
     cluster: ClusterOps
     qualify: Callable[[str, dict[str, Any]], Qualification] = qualify
+    diagnose: Callable[[dict[str, Any], str], AgentRun] = diagnose
 
 
 def _exposure(v: Variables) -> str:
@@ -157,11 +167,74 @@ def create_jira_issue(v: Variables, deps: Deps) -> Variables:
     return {"jiraKey": key, "jiraUrl": deps.jira.browse_url(key)}
 
 
-def provision_k8s(v: Variables, deps: Deps) -> Variables:
-    objects = exposure_objects(
+def _objects(v: Variables) -> list[dict[str, Any]]:
+    """The exposure computed from the validated request: what provisioning and remediation apply."""
+    return exposure_objects(
         v["namespace"], v["serviceName"], v["environment"], v["port"], v["zones"]
     )
-    return {"provisionedResources": deps.cluster.apply(objects)}
+
+
+def provision_k8s(v: Variables, deps: Deps) -> Variables:
+    objects = _objects(v)
+    fault = requested_fault(v["serviceName"])  # demos and the e2e scenario only
+    if fault:
+        target = {k: v[n] for k, n in (("service", "serviceName"), ("namespace", "namespace"))}
+        objects = inject(objects, fault, {**target, "port": v["port"], "zones": v["zones"]})
+    result: Variables = {"provisionedResources": deps.cluster.apply(objects)}
+    if fault:
+        result["injectedFault"] = fault
+    return result
+
+
+def diagnose_failure(v: Variables, deps: Deps) -> Variables:
+    """The agent reads a read-only snapshot of the namespace and proposes one allowed action."""
+    request = {"service": v["serviceName"], "port": v["port"], "zones": v["zones"]}
+    snapshot = deps.cluster.snapshot(
+        v["namespace"], v["serviceName"], request, v.get("verification") or {}
+    )
+    run = deps.diagnose(snapshot, v["serviceName"])
+    answer = run.answer
+    evidence = list(answer.get("evidence") or [])
+    found = sum(grounded(e, snapshot) for e in evidence)
+    return {
+        "diagnosis": {
+            "cause": answer["cause"],
+            "action": answer["action"],
+            "runbook": answer.get("runbook"),
+            "confidence": answer.get("confidence"),
+            "explanation": answer.get("explanation", ""),
+            "evidence": evidence,
+            "evidenceGrounded": f"{found}/{len(evidence)}",
+            "model": run.model,
+            "turns": run.turns,
+            "costUsd": round(run.cost_usd, 6),
+        }
+    }
+
+
+# The only changes the process may make after a diagnosis, each validated by a human first.
+REMEDIATIONS: dict[str, Callable[[Variables, Deps], list[str]]] = {
+    "reapply_network_policy": lambda v, deps: deps.cluster.apply([_objects(v)[3]]),
+    "reapply_service": lambda v, deps: deps.cluster.apply([_objects(v)[2]]),
+    "reapply_deployment": lambda v, deps: deps.cluster.apply([_objects(v)[1]]),
+    "raise_pod_quota": lambda v, deps: deps.cluster.raise_pod_quota(v["namespace"]),
+}
+
+
+def apply_remediation(v: Variables, deps: Deps) -> Variables:
+    diagnosis = v["diagnosis"]
+    action = diagnosis["action"]
+    if action not in REMEDIATIONS:
+        raise ValueError(f"action {action!r} is not in the allowed list")
+    done = REMEDIATIONS[action](v, deps)
+    explanation = diagnosis.get("explanation", "")
+    note = (
+        f"Remédiation appliquée après validation humaine : {action} ({', '.join(done)}). "
+        f"Cause diagnostiquée par l'agent : {diagnosis['cause']}. {explanation}"
+    )
+    deps.servicenow.update_change(v["changeSysId"], {"work_notes": note})
+    deps.jira.add_comment(v["jiraKey"], note)
+    return {"remediationsApplied": [*(v.get("remediationsApplied") or []), action]}
 
 
 def verify_exposure(v: Variables, deps: Deps) -> Variables:
@@ -199,5 +272,7 @@ HANDLERS: dict[str, Callable[[Variables, Deps], Variables]] = {
     "create-jira-issue": create_jira_issue,
     "provision-k8s": provision_k8s,
     "verify-exposure": verify_exposure,
+    "diagnose-failure": diagnose_failure,
+    "apply-remediation": apply_remediation,
     "close-tickets": close_tickets,
 }

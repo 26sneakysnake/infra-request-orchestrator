@@ -42,3 +42,21 @@ Le modèle se change par `NETCO_LLM_MODEL`. Le coût mesuré d'une demande figur
 - Un champ rempli par le demandeur dans le formulaire l'emporte toujours sur la proposition de l'agent.
 - La liste des informations manquantes est recalculée après fusion, donc l'agent ne peut pas masquer un manque.
 - Une citation n'est comptée que si l'extrait figure réellement dans le référentiel.
+
+## Agent de diagnostic : même choix, réévalué en P4
+
+Avec le connecteur AI Agent, on aurait vu chaque appel d'outil dans Operate, ce qui a de la valeur quand un
+humain doit valider une remédiation. Le projet garde pourtant le worker, pour deux raisons :
+- **la reproductibilité** : l'agent travaille sur un **instantané canonique** du namespace, pris une fois au
+  moment de l'échec (noms aléatoires, horodatages et adresses IP retirés). Le même état produit donc exactement
+  les mêmes requêtes, et l'évaluation sur 10 pannes comme l'e2e se rejouent en CI sans clé ;
+- **la séparation entre lecture et écriture**, qui est nette :
+  - l'agent n'a que des outils de lecture sur l'instantané et les runbooks ;
+  - il choisit une action dans une **liste fermée** (`reapply_network_policy`, `reapply_service`,
+    `reapply_deployment`, `raise_pod_quota`, `escalate`) ;
+  - un humain valide dans Tasklist ;
+  - un autre worker applique l'action. Il ne réapplique jamais que la configuration calculée à partir de la
+    demande validée, et n'exécute aucune commande libre.
+
+Ce qui reste visible dans Operate : la tâche de diagnostic, la décision de l'opérateur, et les variables
+`diagnosis` (cause, preuves, runbook, coût) et `remediationsApplied`.

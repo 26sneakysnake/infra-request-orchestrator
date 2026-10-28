@@ -248,3 +248,74 @@ Source : `results/qualification.json`. Modèle Claude Sonnet 5.5, effort `medium
 ### Reste
 - Rien pour P3 : `make eval` produit `results/qualification.json` et la CI le rejoue sans clé.
 - Prochaine phase : P4, seulement avec l'accord de Seif.
+
+## P4 : Diagnostic et remédiation
+
+### Fait
+- **10 pannes reproductibles** (`src/k8s/faults.py`), 2 variantes pour chacune des 5 causes :
+  - NetworkPolicy sur une mauvaise zone ou un mauvais port ;
+  - `port` ou `targetPort` du Service décalé ;
+  - selector avec une faute ou sur un label absent ;
+  - image sur un tag ou un registre inexistant ;
+  - quota de pods nul, ou déjà atteint.
+
+  Dans le processus, une panne n'est injectée que sur demande (`NETCO_INJECT_FAULT=<panne>:<service>`), et
+  seulement au provisionnement.
+- **Instantané canonique en lecture seule** (`src/k8s/observe.py`) :
+  - ce qu'il contient : objets, pods, endpoints prêts, NetworkPolicy, quotas, événements Warning, journaux,
+    résultat des sondes ;
+  - ce qu'il retire : noms aléatoires, horodatages, durées, adresses IP.
+- **Agent de diagnostic** (`src/agents/diagnosis.py`, Sonnet 5.5) :
+  - 6 outils, tous en lecture seule sur l'instantané et sur les runbooks `referentiel/runbooks/` (RB-01 à
+    RB-06) ;
+  - une réponse par schéma : cause, action de la liste fermée, runbook, explication, preuves.
+- **Boucle d'outils commune** aux deux agents (`src/agents/loop.py`). Le refactoring n'a changé aucune requête
+  de la qualification : ses cassettes et ses résultats sont restés identiques.
+- **Processus** : en cas d'erreur de vérification, l'enchaînement est le suivant.
+  1. « Diagnostiquer l'échec (agent IA) ».
+  2. « Valider la remédiation » dans Tasklist : appliquer l'action proposée, ou déclarer « corrigé moi-même ».
+  3. « Appliquer la remédiation (liste autorisée) ». Elle réapplique uniquement l'objet calculé à partir de la
+     demande validée, ou relève le quota, puis laisse une note de travail sur le changement ServiceNow et un
+     commentaire Jira.
+  4. Nouvelle vérification.
+
+  La tâche manuelle de P2 et son formulaire disparaissent.
+- **Évaluation** : capture des 10 cas sur kind (`make eval-capture`), figés par une empreinte. `make eval` lance
+  les deux évaluations. Le job CI `eval` vérifie `results/qualification.json` et `results/diagnosis.json`.
+- **e2e** : une 4e demande avec la panne `network_policy_zone`. Le scénario vérifie le diagnostic et valide la
+  remédiation à la place d'un opérateur. Le service doit être exposé après la 2e vérification.
+
+### Mesuré
+Source : `results/diagnosis.json`. Modèle Claude Sonnet 5.5, effort `medium`, 10 pannes.
+
+| Mesure | k/n | Wilson 95 % |
+|---|---|---|
+| Bonne cause | 10/10 | 0,723 à 1 |
+| Bonne action | 10/10 | 0,723 à 1 |
+| Cause et action toutes deux justes | 10/10 | 0,723 à 1 |
+| Preuves citées présentes dans l'instantané | 35/35 | 0,901 à 1 |
+
+- **Coût** : 0,103 $ pour les 10 diagnostics (0,010 $ chacun). Dépense cumulée depuis P3 : 0,44 $ sur 3 $.
+- **Déterminisme de l'instantané** :
+  - deux captures successives de la même panne sont identiques à l'octet près ;
+  - dans l'e2e, le worker a produit le même instantané que le cas D01 : la cassette du diagnostic a été
+    réutilisée, sans nouvel appel.
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (102 tests) | vert | à compléter après le push |
+| `make eval` rejoué sans clé ni `.env`, identique au passage live (deux fichiers) | vérifié avec `cmp` | job `eval`, à compléter |
+| `make e2e` avec la panne : enregistrement, puis rejeu complet sans aucune cassette manquante | vert (deux exécutions) | à compléter (en rejeu) |
+
+### Écarts et incidents
+- **Le libellé `pod-template-hash`** change à chaque déploiement : il cassait le déterminisme de l'instantané.
+  Il est retiré avant la capture.
+- **Le quota relevé** : le contrôleur des ReplicaSet recrée le pod de lui-même. La nouvelle vérification attend
+  jusqu'à 120 s que le déploiement soit prêt.
+- **Données de test créées** : RITM0010025 à RITM0010035, CHG0030020 à CHG0030030, NETOPS-23 à NETOPS-33. Les
+  trois premiers de chaque série viennent de l'e2e de P3 en CI.
+
+### Reste
+- CI verte sur le commit de P4.
+- Prochaine phase : P5, seulement avec l'accord de Seif.

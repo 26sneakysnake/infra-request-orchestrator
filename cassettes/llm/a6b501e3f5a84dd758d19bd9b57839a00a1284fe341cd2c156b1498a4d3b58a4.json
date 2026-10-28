@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUwyU4EDCxAMZYkUbT3g",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"service_selector\",\"action\":\"reapply_service\",\"runbook\":\"RB-03\",\"explanation\":\"Le Service catalogue-web cible le label app.kubernetes.io/name=catalogue-web-v2. Le pod, lui, porte app.kubernetes.io/name=catalogue-web, donc le Service n'a aucun endpoint prêt et la zone dev est bloquée. La NetworkPolicy et les ports sont conformes à la demande. Il faut réappliquer le Service avec le bon selector (RB-03).\",\"evidence\":[\"Service catalogue-web: ports 8080 -> targetPort 8080, selector app.kubernetes.io/name=catalogue-web-v2, ready endpoints 0\",\"app.kubernetes.io/name: catalogue-web\",\"zone dev : attendue joignable, observée bloquée (ÉCHEC)\",\"NetworkPolicy catalogue-web-ingress: pods app.kubernetes.io/name=catalogue-web, ingress from zones ['dev'] on ['8080/TCP']\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 884,
+   "cache_read_input_tokens": 2450,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 884,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 364,
+     "cache_read_input_tokens": 2450,
+     "cache_creation_input_tokens": 884,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 884,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 364,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

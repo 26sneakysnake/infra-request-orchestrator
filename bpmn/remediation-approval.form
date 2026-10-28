@@ -1,0 +1,32 @@
+{
+  "id": "remediation-approval",
+  "type": "default",
+  "schemaVersion": 16,
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.10.0",
+  "exporter": { "name": "infra-request-orchestrator", "version": "0.1.0" },
+  "components": [
+    {
+      "id": "Text_diagnosis",
+      "type": "text",
+      "text": "### Vérification en échec : {{serviceName}} ({{ritmNumber}})\n\n- Constat : **{{verification.summary}}**\n- Cause proposée par l'agent : **{{diagnosis.cause}}** (confiance {{diagnosis.confidence}}, runbook {{diagnosis.runbook}})\n- Action proposée : **{{diagnosis.action}}**\n- Preuves retrouvées dans l'instantané du namespace : {{diagnosis.evidenceGrounded}}\n\n{{diagnosis.explanation}}\n\nPreuves citées : {{diagnosis.evidence}}\n\nL'action ne peut être que l'une des actions autorisées des runbooks ; elle réapplique la configuration calculée à partir de la demande validée. « escalate » n'exécute rien."
+    },
+    {
+      "id": "Field_remediationDecision",
+      "type": "radio",
+      "key": "remediationDecision",
+      "label": "Décision",
+      "values": [
+        { "label": "Appliquer l'action proposée", "value": "apply" },
+        { "label": "J'ai corrigé moi-même, relancer la vérification", "value": "manual" }
+      ],
+      "validate": { "required": true }
+    },
+    {
+      "id": "Field_remediationComment",
+      "type": "textarea",
+      "key": "remediationComment",
+      "label": "Commentaire"
+    }
+  ]
+}

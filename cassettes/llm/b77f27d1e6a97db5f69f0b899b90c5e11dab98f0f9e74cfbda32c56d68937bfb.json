@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUx19ovcnSrz4KNrQjSQ",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"quota\",\"action\":\"raise_pod_quota\",\"runbook\":\"RB-05\",\"explanation\":\"Le quota de pods du namespace est à 0, donc le ReplicaSet ne peut créer aucun pod. Le déploiement n'est jamais prêt et le Service n'a aucun endpoint. Le runbook RB-05 autorise de relever le quota de pods.\",\"evidence\":[\"ResourceQuota pods-quota: pods 0/0\",\"FailedCreate ReplicaSet/cache-sessions-replicaset: Error creating: pods \\\"cache-sessions-pod\\\" is forbidden: exceeded quota: pods-quota, requested: pods=1, used: pods=0, limited: pods=0\",\"Deployment cache-sessions: image traefik/whoami:v1.12.0, ready replicas 0/1\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 940,
+   "cache_read_input_tokens": 2398,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 940,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 290,
+     "cache_read_input_tokens": 2398,
+     "cache_creation_input_tokens": 940,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 940,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 290,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

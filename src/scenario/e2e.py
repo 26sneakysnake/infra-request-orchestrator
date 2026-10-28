@@ -33,6 +33,7 @@ from integrations.servicenow import (
     RITM_PENDING,
     ServiceNowClient,
 )
+from k8s.faults import FAULTS
 from scenario.camunda import camunda_client
 
 OUT = Path(__file__).resolve().parents[2] / "out"
@@ -60,7 +61,8 @@ DMN_CASES = [
     ),
 ]
 
-# (expected change class, catalog variables, reply to the agent's question or None)
+# (expected change class, catalog variables, reply to the agent's question, injected fault)
+FAULTY_SERVICE, FAULT = "inventaire-api", "network_policy_zone"
 REQUESTS = [
     (
         "standard",
@@ -72,6 +74,7 @@ REQUESTS = [
             "exposure": "interne",
             "request_text": "Exposer l'API catalogue en dev, en interne, pour les développeurs.",
         },
+        None,
         None,
     ),
     (
@@ -85,6 +88,7 @@ REQUESTS = [
             "request_text": "Ouvrir PostgreSQL en recette au réseau data uniquement.",
         },
         None,
+        None,
     ),
     (
         "standard",
@@ -93,6 +97,20 @@ REQUESTS = [
             "l'équipe finance (10.40.12.0/24), en interne.",
         },
         "C'est pour la recette.",
+        None,
+    ),
+    (
+        "standard",
+        {
+            "service_name": FAULTY_SERVICE,
+            "environment": "dev",
+            "ports": "8080/tcp",
+            "source_networks": "10.20.0.0/16",
+            "exposure": "interne",
+            "request_text": "Exposer inventaire-api en dev, en interne, pour les développeurs.",
+        },
+        None,
+        FAULT,
     ),
 ]
 
@@ -172,6 +190,37 @@ def answer_question(sn: ServiceNowClient, request: dict[str, Any]) -> None:
     sn.add_comment("sc_req_item", request["ritm_sys_id"], request["reply"])
 
 
+def validate_remediation(client: sdk.CamundaClient, instance_key: str) -> dict[str, Any]:
+    """Approve the agent's proposed action in place of an operator; return the diagnosis."""
+
+    def open_task() -> Any:
+        query = sdk.UserTaskSearchQuery(
+            filter_=sdk.UserTaskFilter(
+                process_instance_key=instance_key, element_id="Task_ValidateRemediation"
+            )
+        )
+        tasks = [
+            t
+            for t in client.search_user_tasks(data=query).items or []
+            if str(t.state).endswith("CREATED")
+        ]
+        return tasks[0] if tasks else None
+
+    task = wait_for(open_task, 300, "the remediation validation task")
+    diagnosis = instance_variables(client, instance_key)["diagnosis"]
+    decision = {
+        "remediationDecision": "apply",
+        "remediationComment": "Validation simulée par le scénario e2e (aucun humain impliqué).",
+    }
+    client.complete_user_task(
+        task.user_task_key,
+        data=sdk.UserTaskCompletionRequest(
+            variables=sdk.UserTaskCompletionRequestVariables.from_dict(decision)
+        ),
+    )
+    return diagnosis
+
+
 def finished(client: sdk.CamundaClient, business_id: str) -> Any:
     instance = find_instance(client, business_id)
     if instance is not None and instance.has_incident:
@@ -197,21 +246,27 @@ def main() -> int:
     jira = JiraClient(jira_settings.base_url, jira_settings.email, jira_settings.api_token)
     item = ensure_catalog_item(sn)
     ordered = []
-    for expected_class, variables, reply in REQUESTS:
+    for expected_class, variables, reply, fault in REQUESTS:
         created = order_request(sn, item, {**variables, "urgent": False})
         ordered.append(
             {
                 "expected_class": expected_class,
                 "reply": reply,
+                "fault": fault,
                 "ritm": created["ritm"],
                 "ritm_sys_id": created["ritm_sys_id"],
                 "t0": time.monotonic(),
             }
         )
-        print(f"Ordered {created['ritm']} ({expected_class}{', free text' if reply else ''})")
+        detail = ", free text" if reply else f", injected fault {fault}" if fault else ""
+        print(f"Ordered {created['ritm']} ({expected_class}{detail})")
 
     log = (OUT / "e2e-workers.log").open("w", encoding="utf-8")
-    env = {**os.environ, "NETCO_POLL_ONLY": ",".join(r["ritm"] for r in ordered)}
+    env = {
+        **os.environ,
+        "NETCO_POLL_ONLY": ",".join(r["ritm"] for r in ordered),
+        "NETCO_INJECT_FAULT": f"{FAULT}:{FAULTY_SERVICE}",
+    }
     workers = subprocess.Popen([sys.executable, "-m", "workers"], env=env, stdout=log, stderr=log)
     results = []
     try:
@@ -227,6 +282,10 @@ def main() -> int:
             if request["expected_class"] != "standard":
                 approve(camunda, request["instance"])
                 print(f"Approved {request['ritm']} (simulated CAB approval)")
+            if request["fault"]:
+                request["diagnosis"] = validate_remediation(camunda, request["instance"])
+                d = request["diagnosis"]
+                print(f"Remediation approved on {ritm_number}: {d['cause']} -> {d['action']}")
         for request in ordered:
             ritm_number = request["ritm"]
             wait_for(lambda n=ritm_number: finished(camunda, n), 300, f"{ritm_number} to complete")
@@ -243,6 +302,14 @@ def main() -> int:
             }
             if request["reply"]:
                 checks["agent_asked_the_requester"] = variables.get("questionsAsked", 0) >= 1
+            if request["fault"]:
+                expected = FAULTS[request["fault"]]
+                checks["diagnosis_cause"] = request["diagnosis"]["cause"] == expected.cause
+                checks["diagnosis_action"] = request["diagnosis"]["action"] == expected.action
+                checks["remediation_applied"] = variables.get("remediationsApplied") == [
+                    expected.action
+                ]
+                checks["verified_after_remediation"] = variables.get("verificationAttempts") == 2
             results.append(
                 {
                     "ritm": request["ritm"],

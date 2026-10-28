@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUwv8QTMkMztCnxVmQrA",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"image\",\"action\":\"reapply_deployment\",\"runbook\":\"RB-04\",\"explanation\":\"Le déploiement reporting-api référence le tag inexistant traefik/whoami:v9.9.99. Le pod reste en ImagePullBackOff et le Service n'a aucun endpoint prêt. Il faut réappliquer le déploiement avec l'image approuvée traefik/whoami:v1.12.0 (RB-04). Le Service et la NetworkPolicy sont corrects : port 8443 et zone data.\",\"evidence\":[\"Deployment reporting-api: image traefik/whoami:v9.9.99, ready replicas 0/1\",\"Pod reporting-api-pod-1: Pending, not ready, restarts 0, waiting: ImagePullBackOff\",\"docker.io/traefik/whoami:v9.9.99: not found\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 559,
+   "cache_read_input_tokens": 2409,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 559,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 296,
+     "cache_read_input_tokens": 2409,
+     "cache_creation_input_tokens": 559,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 559,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 296,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

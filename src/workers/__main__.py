@@ -30,7 +30,11 @@ REPLY_MESSAGE = "requester-reply"
 RETRY_BACK_OFF_MS = 10_000
 # How long a job stays reserved by a worker. Kept short: if a worker dies, its jobs come back after
 # this delay. The verification may wait up to 2 min for the deployment, hence its longer timeout.
-JOB_TIMEOUT_MS = {"verify-exposure": 180_000}
+JOB_TIMEOUT_MS = {
+    "verify-exposure": 180_000,
+    "diagnose-failure": 180_000,
+    "qualify-request": 120_000,
+}
 DEFAULT_JOB_TIMEOUT_MS = 60_000
 
 

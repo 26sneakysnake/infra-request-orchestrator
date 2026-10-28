@@ -16,3 +16,7 @@ Notées pour plus tard, volontairement non traitées : un seul processus bien fa
   pour la qualité des questions posées au demandeur.
 - Variante de l'agent de qualification sur le connecteur AI Agent de Camunda, pour comparer avec le worker
   Python sur les mêmes cas.
+- Banc de diagnostic plus difficile : pannes combinées, pannes intermittentes, pannes hors du namespace (DNS,
+  nœud), et cas où la bonne réponse est `escalate`.
+- Retour d'expérience : conserver les diagnostics validés ou corrigés par les opérateurs, pour enrichir les
+  runbooks et le jeu d'évaluation.

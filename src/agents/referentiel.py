@@ -7,6 +7,7 @@ from functools import cache
 from pathlib import Path
 
 REFERENTIEL_DIR = Path(__file__).resolve().parents[2] / "referentiel"
+RUNBOOKS_DIR = REFERENTIEL_DIR / "runbooks"
 STOPWORDS = {
     "le", "la", "les", "un", "une", "des", "du", "de", "d", "l", "et", "ou", "en", "au", "aux",
     "pour", "par", "sur", "dans", "avec", "est", "sont", "qui", "que", "ce", "cette", "se", "ne",
@@ -40,9 +41,9 @@ def _normalize(text: str) -> str:
 
 
 @cache
-def sections() -> tuple[Section, ...]:
+def sections(directory: Path = REFERENTIEL_DIR) -> tuple[Section, ...]:
     found = []
-    for path in sorted(REFERENTIEL_DIR.glob("*.md")):
+    for path in sorted(directory.glob("*.md")):
         title, lines = None, []
         for line in [*path.read_text(encoding="utf-8").splitlines(), "## "]:
             if line.startswith("## "):
@@ -54,11 +55,11 @@ def sections() -> tuple[Section, ...]:
     return tuple(found)
 
 
-def search(query: str, k: int = 3) -> list[Section]:
+def search(query: str, k: int = 3, directory: Path = REFERENTIEL_DIR) -> list[Section]:
     """The k sections sharing the most words with the query (title words count double)."""
     terms = _terms(query)
     scored = []
-    for position, section in enumerate(sections()):
+    for position, section in enumerate(sections(directory)):
         score = len(terms & _terms(section.text)) + 2 * len(terms & _terms(section.title))
         if score:
             scored.append((-score, position, section))

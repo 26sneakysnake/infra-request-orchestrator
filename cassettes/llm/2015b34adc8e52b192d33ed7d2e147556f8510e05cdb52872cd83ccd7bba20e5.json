@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUwx3RsXdwrnvi1qJ1Gy",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"network_policy\",\"action\":\"reapply_network_policy\",\"runbook\":\"RB-01\",\"explanation\":\"Le pod est prêt et le Service a un endpoint prêt, mais la NetworkPolicy budget-web-ingress autorise la zone finance sur le port 444/TCP. La demande validée porte sur 443/TCP, donc le trafic légitime de finance est bloqué. Il faut réappliquer la NetworkPolicy conforme à la demande, c'est-à-dire la zone finance sur le port 443.\",\"evidence\":[\"zone finance : attendue joignable, observée bloquée (ÉCHEC)\",\"NetworkPolicy budget-web-ingress: pods app.kubernetes.io/name=budget-web, ingress from zones ['finance'] on ['444/TCP']\",\"Demande validée : service budget-web, port 443/tcp, zones autorisées attendues : finance.\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 509,
+   "cache_read_input_tokens": 2426,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 509,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 315,
+     "cache_read_input_tokens": 2426,
+     "cache_creation_input_tokens": 509,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 509,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 315,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}
