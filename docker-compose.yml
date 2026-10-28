@@ -1,0 +1,126 @@
+# Local stack for infra-request-orchestrator: Camunda 8 (Zeebe, Operate, Tasklist, Connectors) + vcsim.
+#
+# Based on the official Camunda 8.10 lightweight Docker Compose distribution, file docker-compose.yaml in
+# https://github.com/camunda/camunda-distributions/releases/download/docker-compose-8.10/docker-compose-8.10.zip
+# (checked against docs.camunda.io on 2026-10-28). Camunda intends it for local development and evaluation only.
+#
+# Differences from the official file:
+# - Image versions are pinned below (overridable from the shell) instead of in the distribution's .env: our .env
+#   holds ServiceNow/Jira/Anthropic credentials and is not committed. The official .env otherwise only carries
+#   OIDC, Keycloak and Elasticsearch settings, which the lightweight H2 setup does not use.
+# - No env_file, no ./driver-lib mount (external JDBC drivers) and no centralized secrets mount; the latter can
+#   come back if the AI Agent connector needs it.
+# - Added vcsim, the vSphere API simulator from govmomi.
+# - Fixed project name, so containers and volumes are named the same whatever the checkout folder.
+#
+# Endpoints: Operate http://localhost:8080/operate and Tasklist http://localhost:8080/tasklist (demo/demo),
+# REST API http://localhost:8080/v2, gRPC localhost:26500, Connectors http://localhost:8086,
+# vcsim https://localhost:8989/sdk (any username and password).
+name: infra-request-orchestrator
+
+services:
+  camunda-data-init:
+    image: camunda/camunda:${CAMUNDA_VERSION:-8.10.7}
+    user: "0:0"
+    entrypoint: ["/bin/sh", "-c", "chown -R 1001:1001 /usr/local/camunda/camunda-data && chmod 775 /usr/local/camunda/camunda-data"]
+    volumes:
+      - camunda-data:/usr/local/camunda/camunda-data
+    restart: "no"
+
+  orchestration: # Consolidated Zeebe + Operate + Tasklist - https://docs.camunda.io/docs/self-managed/setup/deploy/other/docker/#zeebe
+    image: camunda/camunda:${CAMUNDA_VERSION:-8.10.7}
+    container_name: orchestration
+    ports:
+      - "26500:26500"
+      - "9600:9600"
+      - "8080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS="-XX:+PrintFlagsFinal"
+    mem_limit: 1g
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9600 && echo -e \"GET /actuator/health/status HTTP/1.1\r\nHost: localhost\r\n\r\n\" >&3 && head -n 1 <&3'"]
+      interval: 1s
+      retries: 30
+      start_period: 30s
+    volumes:
+      - camunda:/usr/local/camunda/data
+      - camunda-data:/usr/local/camunda/camunda-data
+    configs:
+      - source: orchestration-config
+        target: /usr/local/camunda/config/application.yaml
+    networks:
+      - camunda
+    depends_on:
+      camunda-data-init:
+        condition: service_completed_successfully
+
+  # Camunda Connectors - executes outbound and inbound connector logic
+  # Docs: https://docs.camunda.io/docs/self-managed/connectors-deployment/connectors-configuration/
+  connectors:
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-8.10.2}
+    container_name: connectors
+    ports:
+      - "8086:8080"
+    mem_limit: 512m
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health/readiness"]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
+    configs:
+      - source: connectors-config
+        target: /application.yaml
+    networks:
+      - camunda
+    depends_on:
+      orchestration:
+        # Wait for orchestration service to be healthy, otherwise we get a lot of noisy logs from connection errors
+        condition: service_healthy
+
+  # vSphere API simulator (govmomi). It stands in for VMware: it is not a real vSphere server.
+  # The image is built FROM scratch, so it has no shell for a healthcheck; `make up` probes /about from the host.
+  vcsim:
+    image: vmware/vcsim:${VCSIM_VERSION:-v0.56.2}
+    container_name: vcsim
+    ports:
+      - "8989:8989"
+    mem_limit: 256m
+    restart: on-failure
+    networks:
+      - camunda
+
+volumes:
+  camunda:
+  camunda-data:
+
+networks:
+  camunda:
+    name: camunda
+
+configs:
+  connectors-config:
+    content: |
+      camunda:
+        client:
+          mode: self-managed
+          grpc-address: http://orchestration:26500
+          rest-address: http://orchestration:8080
+        connector:
+          secretprovider:
+            environment:
+              prefix: "CONNECTORS_SECRET"
+      management:
+        endpoints:
+          web:
+            exposure:
+              include: health,configprops
+        endpoint:
+          health:
+            probes:
+              enabled: true
+
+  orchestration-config:
+    file: ./infra/camunda/application-h2.yaml

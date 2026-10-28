@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - run: make setup
+      - run: make lint test
+
+  stack:
+    # Starts Camunda + vcsim with docker compose and waits until every endpoint answers.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - run: make setup
+      - run: make up
+      - name: Show containers and logs
+        if: failure()
+        run: |
+          docker compose ps -a
+          docker compose logs --no-color --tail 300
+      - name: Stop the stack
+        if: always()
+        run: docker compose down -v

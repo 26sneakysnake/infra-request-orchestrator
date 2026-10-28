@@ -1,0 +1,33 @@
+[project]
+name = "infra-request-orchestrator"
+version = "0.1.0"
+description = "End-to-end orchestration of an infrastructure request with Camunda 8, ServiceNow, Jira, Kubernetes and AI agents, for a fictional company (NetCo)."
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stack"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pyyaml>=6.0.3",
+    "ruff>=0.17.3",
+]
