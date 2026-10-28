@@ -86,7 +86,7 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 | `make seed` : 5 demandes créées | vert | sans objet |
 | Cassettes enregistrées sur les vraies instances | oui | rejouées sans réseau |
 | Cassettes sans secret ni identifiant (mot de passe, jeton, e-mail, hôtes, nom affiché, `accountId`) | vérifié par script | sans objet |
-| `make lint test` | vert | vert sur le commit de P1 (lien ci-dessous) |
+| `make lint test` | vert | vert : [run 40703449301](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40703449301), commit `45acc72` |
 
 ### Écarts et incidents
 - **Projet Jira :** créé avec la clé `KAN`, puis renommé `NETOPS` par Seif. `.env` a été corrigé en conséquence.
