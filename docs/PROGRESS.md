@@ -51,7 +51,7 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 - `CONTEXT.md` reste local, ignoré par git, à la demande de Seif. `CLAUDE.md` y fait référence.
 - Prochaine phase : P1, seulement avec l'accord de Seif.
 
-## P1 : Comptes et connecteurs
+## P1 : Comptes et connecteurs (terminée le 2026-10-28)
 
 ### Fait
 - Comptes créés par Seif :
@@ -82,7 +82,7 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make verify` : `ServiceNow OK`, `Jira OK` | vert, lancé par Claude Code ; reste à le lancer par Seif lui-même | sans objet : pas de secret en CI |
+| `make verify` : `ServiceNow OK`, `Jira OK` | vert, lancé par Claude Code puis par Seif lui-même | sans objet : pas de secret en CI |
 | `make seed` : 5 demandes créées | vert | sans objet |
 | Cassettes enregistrées sur les vraies instances | oui | rejouées sans réseau |
 | Cassettes sans secret ni identifiant (mot de passe, jeton, e-mail, hôtes, nom affiché, `accountId`) | vérifié par script | sans objet |
@@ -100,7 +100,7 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
   NETOPS-5 dans Jira (le premier enregistrement a été refait pour masquer le nom affiché et l'`accountId`).
 
 ### Reste
-- Seif lance `make verify` lui-même : c'est le critère de fin de P1.
+- Critère de fin atteint : Seif a obtenu `ServiceNow OK` et `Jira OK` avec `make verify`.
 - Secrets GitHub : inutiles en P1, puisque la CI rejoue les cassettes. À créer avant le job e2e de P2.
 - Clé Anthropic : à créer avant P3.
 - Prochaine phase : P2, seulement avec l'accord de Seif.
