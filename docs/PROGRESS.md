@@ -150,8 +150,8 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` | vert | à compléter après le push |
-| `make e2e` | vert (3 exécutions) | à compléter après le push |
+| `make lint test` | vert | vert : [run 40711285304](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40711285304), commit `f380ba6` |
+| `make e2e` | vert (3 exécutions) | vert : [run 40711285386](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40711285386), tentative 2, 2 min 24 s au total, dont kind 40 s, pile 54 s, scénario 22 s |
 | Refus, incident, idempotence | vérifiés par des scripts ponctuels | non couverts |
 | Chemin « vérification en échec » (erreur BPMN) | test unitaire seulement | non couvert : les pannes injectées arrivent en P4 |
 | Instance complète visible dans Operate | à faire par Seif | sans objet |
@@ -166,9 +166,12 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
   reste alors réservé jusqu'à son délai. Ce délai passe à 1 min (3 min pour la vérification). C'est en observant ce
   cas qu'on a constaté un ticket Jira en double (NETOPS-11, resté ouvert), d'où l'idempotence ci-dessus.
 - Un seul port par demande (PORT-03), et `traefik/whoami` tient lieu de vrai service.
+- **1re tentative de l'e2e en CI en échec**, dès `make verify` : ServiceNow OK, mais Jira 401. Les secrets GitHub
+  `JIRA_EMAIL` et `JIRA_API_TOKEN` ne correspondaient pas au `.env`. Seif les a corrigés, et la 2e tentative est
+  verte.
 - **Données de test créées dans les instances** : RITM0010007 à RITM0010016, CHG0030004 à CHG0030011, NETOPS-6 à
   NETOPS-14.
 
 ### Reste
-- Job e2e vert en CI : c'est le critère de fin, avec l'instance visible dans Operate chez Seif.
+- Job e2e vert en CI : fait. Reste à confirmer que Seif voit une instance complète dans Operate chez lui.
 - Prochaine phase : P3, seulement avec l'accord de Seif.
