@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.2 # setup-uv publishes no floating major tag
       - run: make setup
       - run: make lint test
 
@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.2 # setup-uv publishes no floating major tag
       - run: make setup
       - run: make up
       - name: Show containers and logs
