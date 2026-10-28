@@ -1,0 +1,58 @@
+[
+  {
+    "method": "GET",
+    "url": "https://example.atlassian.net/rest/api/3/issue/createmeta/NETOPS/issuetypes",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"startAt\":0,\"maxResults\":50,\"total\":4,\"issueTypes\":[{\"self\":\"https://example.atlassian.net/rest/api/3/issuetype/10001\",\"id\":\"10001\",\"description\":\"Une collection de bugs, stories et tâches connexes.\",\"iconUrl\":\"https://example.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium\",\"name\":\"Epic\",\"untranslatedName\":\"Epic\",\"subtask\":false,\"hierarchyLevel\":1,\"scope\":{\"type\":\"PROJECT\",\"project\":{\"id\":\"10000\"}}},{\"self\":\"https://example.atlassian.net/rest/api/3/issuetype/10002\",\"id\":\"10002\",\"description\":\"Subtasks track small pieces of work that are part of a larger task.\",\"iconUrl\":\"https://example.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium\",\"name\":\"Subtask\",\"untranslatedName\":\"Subtask\",\"subtask\":true,\"hierarchyLevel\":-1,\"scope\":{\"type\":\"PROJECT\",\"project\":{\"id\":\"10000\"}}},{\"self\":\"https://example.atlassian.net/rest/api/3/issuetype/10003\",\"id\":\"10003\",\"description\":\"Une tâche distincte.\",\"iconUrl\":\"https://example.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium\",\"name\":\"Tâche\",\"untranslatedName\":\"Task\",\"subtask\":false,\"hierarchyLevel\":0,\"scope\":{\"type\":\"PROJECT\",\"project\":{\"id\":\"10000\"}}},{\"self\":\"https://example.atlassian.net/rest/api/3/issuetype/10004\",\"id\":\"10004\",\"description\":\"Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.\",\"iconUrl\":\"https://example.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium\",\"name\":\"Story\",\"untranslatedName\":\"Story\",\"subtask\":false,\"hierarchyLevel\":0,\"scope\":{\"type\":\"PROJECT\",\"project\":{\"id\":\"10000\"}}}]}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.atlassian.net/rest/api/3/issue",
+    "request_body": "{\"fields\":{\"project\":{\"key\":\"NETOPS\"},\"summary\":\"[test] Exposition de test-api (enregistrement des tests)\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Ticket créé par les tests enregistrés du dépôt.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Aucune action réelle.\"}]}]},\"issuetype\":{\"id\":\"10003\"}}}",
+    "status": 201,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"id\":\"10004\",\"key\":\"NETOPS-5\",\"self\":\"https://example.atlassian.net/rest/api/3/issue/10004\"}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.atlassian.net/rest/api/3/issue/NETOPS-5/comment",
+    "request_body": "{\"body\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"[test] Commentaire enregistré.\"}]}]}}",
+    "status": 201,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"self\":\"https://example.atlassian.net/rest/api/3/issue/10004/comment/10001\",\"id\":\"10001\",\"author\":{\"self\":\"https://example.atlassian.net/rest/api/3/user?accountId=712020%3Abf80b46b-e2db-4aaf-aa85-fa0d91cd1233\",\"accountId\":\"000000:00000000-0000-0000-0000-000000000000\",\"emailAddress\":\"user@example.com\",\"avatarUrls\":{\"48x48\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"24x24\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"16x16\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"32x32\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\"},\"displayName\":\"NetCo Test\",\"active\":true,\"timeZone\":\"Europe/Paris\",\"accountType\":\"atlassian\"},\"body\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"[test] Commentaire enregistré.\"}]}]},\"updateAuthor\":{\"self\":\"https://example.atlassian.net/rest/api/3/user?accountId=712020%3Abf80b46b-e2db-4aaf-aa85-fa0d91cd1233\",\"accountId\":\"000000:00000000-0000-0000-0000-000000000000\",\"emailAddress\":\"user@example.com\",\"avatarUrls\":{\"48x48\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"24x24\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"16x16\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"32x32\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\"},\"displayName\":\"NetCo Test\",\"active\":true,\"timeZone\":\"Europe/Paris\",\"accountType\":\"atlassian\"},\"created\":\"2026-10-28T14:20:54.734+0100\",\"updated\":\"2026-10-28T14:20:54.734+0100\",\"jsdPublic\":true}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.atlassian.net/rest/api/3/issue/NETOPS-5/attachments",
+    "request_body": "<multipart body not recorded>",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "[{\"self\":\"https://example.atlassian.net/rest/api/3/attachment/10001\",\"id\":\"10001\",\"filename\":\"fiche-test.md\",\"author\":{\"self\":\"https://example.atlassian.net/rest/api/3/user?accountId=712020%3Abf80b46b-e2db-4aaf-aa85-fa0d91cd1233\",\"accountId\":\"000000:00000000-0000-0000-0000-000000000000\",\"emailAddress\":\"user@example.com\",\"avatarUrls\":{\"48x48\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"24x24\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"16x16\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\",\"32x32\":\"https://secure.gravatar.com/avatar/d2c2037ddf93dfc3c4b811d1dcbc4c29?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-2.png\"},\"displayName\":\"NetCo Test\",\"active\":true,\"timeZone\":\"Europe/Paris\",\"accountType\":\"atlassian\"},\"created\":\"2026-10-28T14:20:55.150+0100\",\"size\":16,\"mimeType\":\"text/markdown\",\"content\":\"https://example.atlassian.net/rest/api/3/attachment/content/10001\"}]"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.atlassian.net/rest/api/3/issue/NETOPS-5/transitions",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"expand\":\"transitions\",\"transitions\":[{\"id\":\"11\",\"name\":\"A faire\",\"to\":{\"self\":\"https://example.atlassian.net/rest/api/3/status/10000\",\"description\":\"\",\"iconUrl\":\"https://example.atlassian.net/images/icons/statuses/generic.png\",\"name\":\"À faire\",\"id\":\"10000\",\"statusCategory\":{\"self\":\"https://example.atlassian.net/rest/api/3/statuscategory/2\",\"id\":2,\"key\":\"new\",\"colorName\":\"blue-gray\",\"name\":\"A faire\"}},\"hasScreen\":false,\"isGlobal\":true,\"isInitial\":false,\"isAvailable\":true,\"isConditional\":false,\"isLooped\":false},{\"id\":\"21\",\"name\":\"En cours\",\"to\":{\"self\":\"https://example.atlassian.net/rest/api/3/status/3\",\"description\":\"Ce ticket est en cours de traitement par la personne assignée.\",\"iconUrl\":\"https://example.atlassian.net/images/icons/statuses/inprogress.png\",\"name\":\"En cours\",\"id\":\"3\",\"statusCategory\":{\"self\":\"https://example.atlassian.net/rest/api/3/statuscategory/4\",\"id\":4,\"key\":\"indeterminate\",\"colorName\":\"yellow\",\"name\":\"En cours\"}},\"hasScreen\":false,\"isGlobal\":true,\"isInitial\":false,\"isAvailable\":true,\"isConditional\":false,\"isLooped\":false},{\"id\":\"31\",\"name\":\"In Review\",\"to\":{\"self\":\"https://example.atlassian.net/rest/api/3/status/10001\",\"description\":\"\",\"iconUrl\":\"https://example.atlassian.net/images/icons/statuses/generic.png\",\"name\":\"Revue en cours\",\"id\":\"10001\",\"statusCategory\":{\"self\":\"https://example.atlassian.net/rest/api/3/statuscategory/4\",\"id\":4,\"key\":\"indeterminate\",\"colorName\":\"yellow\",\"name\":\"En cours\"}},\"hasScreen\":false,\"isGlobal\":true,\"isInitial\":false,\"isAvailable\":true,\"isConditional\":false,\"isLooped\":false},{\"id\":\"41\",\"name\":\"Terminé\",\"to\":{\"self\":\"https://example.atlassian.net/rest/api/3/status/10002\",\"description\":\"\",\"iconUrl\":\"https://example.atlassian.net/images/icons/statuses/generic.png\",\"name\":\"Terminé(e)\",\"id\":\"10002\",\"statusCategory\":{\"self\":\"https://example.atlassian.net/rest/api/3/statuscategory/3\",\"id\":3,\"key\":\"done\",\"colorName\":\"green\",\"name\":\"Terminé\"}},\"hasScreen\":false,\"isGlobal\":true,\"isInitial\":false,\"isAvailable\":true,\"isConditional\":false,\"isLooped\":false}]}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.atlassian.net/rest/api/3/issue/NETOPS-5/transitions",
+    "request_body": "{\"transition\":{\"id\":\"41\"}}",
+    "status": 204,
+    "content_type": "text/html;charset=UTF-8",
+    "response_body": ""
+  },
+  {
+    "method": "GET",
+    "url": "https://example.atlassian.net/rest/api/3/issue/NETOPS-5?fields=status",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"expand\":\"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations\",\"id\":\"10004\",\"self\":\"https://example.atlassian.net/rest/api/3/issue/10004\",\"key\":\"NETOPS-5\",\"fields\":{\"status\":{\"self\":\"https://example.atlassian.net/rest/api/3/status/10002\",\"description\":\"\",\"iconUrl\":\"https://example.atlassian.net/images/icons/statuses/generic.png\",\"name\":\"Terminé(e)\",\"id\":\"10002\",\"statusCategory\":{\"self\":\"https://example.atlassian.net/rest/api/3/statuscategory/3\",\"id\":3,\"key\":\"done\",\"colorName\":\"green\",\"name\":\"Terminé\"}}}}"
+  }
+]

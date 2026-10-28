@@ -50,3 +50,57 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
   `stack` casse, épingler `ubuntu-24.04`.
 - `CONTEXT.md` reste local, ignoré par git, à la demande de Seif. `CLAUDE.md` y fait référence.
 - Prochaine phase : P1, seulement avec l'accord de Seif.
+
+## P1 : Comptes et connecteurs
+
+### Fait
+- Comptes créés par Seif :
+  - instance développeur ServiceNow (release Zurich) ;
+  - site Jira Cloud gratuit, avec le projet `NETOPS` en mode team-managed.
+
+  La clé Anthropic n'est pas encore créée ; elle servira en P3.
+- `src/integrations/` :
+  - `servicenow.py` : client mince pour les API Table, Attachment et Service Catalog ;
+  - `jira.py` : client mince pour l'API REST v3 (création, lecture, commentaire, pièce jointe, transition) ;
+  - `config.py` : lecture de `.env` ;
+  - `cassette.py` : enregistrement et rejeu des échanges HTTP par les transports httpx. Aucun en-tête n'est
+    stocké, et les hôtes, e-mails et identifiants sont remplacés.
+- `make verify` (en lecture seule) contrôle l'accès aux deux API.
+- `make seed` :
+  - crée, si elles n'existent pas, la catégorie « NetCo » et l'article « Exposition de service (NetCo) » avec ses
+    8 variables (texte libre, puis service, environnement, ports, réseaux sources, exposition, VM et taille) ;
+  - commande ensuite 5 demandes synthétiques par l'API Service Catalog (`seed/requests.yaml`).
+- `make record` réenregistre les cassettes sur les vraies instances.
+
+### Mesuré
+- Tests : 29 sur 29 passent, sans réseau. Deux d'entre eux rejouent de vrais appels enregistrés : 10 échanges avec
+  ServiceNow et 7 avec Jira.
+- `make seed` : 5 demandes sur 5 créées (REQ0010001 à REQ0010005, RITM0010001 à RITM0010005). Les variables ont
+  été relues par la Table API (`variables.<nom>`). Une seconde exécution de la création de l'article ne crée aucun
+  doublon.
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make verify` : `ServiceNow OK`, `Jira OK` | vert, lancé par Claude Code ; reste à le lancer par Seif lui-même | sans objet : pas de secret en CI |
+| `make seed` : 5 demandes créées | vert | sans objet |
+| Cassettes enregistrées sur les vraies instances | oui | rejouées sans réseau |
+| Cassettes sans secret ni identifiant (mot de passe, jeton, e-mail, hôtes, nom affiché, `accountId`) | vérifié par script | sans objet |
+| `make lint test` | vert | vert sur le commit de P1 (lien ci-dessous) |
+
+### Écarts et incidents
+- **Projet Jira :** créé avec la clé `KAN`, puis renommé `NETOPS` par Seif. `.env` a été corrigé en conséquence.
+- **ServiceNow en 401 :** sur cette instance Zurich, l'API refuse l'authentification Basic sans le rôle
+  `snc_basic_auth_api_access`, même pour admin. Seif a ajouté ce rôle à admin et changé le mot de passe.
+- **Jira en français :** le type « Tâche » est choisi par son nom anglais (`untranslatedName` = `Task`), et la
+  transition par catégorie de statut (`done`). Le code ne dépend donc pas des noms traduits.
+- **vcrpy écarté :** 5 versions publiées le même jour, trois jours plus tôt. L'enregistrement s'appuie sur les
+  transports httpx.
+- **Données de test réellement créées par les enregistrements :** RITM0010006 dans ServiceNow ; NETOPS-4 et
+  NETOPS-5 dans Jira (le premier enregistrement a été refait pour masquer le nom affiché et l'`accountId`).
+
+### Reste
+- Seif lance `make verify` lui-même : c'est le critère de fin de P1.
+- Secrets GitHub : inutiles en P1, puisque la CI rejoue les cassettes. À créer avant le job e2e de P2.
+- Clé Anthropic : à créer avant P3.
+- Prochaine phase : P2, seulement avec l'accord de Seif.

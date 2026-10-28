@@ -2,7 +2,7 @@
 # and under Windows (GNU make from ezwinports).
 COMPOSE := docker compose
 
-.PHONY: all setup lint format test up down ps logs seed deploy-bpmn workers e2e eval metrics readme
+.PHONY: all setup lint format test up down ps logs verify seed record deploy-bpmn workers e2e eval metrics readme
 
 all: lint test
 
@@ -35,10 +35,20 @@ ps:
 logs:
 	$(COMPOSE) logs --tail 200
 
-# Targets of later phases (see PLAN.md).
-seed:
-	$(error make $@ arrives in phase P1)
+# Read-only check of the ServiceNow and Jira credentials in .env.
+verify:
+	uv run python -m integrations.verify
 
+# Create the NetCo catalog item if needed and order 5 synthetic requests in ServiceNow.
+seed:
+	uv run python -m integrations.seed
+
+# Re-record the API cassettes against the real instances (creates test records there).
+record: export CASSETTE_RECORD = 1
+record:
+	uv run pytest -m recorded
+
+# Targets of later phases (see PLAN.md).
 deploy-bpmn workers e2e:
 	$(error make $@ arrives in phase P2)
 

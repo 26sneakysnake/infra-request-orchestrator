@@ -10,8 +10,9 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phase P0 (squelette) seulement : outillage, CI et pile locale. Le processus, les intégrations et les agents ne
-sont pas encore écrits. Suivi détaillé : [docs/PROGRESS.md](docs/PROGRESS.md).
+Phases P0 et P1 : outillage, CI, pile locale, et connecteurs ServiceNow et Jira (vérification d'accès, demandes
+synthétiques commandées dans le catalogue ServiceNow). Le processus BPMN et les agents ne sont pas encore écrits.
+Suivi détaillé : [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Démarrer en local
 
@@ -22,6 +23,13 @@ make setup      # environnement Python 3.12 (uv)
 make lint test  # ruff et pytest
 make up         # pile Camunda 8.10 + vcsim, attend que tout réponde
 make down       # arrête la pile (les volumes sont conservés)
+```
+
+Avec un fichier `.env` rempli (modèle : [.env.example](.env.example)) :
+
+```sh
+make verify     # vérifie l'accès aux API ServiceNow et Jira, en lecture seule
+make seed       # crée l'article de catalogue NetCo et commande 5 demandes synthétiques
 ```
 
 | Service | Adresse | Accès |

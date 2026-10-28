@@ -1,0 +1,69 @@
+# Synthetic service exposure requests for the fictional company NetCo. No real data.
+# Ordered by `make seed` from the catalog item "Exposition de service (NetCo)".
+# request_text is what an application team writes; the other variables are the structured form.
+
+- title: Standard, interne, dev
+  variables:
+    request_text: >-
+      Bonjour, nous voudrions exposer l'API catalogue en environnement de dev, en interne
+      uniquement, sur le port 8080/tcp, pour le réseau des développeurs (10.20.0.0/16).
+      Pas besoin de VM. Merci !
+    service_name: catalogue-api
+    environment: dev
+    ports: 8080/tcp
+    source_networks: 10.20.0.0/16
+    exposure: interne
+    vm_required: false
+    vm_size: ""
+
+- title: Externe, prod
+  variables:
+    request_text: >-
+      Pour le lancement du nouveau parcours de paiement, le front doit être joignable depuis
+      Internet en HTTPS (443/tcp) en production. Mise en ligne souhaitée la semaine prochaine.
+    service_name: paiement-front
+    environment: prod
+    ports: 443/tcp
+    source_networks: 0.0.0.0/0
+    exposure: externe
+    vm_required: false
+    vm_size: ""
+
+- title: Avec VM, recette
+  variables:
+    request_text: >-
+      L'équipe data a besoin d'une VM de taille M en recette pour le batch de reporting, avec
+      la base PostgreSQL (5432/tcp) accessible depuis le réseau data (10.30.0.0/16) seulement.
+    service_name: reporting-batch
+    environment: recette
+    ports: 5432/tcp
+    source_networks: 10.30.0.0/16
+    exposure: interne
+    vm_required: true
+    vm_size: M
+
+- title: Environnement manquant
+  variables:
+    request_text: >-
+      Il faudrait ouvrir le service facturation-api sur le 8443 pour l'équipe finance
+      (10.40.12.0/24), en interne. C'est assez urgent.
+    service_name: facturation-api
+    environment: ""
+    ports: 8443/tcp
+    source_networks: 10.40.12.0/24
+    exposure: interne
+    vm_required: false
+    vm_size: ""
+
+- title: Port interdit
+  variables:
+    request_text: >-
+      Merci d'ouvrir l'accès bureau à distance (RDP, 3389/tcp) au serveur legacy-erp depuis
+      l'extérieur, pour que notre prestataire puisse intervenir en production.
+    service_name: legacy-erp
+    environment: prod
+    ports: 3389/tcp
+    source_networks: 0.0.0.0/0
+    exposure: externe
+    vm_required: false
+    vm_size: ""

@@ -1,0 +1,82 @@
+[
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/sc_catalog?sysparm_query=title%3DService+Catalog&sysparm_limit=1&sysparm_fields=sys_id",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":[{\"sys_id\":\"e0d08b13c3330100c8b837659bba8fb4\"}]}"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/sc_category?sysparm_query=title%3DNetCo%5Esc_catalog%3De0d08b13c3330100c8b837659bba8fb4&sysparm_limit=1&sysparm_fields=sys_id",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":[{\"sys_id\":\"490e33042f1c57106e48198a6fa4e32a\"}]}"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/sc_cat_item?sysparm_query=name%3DExposition+de+service+%28NetCo%29&sysparm_limit=1&sysparm_fields=sys_id",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":[{\"sys_id\":\"1d0e33042f1c57106e48198a6fa4e346\"}]}"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/item_option_new?sysparm_query=cat_item%3D1d0e33042f1c57106e48198a6fa4e346&sysparm_limit=100&sysparm_fields=name",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":[{\"name\":\"vm_size\"},{\"name\":\"exposure\"},{\"name\":\"request_text\"},{\"name\":\"environment\"},{\"name\":\"ports\"},{\"name\":\"source_networks\"},{\"name\":\"service_name\"},{\"name\":\"vm_required\"}]}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.service-now.com/api/sn_sc/servicecatalog/items/1d0e33042f1c57106e48198a6fa4e346/order_now",
+    "request_body": "{\"sysparm_quantity\":\"1\",\"variables\":{\"request_text\":\"[test] Demande créée par les tests enregistrés du dépôt.\",\"service_name\":\"test-api\",\"environment\":\"dev\",\"ports\":\"8080/tcp\",\"source_networks\":\"10.20.0.0/16\",\"exposure\":\"interne\",\"vm_required\":\"false\"}}",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":{\"sys_id\":\"e02ebb042f1c57106e48198a6fa4e368\",\"number\":\"REQ0010006\",\"request_number\":\"REQ0010006\",\"request_id\":\"e02ebb042f1c57106e48198a6fa4e368\",\"table\":\"sc_request\"}}"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/sc_req_item?sysparm_query=request%3De02ebb042f1c57106e48198a6fa4e368&sysparm_limit=1&sysparm_fields=sys_id%2Cnumber",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":[{\"sys_id\":\"ac2ebb042f1c57106e48198a6fa4e368\",\"number\":\"RITM0010006\"}]}"
+  },
+  {
+    "method": "PATCH",
+    "url": "https://example.service-now.com/api/now/table/sc_req_item/ac2ebb042f1c57106e48198a6fa4e368",
+    "request_body": "{\"comments\":\"[test] Il manque l'environnement cible.\"}",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":{\"parent\":\"\",\"made_sla\":\"true\",\"watch_list\":\"\",\"sc_catalog\":\"\",\"upon_reject\":\"cancel\",\"requested_for\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"sys_updated_on\":\"2026-10-28 14:09:29\",\"task_effective_number\":\"RITM0010006\",\"approval_history\":\"\",\"number\":\"RITM0010006\",\"sys_updated_by\":\"admin\",\"opened_by\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"user_input\":\"\",\"price\":\"0\",\"sys_created_on\":\"2026-10-28 14:09:28\",\"recurring_frequency\":\"\",\"sys_domain\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user_group/global\",\"value\":\"global\"},\"context\":\"\",\"state\":\"1\",\"route_reason\":\"\",\"sys_created_by\":\"admin\",\"knowledge\":\"false\",\"order\":\"\",\"closed_at\":\"\",\"cmdb_ci\":\"\",\"delivery_plan\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item_delivery_plan/523da512c611228900811a37c97c2014\",\"value\":\"523da512c611228900811a37c97c2014\"},\"backordered\":\"false\",\"contract\":\"\",\"impact\":\"3\",\"active\":\"true\",\"work_notes_list\":\"\",\"business_service\":\"\",\"priority\":\"4\",\"sys_domain_path\":\"/\",\"time_worked\":\"\",\"expected_start\":\"\",\"flow_context\":\"\",\"opened_at\":\"2026-10-28 14:09:28\",\"business_duration\":\"\",\"group_list\":\"\",\"configuration_item\":\"\",\"work_end\":\"\",\"approval_set\":\"\",\"work_notes\":\"\",\"order_guide\":\"\",\"universal_request\":\"\",\"request\":{\"link\":\"https://example.service-now.com/api/now/table/sc_request/e02ebb042f1c57106e48198a6fa4e368\",\"value\":\"e02ebb042f1c57106e48198a6fa4e368\"},\"short_description\":\"Demande d'exposition d'un service sur le réseau NetCo (fictive)\",\"correlation_display\":\"\",\"delivery_task\":\"\",\"work_start\":\"\",\"assignment_group\":\"\",\"additional_assignee_list\":\"\",\"description\":\"\",\"calendar_duration\":\"\",\"close_notes\":\"\",\"service_offering\":\"\",\"sys_class_name\":\"sc_req_item\",\"closed_by\":\"\",\"follow_up\":\"\",\"sys_id\":\"ac2ebb042f1c57106e48198a6fa4e368\",\"contact_type\":\"\",\"urgency\":\"3\",\"company\":\"\",\"reassignment_count\":\"0\",\"activity_due\":\"\",\"assigned_to\":\"\",\"comments\":\"\",\"quantity\":\"1\",\"approval\":\"requested\",\"sla_due\":\"\",\"comments_and_work_notes\":\"\",\"due_date\":\"2026-10-30 14:09:28\",\"sys_mod_count\":\"1\",\"recurring_price\":\"0\",\"sys_tags\":\"\",\"billable\":\"false\",\"cat_item\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item/1d0e33042f1c57106e48198a6fa4e346\",\"value\":\"1d0e33042f1c57106e48198a6fa4e346\"},\"stage\":\"waiting_for_approval\",\"escalation\":\"0\",\"upon_approval\":\"proceed\",\"correlation_id\":\"\",\"location\":\"\",\"estimated_delivery\":\"\"}}"
+  },
+  {
+    "method": "POST",
+    "url": "https://example.service-now.com/api/now/attachment/file?table_name=sc_req_item&table_sys_id=ac2ebb042f1c57106e48198a6fa4e368&file_name=fiche-test.md",
+    "request_body": "# Fiche de test\n",
+    "status": 201,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":{\"size_bytes\":\"16\",\"file_name\":\"fiche-test.md\",\"sys_mod_count\":\"0\",\"average_image_color\":\"\",\"image_width\":\"\",\"sys_updated_on\":\"2026-10-28 14:09:31\",\"sys_tags\":\"\",\"table_name\":\"sc_req_item\",\"sys_id\":\"d92ebb042f1c57106e48198a6fa4e3c2\",\"image_height\":\"\",\"sys_updated_by\":\"admin\",\"download_link\":\"https://example.service-now.com/api/now/attachment/d92ebb042f1c57106e48198a6fa4e3c2/file\",\"content_type\":\"text/x-web-markdown\",\"sys_created_on\":\"2026-10-28 14:09:31\",\"size_compressed\":\"36\",\"compressed\":\"true\",\"state\":\"pending\",\"table_sys_id\":\"ac2ebb042f1c57106e48198a6fa4e368\",\"chunk_size_bytes\":\"700000\",\"hash\":\"80f444efd4484546bb4b1f8641ec32c9f2d8fefe9ef2d3de24b144cfd3b795d8\",\"sys_created_by\":\"admin\"}}"
+  },
+  {
+    "method": "PATCH",
+    "url": "https://example.service-now.com/api/now/table/sc_req_item/ac2ebb042f1c57106e48198a6fa4e368",
+    "request_body": "{\"state\":\"2\"}",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":{\"parent\":\"\",\"made_sla\":\"true\",\"watch_list\":\"\",\"sc_catalog\":\"\",\"upon_reject\":\"cancel\",\"requested_for\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"sys_updated_on\":\"2026-10-28 14:09:31\",\"task_effective_number\":\"RITM0010006\",\"approval_history\":\"\",\"number\":\"RITM0010006\",\"sys_updated_by\":\"admin\",\"opened_by\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"user_input\":\"\",\"price\":\"0\",\"sys_created_on\":\"2026-10-28 14:09:28\",\"recurring_frequency\":\"\",\"sys_domain\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user_group/global\",\"value\":\"global\"},\"context\":\"\",\"state\":\"2\",\"route_reason\":\"\",\"sys_created_by\":\"admin\",\"knowledge\":\"false\",\"order\":\"\",\"closed_at\":\"\",\"cmdb_ci\":\"\",\"delivery_plan\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item_delivery_plan/523da512c611228900811a37c97c2014\",\"value\":\"523da512c611228900811a37c97c2014\"},\"backordered\":\"false\",\"contract\":\"\",\"impact\":\"3\",\"active\":\"true\",\"work_notes_list\":\"\",\"business_service\":\"\",\"priority\":\"4\",\"sys_domain_path\":\"/\",\"time_worked\":\"\",\"expected_start\":\"\",\"flow_context\":\"\",\"opened_at\":\"2026-10-28 14:09:28\",\"business_duration\":\"\",\"group_list\":\"\",\"configuration_item\":\"\",\"work_end\":\"\",\"approval_set\":\"2026-10-28 14:09:29\",\"work_notes\":\"\",\"order_guide\":\"\",\"universal_request\":\"\",\"request\":{\"link\":\"https://example.service-now.com/api/now/table/sc_request/e02ebb042f1c57106e48198a6fa4e368\",\"value\":\"e02ebb042f1c57106e48198a6fa4e368\"},\"short_description\":\"Demande d'exposition d'un service sur le réseau NetCo (fictive)\",\"correlation_display\":\"\",\"delivery_task\":\"\",\"work_start\":\"\",\"assignment_group\":\"\",\"additional_assignee_list\":\"\",\"description\":\"\",\"calendar_duration\":\"\",\"close_notes\":\"\",\"service_offering\":\"\",\"sys_class_name\":\"sc_req_item\",\"closed_by\":\"\",\"follow_up\":\"\",\"sys_id\":\"ac2ebb042f1c57106e48198a6fa4e368\",\"contact_type\":\"\",\"urgency\":\"3\",\"company\":\"\",\"reassignment_count\":\"0\",\"activity_due\":\"\",\"assigned_to\":\"\",\"comments\":\"\",\"quantity\":\"1\",\"approval\":\"approved\",\"sla_due\":\"\",\"comments_and_work_notes\":\"\",\"due_date\":\"2026-10-30 14:09:28\",\"sys_mod_count\":\"4\",\"recurring_price\":\"0\",\"sys_tags\":\"\",\"billable\":\"false\",\"cat_item\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item/1d0e33042f1c57106e48198a6fa4e346\",\"value\":\"1d0e33042f1c57106e48198a6fa4e346\"},\"stage\":\"Assess or Scope Task\",\"escalation\":\"0\",\"upon_approval\":\"proceed\",\"correlation_id\":\"\",\"location\":\"\",\"estimated_delivery\":\"\"}}"
+  },
+  {
+    "method": "GET",
+    "url": "https://example.service-now.com/api/now/table/sc_req_item/ac2ebb042f1c57106e48198a6fa4e368",
+    "request_body": "",
+    "status": 200,
+    "content_type": "application/json;charset=UTF-8",
+    "response_body": "{\"result\":{\"parent\":\"\",\"made_sla\":\"true\",\"watch_list\":\"\",\"sc_catalog\":\"\",\"upon_reject\":\"cancel\",\"requested_for\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"sys_updated_on\":\"2026-10-28 14:09:31\",\"task_effective_number\":\"RITM0010006\",\"approval_history\":\"\",\"number\":\"RITM0010006\",\"sys_updated_by\":\"admin\",\"opened_by\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user/6816f79cc0a8016401c5a33be04be441\",\"value\":\"6816f79cc0a8016401c5a33be04be441\"},\"user_input\":\"\",\"price\":\"0\",\"sys_created_on\":\"2026-10-28 14:09:28\",\"recurring_frequency\":\"\",\"sys_domain\":{\"link\":\"https://example.service-now.com/api/now/table/sys_user_group/global\",\"value\":\"global\"},\"context\":\"\",\"state\":\"2\",\"route_reason\":\"\",\"sys_created_by\":\"admin\",\"knowledge\":\"false\",\"order\":\"\",\"closed_at\":\"\",\"cmdb_ci\":\"\",\"delivery_plan\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item_delivery_plan/523da512c611228900811a37c97c2014\",\"value\":\"523da512c611228900811a37c97c2014\"},\"backordered\":\"false\",\"contract\":\"\",\"impact\":\"3\",\"active\":\"true\",\"work_notes_list\":\"\",\"business_service\":\"\",\"priority\":\"4\",\"sys_domain_path\":\"/\",\"time_worked\":\"\",\"expected_start\":\"\",\"flow_context\":\"\",\"opened_at\":\"2026-10-28 14:09:28\",\"business_duration\":\"\",\"group_list\":\"\",\"configuration_item\":\"\",\"work_end\":\"\",\"approval_set\":\"2026-10-28 14:09:29\",\"work_notes\":\"\",\"order_guide\":\"\",\"universal_request\":\"\",\"request\":{\"link\":\"https://example.service-now.com/api/now/table/sc_request/e02ebb042f1c57106e48198a6fa4e368\",\"value\":\"e02ebb042f1c57106e48198a6fa4e368\"},\"short_description\":\"Demande d'exposition d'un service sur le réseau NetCo (fictive)\",\"correlation_display\":\"\",\"delivery_task\":\"\",\"work_start\":\"\",\"assignment_group\":\"\",\"additional_assignee_list\":\"\",\"description\":\"\",\"calendar_duration\":\"\",\"close_notes\":\"\",\"service_offering\":\"\",\"sys_class_name\":\"sc_req_item\",\"closed_by\":\"\",\"follow_up\":\"\",\"sys_id\":\"ac2ebb042f1c57106e48198a6fa4e368\",\"contact_type\":\"\",\"urgency\":\"3\",\"company\":\"\",\"reassignment_count\":\"0\",\"activity_due\":\"\",\"assigned_to\":\"\",\"comments\":\"\",\"quantity\":\"1\",\"approval\":\"approved\",\"sla_due\":\"\",\"comments_and_work_notes\":\"\",\"due_date\":\"2026-10-30 14:09:28\",\"sys_mod_count\":\"4\",\"recurring_price\":\"0\",\"sys_tags\":\"\",\"billable\":\"false\",\"cat_item\":{\"link\":\"https://example.service-now.com/api/now/table/sc_cat_item/1d0e33042f1c57106e48198a6fa4e346\",\"value\":\"1d0e33042f1c57106e48198a6fa4e346\"},\"stage\":\"Assess or Scope Task\",\"escalation\":\"0\",\"upon_approval\":\"proceed\",\"correlation_id\":\"\",\"location\":\"\",\"estimated_delivery\":\"\"}}"
+  }
+]
