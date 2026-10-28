@@ -222,9 +222,9 @@ Source : `results/qualification.json`. Modèle Claude Sonnet 5.5, effort `medium
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (88 tests) | vert | à compléter après le push |
-| `make eval` rejoué sans clé ni `.env`, identique au passage live | vérifié avec `cmp` | job `eval`, à compléter |
-| `make e2e` (enregistrement, puis rejeu complet) | vert | à compléter (en rejeu) |
+| `make lint test` (88 tests) | vert | vert : [run 40718460578](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40718460578), commit `875670f` |
+| `make eval` rejoué sans clé ni `.env`, identique au passage live | vérifié avec `cmp` | vert : job `eval`, avec `git diff --exit-code results/` sans écart, sous Linux |
+| `make e2e` (enregistrement, puis rejeu complet) | vert | vert en rejeu, sans clé Anthropic : [run 40718447071](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40718447071), 3 demandes en 33 s |
 | Chemin « vérification en échec » : erreur BPMN puis correction manuelle | exercé pour de vrai (voir ci-dessous) | non couvert |
 
 ### Écarts et incidents
@@ -246,5 +246,5 @@ Source : `results/qualification.json`. Modèle Claude Sonnet 5.5, effort `medium
   NETOPS-15 à NETOPS-22. Les deux premiers de chaque série viennent de l'e2e de P2 en CI.
 
 ### Reste
-- CI verte sur le commit de P3 (`ci` avec `eval`, et `e2e` en rejeu).
+- Rien pour P3 : `make eval` produit `results/qualification.json` et la CI le rejoue sans clé.
 - Prochaine phase : P4, seulement avec l'accord de Seif.
