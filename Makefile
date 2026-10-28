@@ -3,7 +3,7 @@
 COMPOSE := docker compose
 KUBECTL := kubectl --context kind-netco
 
-.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval metrics readme
+.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval eval-live eval-freeze metrics readme
 
 all: lint test
 
@@ -70,9 +70,19 @@ workers:
 e2e:
 	uv run python -m scenario.e2e
 
-# Targets of later phases (see PLAN.md).
+# Qualification agent evaluation on the frozen cases, replayed from cassettes/llm/ (no key, no cost).
 eval:
-	$(error make $@ arrives in phase P3)
+	uv run python -m evals.qualification
+
+# Same evaluation calling the API for answers not recorded yet (costs money, spend guard in .env).
+eval-live:
+	uv run python -m evals.qualification --live
+
+# Fingerprint of eval/cases/qualification/cases.yaml, written once when the set is created.
+eval-freeze:
+	uv run python -m evals.qualification --freeze
+
+# Targets of later phases (see PLAN.md).
 
 metrics:
 	$(error make $@ arrives in phase P6)

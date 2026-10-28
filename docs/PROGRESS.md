@@ -175,3 +175,76 @@ Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai 
 ### Reste
 - Job e2e vert en CI : fait. Reste à confirmer que Seif voit une instance complète dans Operate chez lui.
 - Prochaine phase : P3, seulement avec l'accord de Seif.
+
+## P3 : Agent de qualification
+
+### Fait
+- **Agent `src/agents/qualification.py`**, construit avec le SDK Anthropic 1.13.0 :
+  - une boucle d'outils manuelle, avec un seul outil, en lecture seule : la recherche dans le référentiel ;
+  - une sortie JSON imposée par un schéma ;
+  - des citations, la liste des champs manquants et les questions à poser ;
+  - un repli côté serveur en cas de refus du modèle.
+- **Fusion déterministe avec le formulaire** : ce que le demandeur a rempli l'emporte, et les manques sont
+  recalculés après fusion.
+- **Cassettes LLM** : adressées par contenu (`cassettes/llm/`, 62 réponses), avec trois modes (replay, record,
+  live), un registre de dépense et un plafond.
+- **Processus** :
+  - la tâche « Qualifier la demande (agent IA) », puis une passerelle à trois issues : hors périmètre,
+    informations manquantes, complète ;
+  - en cas de manque, une question au demandeur en commentaire ServiceNow, puis l'attente de sa réponse
+    (message corrélé par le numéro de demande) ou d'un délai de 72 h ;
+  - à réception de la réponse, une nouvelle qualification.
+- **Poller** : il détecte les réponses du demandeur et corrèle le message.
+- **Évaluation** :
+  - 30 cas synthétiques, figés par une empreinte ;
+  - `make eval` produit `results/qualification.json` ;
+  - un job CI `eval` vérifie que ce fichier est reproduit octet pour octet à partir des cassettes.
+- **`docs/02-architecture-cible.md`** : le choix entre un worker Python et le connecteur AI Agent de Camunda.
+- **e2e** : une 3e demande, en texte libre et sans environnement ; le scénario répond à la question de l'agent.
+
+### Mesuré
+Source : `results/qualification.json`. Modèle Claude Sonnet 5.5, effort `medium`, 30 cas.
+
+| Mesure | k/n | Wilson 95 % |
+|---|---|---|
+| Demandes entièrement exactes (8 champs) | 27/27 | 0,875 à 1 |
+| Informations manquantes détectées | 8/8 | 0,676 à 1 |
+| Fausses alertes de manque | 0/19 | 0 à 0,168 |
+| Hors périmètre détecté | 3/3 | 0,439 à 1 |
+| Citations présentes dans le référentiel | 71/71 | 0,949 à 1 |
+| Décision finale du processus correcte | 30/30 | 0,887 à 1 |
+
+- **Coût** : 0,244 $ pour les 30 demandes, soit 0,0081 $ par demande. Dépense cumulée de la phase (pilote,
+  évaluation et e2e) : 0,32 $ sur un budget de 3 $.
+- **e2e en local** : 3 demandes sur 3 vont au bout, dont la boucle question puis réponse (6 contrôles sur 6 pour
+  la demande en texte libre).
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (88 tests) | vert | à compléter après le push |
+| `make eval` rejoué sans clé ni `.env`, identique au passage live | vérifié avec `cmp` | job `eval`, à compléter |
+| `make e2e` (enregistrement, puis rejeu complet) | vert | à compléter (en rejeu) |
+| Chemin « vérification en échec » : erreur BPMN puis correction manuelle | exercé pour de vrai (voir ci-dessous) | non couvert |
+
+### Écarts et incidents
+- **Course entre « pod prêt » et « règles réseau appliquées ».**
+  - Ce qui s'est passé : à la 1re exécution de l'e2e, la zone finance a été vue bloquée alors qu'elle était
+    autorisée. L'erreur BPMN a ouvert la tâche de correction ; une fois cette tâche complétée, l'instance s'est
+    terminée.
+  - Correctif : une zone autorisée dispose désormais de 30 s pour répondre ; une zone interdite n'a aucun délai.
+- **Variables d'une erreur BPMN non remontées au processus.** Le compteur de tentatives restait à 1, et le
+  formulaire de correction n'aurait pas affiché le constat. Correctif : des mappings de sortie sur l'événement
+  d'erreur.
+- **Mode record** : il réutilise une cassette déjà enregistrée. La 2e exécution de l'e2e n'a rien coûté.
+- **Pilote** : 3 cas live (0,04 $) avant l'évaluation complète. Ils ont été refaits ensuite, parce que la mise
+  en cache du prompt système a changé la forme des requêtes.
+- **Dépendances** :
+  - SDK `anthropic` en 1.13.0, car la branche 2.x a moins de deux semaines ;
+  - il repose sur `httpx2`, d'où un transport de cassette dédié.
+- **Données de test créées dans les instances** : RITM0010017 à RITM0010024, CHG0030012 à CHG0030019,
+  NETOPS-15 à NETOPS-22. Les deux premiers de chaque série viennent de l'e2e de P2 en CI.
+
+### Reste
+- CI verte sur le commit de P3 (`ci` avec `eval`, et `e2e` en rejeu).
+- Prochaine phase : P4, seulement avec l'accord de Seif.

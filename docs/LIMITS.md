@@ -17,7 +17,20 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
   ouvre la zone entière, pas seulement le sous-réseau demandé.
 - La charge déployée est un petit serveur HTTP (`traefik/whoami`) qui écoute sur le port demandé, pas le vrai
   service. Une demande = un port TCP.
-- Aucun appel à un LLM avant P3.
+## Agent de qualification
+- Les 30 cas d'évaluation sont synthétiques, et écrits par l'auteur du système. Ils sont probablement plus
+  propres que de vraies demandes, donc le score est optimiste.
+- Avec si peu de cas, un 27/27 donne un intervalle de Wilson qui va de 0,875 à 1. Ce n'est pas une garantie
+  d'exactitude.
+- Les cassettes figent les réponses du modèle. Si le prompt, le schéma ou les cas changent, `make eval` échoue
+  tant qu'on n'a pas réenregistré les réponses, ce qui demande une clé et coûte de l'argent.
+- En mode live, les réponses du modèle peuvent varier d'un appel à l'autre : les modèles 5.5 n'acceptent pas de
+  température.
+- La réponse du demandeur est repérée comme le premier commentaire qui suit la question du processus et ne
+  commence pas par « [NetCo] ». Sur l'instance de démonstration, tous les commentaires sont écrits par le même
+  compte.
+- Le coût affiché est calculé au tarif du modèle demandé. Une réponse produite par le modèle de repli (après un
+  refus) serait facturée autrement.
 
 ## Processus
 - Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile

@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUsY6tMFVbbbYbJkkt6A",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"facturation-api\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"8443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"PORT-02\",\"passage\":\"Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"}],\"summary\":\"Exposition interne en recette du service facturation-api sur le port 8443/tcp pour l'équipe finance (10.40.12.0/24).\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 543,
+   "cache_read_input_tokens": 2445,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 543,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 257,
+     "cache_read_input_tokens": 2445,
+     "cache_creation_input_tokens": 543,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 543,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 257,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

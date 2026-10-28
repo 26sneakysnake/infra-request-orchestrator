@@ -11,6 +11,7 @@ from kubernetes import client, config, dynamic
 from kubernetes.stream import stream
 
 PROBE_POD = "probe"
+ALLOWED_GRACE_S = 30.0
 FIELD_MANAGER = "infra-request-orchestrator"
 
 
@@ -63,6 +64,15 @@ class Cluster:
         )
         return output.strip().endswith("200")
 
+    def _reachable_within(self, zone: str, url: str, grace_s: float) -> bool:
+        deadline = time.monotonic() + grace_s
+        while True:
+            if self.reachable(zone, url):
+                return True
+            if time.monotonic() >= deadline:
+                return False
+            time.sleep(3)
+
     def verify(
         self,
         namespace: str,
@@ -77,7 +87,9 @@ class Cluster:
         denied = [zone for zone in all_zones if zone not in allowed_zones][:1]
         checks = []
         for zone, expected in [(z, True) for z in allowed_zones] + [(z, False) for z in denied]:
-            reached = self.reachable(zone, url)
+            # A ready pod is not yet a reachable one: service and network policy rules reach the
+            # node a few seconds later. An allowed zone gets that grace; a denied one never does.
+            reached = self._reachable_within(zone, url, ALLOWED_GRACE_S if expected else 0)
             checks.append(
                 {
                     "zone": zone,

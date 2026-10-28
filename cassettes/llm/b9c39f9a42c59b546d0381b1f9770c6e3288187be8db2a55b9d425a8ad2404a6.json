@@ -1,0 +1,74 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUrwyvTFzC57vzEJbYz7",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSkgcKEAgTGAI4AUIIdGhpbmtpbmcSDIRchuGZhQShsPv4ZhoMM6dyLlYcW5YUNtP+IjCSL0bb52IvMV1Ns1rNUJ+e3xAlypFQ/1S5GRBECP+TRn91+pqo9ZQk8dPQhyiVJ7QqrwbHLcbl7y0nPs5xL2LAGLlE8q1BJB9R6zhcVweRV7l9XYwo0ksSCe+cI+W9PdOPb4mZdgisJvVfy2O8GmQQcxkIBYZqkX5ed6+VLXlRql7luZeC/dDVMl4H1sY1SerOwN0wNCOoL36+SARYAJuUprmDe9i0TqXaunpBVpUJOi3TheuD6EayinbrNf4xcibj5NecdFVtnU63uhx8fFBZYOPibJKlWsaKSPDISa4+MrxnUylerYdli9ODmpDTWTRwhlsPFxkoQYcOUZCnp/HY9U5LmZ2DWykDv4w9B3RI7bZzdgvHZMOi+p4VQiJsCKF0vKBpdJPvbeJnlQDwrD7R0/5lyW1tsePp38cWD31ZbZyAm1Ks8DWr2rK+C6VPO5MqZuuc+pq4zUpR+7uBHW5mAG7l4K7OTIdapLtnwWICMzHZlkSNs0/shFErn0AOz8zXknUgnoAvAhYqCOkmKASjwvxG6MDv9wMMG2leSuHleAlMdLRZ8FppxMCGLsS7GhldNTM8B9tiRxClqU12yLqNIPAx3+ngGu+rFZXqUQj3HEC58N4U7dy6ur/1Pxhmw1LRxguKHkPecBm/UFzTFPk1K97Sc+XkSRQRWbzB/M5Yd38xqu5MhRnBLPIY4z5PefTazsdNRlMM1GSrFv/tLzG1CyvUw8bnh24TTeEcHd7Od1KE+7OCZgWXYwk9KHUlODNfJbMSCHAY5F7Hy4K0dana64sjyN7es3bNDAd96V5MD0ubZYRKbeDQEhhxBMBBf/BbqlPHhLwwMyZ0yVRW4jqmfVLWQkbs5VYp4luttynM9MBfVfENdmqnlgCIZ1esBJJ6XUajvonQ1z5XMQ9je/re4nWmNNk0DlCaKIgR5IEHWU1l881Ui8Yr266mHXY/5qRdP7H5Rd5KR7oklgT3SJxmwwiiTprVTvlVyoWd0CYCLlFiuNMic1VdMboB0Hjsb9xx2Gd6rEEMSo8xigDjaIp2ac3d7npdc2s+OlzHcGkUGiNCvzPxPr6szQbU9XQpCFsM4lJWPhEDd8f1EziBy1I4a69YoW9fDhl5hFyvv02JNOKygJXu/TIUP/8prtqXnh84lhgB"
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01RbeJen6bwku4LVGhnf7AGi",
+    "name": "search_referentiel",
+    "input": {
+     "query": "zone développeurs"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01UWNo5UGoaS57DfXMShjqwo",
+    "name": "search_referentiel",
+    "input": {
+     "query": "port 8080"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 2381,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 219,
+     "cache_read_input_tokens": 2381,
+     "cache_creation_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 219,
+   "output_tokens_details": {
+    "thinking_tokens": 113
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

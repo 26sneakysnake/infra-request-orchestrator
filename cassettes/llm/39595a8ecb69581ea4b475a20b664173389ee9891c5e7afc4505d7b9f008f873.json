@@ -1,0 +1,74 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUryQQsU6Z5qfjhRsSPG",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQShQgKEAgTGAI4AUIIdGhpbmtpbmcSDKFhKeIrYJpIHBOKkRoMa/95r9MDqWUV06pSIjBhfWIVd851htcewY9V8V3WwlTeDnyfYQDrNw/Z/OM95FVT5/xIiFKfPwEhLZGrZycqogfNvyg+tkzUuTCuW1srFz/sMrt1O4jUdMpehYqYqyip2kc0Cph+vSyWfsj9RG/bhJqC0hy7zixcbQwCgB6t4QSKxaf3TdbEuhcNEhr/MfulTI/G8jcIbDSubXkgoxxMXDwiVr9Gwx/T8+Lhcn6expFMAI0HNraR7UnDmn4e4H40ACmUsGbDShI3QXy/o6Das694WfoMqRiXX8ho7bdzDNa93NGEkotP/37GW5OEYTmH2HEcNyLX6zucaZ2N+Ud26GC6LyVI97bod+iCPPF0oD1sZlQFtGT9M5Chq1ihP5+MQxZO46kviEg18EAcUaVdNQdgVX/0Hb/CDBmmgtKjTegcDIwl269o0XirmeHnsSNCRS+cBTxj0ZZpLETczF9wPULN9yIQh3+m4NqR0/x0bmOgfgcIJiJqcrymiYUYHSmRvXqT7fkCuHJXmOmq/RTshMUcUs9UBevZNf4N/IsVSd1BWEOjPNIhVuaZy9QTpzCN7xFW1nt5X3QI6jtcjeSVoTX8C/70uSxTJconxTUPn6pqCW6DoMk4EcwgVLewVD5vGPS2ytuAU2mvvYdQIiAf9lGK0UdSahGPtk9iy7B55ivU8/la6tL3XsmtxsviyMBZlwudsY20rf+YlthO27FiMnNZ5VfZ+csnK//oTRA3utUAmm/4FKNSFO7aXZNBJQNWkAPkVlYz6ULiDBbh75oeEvSbrA9pGeSANfWyan7z1Nd1Jib0z4xqe/qKt2TObZ370Z8P49Klr3XZQIRPVtwjvR2dBWuN62crlsHzZwwx2V809i1vuZ2FyO3BfTJ4SnSppOto6lyAH3TsZNChMiHcsG5Agr+BNAWg9a4/cHx9uvi/oBcdyrUX8C57VpanHg6Abg/IPJyK/Hkf28suLGdZIazPPEpp58AUeX7tNibOXG/NjhSgj+fCQCkG7386szx2mTxwm8PF08UP59wxzdJIodH0jqjuVB6O3Fp3e1RfkTEhsrO9BElH9LLTIDRzsC2w2o9mbrwXLCJRnM+0+eQ+bFaxeheBORvf9VNzMXQyUOYuqskz9eduvETZeqgKJLCzrtD7cbg4hYbATbNlmO2ASnRZCQsQrYbczAB1/b7ucUpS6guoXfWsAprNBda0mWFeWgKw0pQu9V+dmuRrrO/cajo6UnpXZL6qxbbS2+0Tj74OV80lkDiW7Zbx8ORo+iAL10ssJKx9DpZpIy0faPMVysi5wbMgzDhI6FcTHXuG4AgnK9oYAQ=="
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_018oq4QDZoZFt3na5jtYnJ7n",
+    "name": "search_referentiel",
+    "input": {
+     "query": "port 9090 monitoring"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01FMeaxQCMSWQkvSfoA4XbNU",
+    "name": "search_referentiel",
+    "input": {
+     "query": "postes bureautiques zone"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 124,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 124,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 269,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 124,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 124,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 269,
+   "output_tokens_details": {
+    "thinking_tokens": 155
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs6VtE8cBvs82erd5Vn",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQStQUKEAgTGAI4AUIIdGhpbmtpbmcSDDUz88XnhlyTTHu46RoMP/Xuoa5asDqnaoHPIjDUQXlr1cjzSCPIlHKmYX8z0Ds7in9jYtdQeiY/AC4i+rf5IcNxLDnpZSJZ26c7Hpcq0gRMFwrQ/fujc5kGHs/8kDFhmCkj+q8OhWnOJtXzYpaJIr9FY9Y42F402HwvWa95mnpZkpJZJfsMLnbJCARY+DxVylj6+ArLcecOJhk66IWpBhL6SzDQvgSNq2rYRfGUcO4CxUfdwM5OEkGFQ9E8oLoGvr3c1qV/HSUmQcOn6Ev2sF09bIIu14nFVtgvJ6Wzwponc54ufthC0gxFjlv22xjLF7b5WRcyzXkxvnJYD9W8t4DxqBGU5LUxlZL9F4QVdUnZ75j8mB16GKXHdCju+/Q6cyiK67rQVPWkifTOr8D0f+df7nTTLzzwiMbI+08iCAB44l7G6rWFemI46goDkknwyUIWclx+WuIjcjmk9M6ZyC9YBYxQjWmn/4JSO2psrK+gppD/NU5NZSeQb7ngYABzle2mnekQrA3jwX/3WCpJ10qxPekrBJ0SnBzgQaz2KfBJsoJYD87azSoQg4HUjgHy6YFu2xIdxCcP9z482aEkX5EDNugTDazq0vfJNMq/SI9c7Xpd8w3RGIeVq1LhHhbn0NlSnr+yX7QolcJ7OEZnmJjFJw5zeFV3fdZHSvdEk4ssPPQZ2xfmxfV0hm8ett5qLXQKj4R/0andB+9fdC8XUm3xuigR1L1EjlbSLPbJx4v8SuxLx11FMDTHzRLKWitReBys/uc1X9UvHngXfmRpgXi8oW0v8Iec8Eo+8gnBS5sC+uywBUqK+9b4WNsCQAehM9NPq1GyWSf4bc4tymvU84JR25wHQivRtOs9qhHDW1gNwOEULfyHCYgMYY9Pb3bhFu4YAQ=="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"reporting-web\",\"environment\":null,\"exposure\":\"interne\",\"ports\":[\"8080/tcp\"],\"source_networks\":[\"10.20.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"environment\"],\"questions\":[\"Dans quel environnement (dev, recette ou prod) le service reporting-web doit-il être exposé ?\"],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| dev | 10.20.0.0/16 | Postes et outils des équipes de développement |\"},{\"rule\":\"PORT-02\",\"passage\":\"- Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"EXP-01\",\"passage\":\"- `interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"Exposition interne de reporting-web sur le port 8080/tcp pour les développeurs (zone dev), environnement non précisé, sans incident en cours.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 994,
+   "cache_read_input_tokens": 2345,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 994,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 400,
+     "cache_read_input_tokens": 2345,
+     "cache_creation_input_tokens": 994,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 994,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 400,
+   "output_tokens_details": {
+    "thinking_tokens": 28
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

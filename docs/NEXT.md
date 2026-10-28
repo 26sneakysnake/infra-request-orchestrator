@@ -12,3 +12,7 @@ Notées pour plus tard, volontairement non traitées : un seul processus bien fa
 - Plusieurs ports par demande, et ports UDP.
 - Modèle de changement standard ServiceNow dédié (« Exposition de service standard ») pour les changements
   pré-approuvés.
+- Jeu d'évaluation tiré de vraies demandes anonymisées, plus difficile que les 30 cas synthétiques. Juge LLM
+  pour la qualité des questions posées au demandeur.
+- Variante de l'agent de qualification sur le connecteur AI Agent de Camunda, pour comparer avec le worker
+  Python sur les mêmes cas.

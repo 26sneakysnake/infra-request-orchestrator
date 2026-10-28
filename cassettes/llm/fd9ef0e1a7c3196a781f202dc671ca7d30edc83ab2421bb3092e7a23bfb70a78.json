@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs4RbhrTGkD1As6kD94",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"batch-compta\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"22/tcp\"],\"source_networks\":[\"10.20.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"PORT-01\",\"passage\":\"| 22 | SSH | L'administration passe par le bastion, pas par une exposition de service |\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"},{\"rule\":\"EXP-01\",\"passage\":\"`interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"Demande d'accès SSH (22/tcp) au service batch-compta en recette, en interne, depuis 10.20.0.0/16.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1002,
+   "cache_read_input_tokens": 2349,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1002,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 314,
+     "cache_read_input_tokens": 2349,
+     "cache_creation_input_tokens": 1002,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1002,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 314,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

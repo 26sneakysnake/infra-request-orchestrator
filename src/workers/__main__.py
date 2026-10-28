@@ -26,6 +26,7 @@ from workers.poller import poll_forever
 
 log = logging.getLogger("workers")
 PROCESS_ID = "expose_service"
+REPLY_MESSAGE = "requester-reply"
 RETRY_BACK_OFF_MS = 10_000
 # How long a job stays reserved by a worker. Kept short: if a worker dies, its jobs come back after
 # this delay. The verification may wait up to 2 min for the deployment, hence its longer timeout.
@@ -73,6 +74,17 @@ def start_instance(variables: dict[str, Any], business_id: str) -> str:
     return str(result.process_instance_key)
 
 
+def correlate_reply(request_number: str, reply: str) -> None:
+    """Hand the requester's reply to the instance waiting for it (fails if none is waiting yet)."""
+    camunda_client().correlate_message(
+        data=sdk.MessageCorrelationRequest(
+            name=REPLY_MESSAGE,
+            correlation_key=request_number,
+            variables=sdk.MessageCorrelationRequestVariables.from_dict({"reply": reply}),
+        )
+    )
+
+
 async def run() -> None:
     deps = build_deps()
     only = [n.strip() for n in os.environ.get("NETCO_POLL_ONLY", "").split(",") if n.strip()]
@@ -91,7 +103,9 @@ async def run() -> None:
                 execution_strategy="thread",
             )
         poller = asyncio.create_task(
-            asyncio.to_thread(poll_forever, deps.servicenow, start_instance, stop, only or None)
+            asyncio.to_thread(
+                poll_forever, deps.servicenow, start_instance, correlate_reply, stop, only or None
+            )
         )
         log.info("Workers started for %s", ", ".join(HANDLERS))
         try:

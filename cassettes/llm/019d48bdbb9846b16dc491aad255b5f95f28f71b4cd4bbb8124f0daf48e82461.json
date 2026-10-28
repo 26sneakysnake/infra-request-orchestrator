@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUrzgWXn67nrQnnh19jQ",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS+ggKEAgTGAI4AUIIdGhpbmtpbmcSDBWyyWYXJbQxm2ZyxhoMLDOHuK+VMxMfOLNDIjD8LqMT1Ks/p8bwEx8ZwF4VT4qvr2VQxJJWT5CkuJ8uFkRMsEH+ZNr1yFsLHBp+QyoqlwhQMPNYL80i5yoWl3RxUBqBWt6r3o5C14VzrVw2tJ5as5md1XMPAKoLcVfNkYj2c245uFFZQiBtHSVLHnUSyk66MQyLVBrSxJKKCn58I9Gn20AfaEhukJwrknG79HeEfjI89JHFE+Ydx01Nj81Rh1H0t1p4yelhiXaeQKyUrlSGOc8CPZ/Rg6Ry5I3bsZg0KFxKI9ClIMGUSCTApAXvrT9ZswCRxCadUDpOvYOMrEvbOp6zo6LfIpqWVL6jBr3YuJ+U5C8ARduzFPtV+FlTuh6f9BugX1dK4xI0kEgcWQfavW8O34qzSAUG+ouR6kj90sVTmM+x2mRMgFahSlgX/GOELbgYEgMsvjLQWX3yzPeUQlcVVoSgdroWv/tgdlOjuPtBCJy4iK1pb6hW3Ij6m43Po5yoQr4BVYyc58zDSixQxmaOLOanJG1i3fbpLJaDJzjphprLfbKslEvnrNhnqkpS9rpAWAEDD2omzpy0z6BRVo8TTr444PrUMx5hoy8NNYPXrPDRMZQdSrC2O9UrGtE+XH0V90JTkoeFh35kCHvQQI9MmhuGl78gGBh8Xl6IAsusNa+zT5D7dg9vHshKbKJGU/VoI2Wpkdj9JAHyvT1gprUb7hpK7RutObs4qJrSKa9OZT96FpuxTI5rAQ6k34dboi4rsimaKZDPZciN+O+rz9jFVPIbOLEOc3xNfj/qhoo2YKtKC8MH7JoOyfd6XGqWapOmAPkpcDcevMhkg7BWThC2CBuMr1FWuasjPvO/Kan12a6n+erH8FLN0Xc0S2LPxg9E54un2WacRTyKyVdiQibZvU+JHxGN4TXNm+23QYtUdZJWCTd7eksS6YE+CQqMX9QPbe0tvfZlwd9nKFeogScVQKlEav62+COGITxE5YmO8zcZeIfTNrp/Q3ZChj/Ji86HO3C66xkxkI4pljLWqVK8+B3SfoeLmXR6mWJlF6Bwmw1odQ1iayVgALlOjTNcLBAS4EHCc0UQjkWTzlt7HWi2mvzmTwE1EznDNoGs3YSoS9me9kKmNTFz6HD4Cgmw5pgnAbQSXNolTrJZNWh31sNoCutB48Ra8COOR2h9A5tVPJSs8k7J8e34plcFvnhPtvvL60580SvoqlHQ31/AeCHpYD3Yg2I2XgQmbNpcV3Hpv6HpBR9FeSHuCnEDR/olh5xhPJDq80vVTlHXf4+cKKj5AP56J1w1patr47fno2wcroMJj9ykJHFE3kHNXHMRNONuCq28vfl4zaEe37wBmkSk7sJPLWE6d38BziGxs69YNVzfEhSrjm0MsotJ0ICGatVhoeiGK0AoAKXAfG4ZvDwd/IpBYRqMVJQqoSm1Du0VluPmenGilu2xmAbAikceIgzGgfbUgED7hsmV1CuIYCE5edyoHCIYAQ=="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"api-factures\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":true,\"vm_size\":\"L\",\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[],\"summary\":\"Exposition interne du service api-factures en recette sur 443/tcp depuis 10.40.12.0/24, avec une VM de taille L.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 124,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 124,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 358,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 124,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 124,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 358,
+   "output_tokens_details": {
+    "thinking_tokens": 196
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

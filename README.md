@@ -10,9 +10,16 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 à P2 : le processus BPMN tourne de bout en bout, sans IA, de la demande ServiceNow jusqu'aux tickets
-clos, avec une table DMN, une approbation dans Tasklist et un vrai provisionnement sur un cluster kind local. Les
-agents IA (qualification, diagnostic, documentation) ne sont pas encore écrits. Suivi détaillé :
+Phases P0 à P3 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
+comprend :
+- un agent IA de qualification, qui transforme le texte libre en formulaire, cite le référentiel et interroge le
+  demandeur quand une information manque ;
+- une table DMN ;
+- une approbation dans Tasklist ;
+- un vrai provisionnement sur un cluster kind local.
+
+Les agents de diagnostic et de documentation ne sont pas encore écrits. Les résultats chiffrés de
+l'évaluation sont dans [results/qualification.json](results/qualification.json), et le suivi détaillé dans
 [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Démarrer en local
@@ -48,8 +55,15 @@ Dans Operate, on suit les 5 instances :
 - 2 normales, en attente d'approbation dans Tasklist (groupe `cab`) ;
 - 2 refusées par le référentiel, avec un commentaire dans ServiceNow.
 
-`make e2e` rejoue le scénario complet de façon automatique, avec une approbation simulée. `make kind-down` et
-`make down` arrêtent tout.
+`make e2e` rejoue le scénario complet de façon automatique, avec une approbation simulée et une réponse
+simulée du demandeur. `make kind-down` et `make down` arrêtent tout.
+
+## Évaluation de l'agent de qualification
+
+```sh
+make eval        # 30 cas synthétiques, réponses rejouées depuis cassettes/llm/ : sans clé, sans coût
+make eval-live   # réenregistre les réponses manquantes (clé Anthropic, plafond de dépense dans .env)
+```
 
 | Service | Adresse | Accès |
 |---|---|---|

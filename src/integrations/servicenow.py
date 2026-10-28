@@ -5,8 +5,9 @@ from typing import Any, Self
 import httpx
 
 CHANGE_CLOSED = "3"
-# sc_req_item states
-RITM_WORK_IN_PROGRESS, RITM_CLOSED_COMPLETE, RITM_CLOSED_INCOMPLETE = "2", "3", "4"
+# sc_req_item states (task choices)
+RITM_PENDING, RITM_OPEN, RITM_WORK_IN_PROGRESS = "-5", "1", "2"
+RITM_CLOSED_COMPLETE, RITM_CLOSED_INCOMPLETE = "3", "4"
 
 
 def _values(record: dict[str, Any]) -> dict[str, Any]:

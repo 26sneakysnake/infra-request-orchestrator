@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs5NTU8pK6UB3GB5ikn",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS8wgKEAgTGAI4AUIIdGhpbmtpbmcSDExrBU/ttbX0xYWNaxoMkaqpNgfiCbcFel2VIjCZuFsh8EzKSAZgZM+v98510RraW1fq1R3yF4QNHcFLKyob5zwXgnayqLLFcvS/fpYqkAhOsRVjw7Coeet69ND8F9x/wH3Cq7CDQqHk0Mvk19BRPd9sGVBRRkOVUxkPUOFX9DCGIdQRmLK5Bft0zF4PiDELdSGr0ouY0qCLi9i53km0K2iEOxA1JSGj/ZPm9rSjsazQfb+jYi1jAgqbwjtbmKbfyR277B/dDBFWhwkkGaaMDV46BMD+anRvHFYppNdn+C8hIsDMnPviyvYzilBECsxj4JVvzx22vxSWQ4Usgj9+55EB4VBUhAiFL/w5C+4Hv/PYwQ9+vYgY9jlMcXgFajQX+cHt/BxkIeZMfcq5JlK9APb5cu5FQSctGy8mMWPiSlq8w37ZfimVT/kMXcS5xxS7KyXwme/UorEAbmLidN2G+tCE0H5kdTxY+n3DiEUmMpkG/CNyOKgQiVohkcjbmljB8JcmLVH34piZvkmw3dZ9Bzt99zB6jEuoFGNSGW03NA6B4Fio98N/Oxj0e7d9BeLmTD9ICLzDKzxZ9jdPwbjPtHNFyM5c1pIoL7VOwfhacEB2eQySXM9Q466Y2nH1ddl46nu1kaa1TlsljCvap2PNfmedVc4ooKVDl94OS1QYq+HLQnneZFqXh3zVg+TVIhqNMYORm+gwUFzGvaq3+6Bv25O+jvlEI9e1LTpCF8NOSKSggqS9zdBoFCXsmgIU/MWT9M8sUc6Ew5FjTMTh5WT20kiwqycLJNqPaINPBrgXg87mOXXjn3Lo3MERQhLRlUPm3P3SDKw7NdwrmrWyfpi+m8/ugKE4xrm2hqvNSp03P/KW5DVsT+qtSvwmsFO33r72tK7iqno78BZ8jQRP2t5wEkjuujhVCP/z8kS8Cf13Ltkheg1XOmfnPpa82Hg2YmvvrFOoi+IIx/9GNrg56jzLaNQViCb5AGQdIaGlhxXQWqcMCXcCSHQneymyFkU2QiDA6l4yrf08KUrGmlqFHQSQKfziISNEOo2vez4VMbxbeofG2ahNTCLM+QsljAeSe33n2xbnMZzfNuvgmnXcqteGcA62G9bzSu9S0kqy046U/hvGOCG2WaxGauPEMvnEHDb4t55NluWo6e3+9zGa/xhOg7Sig5St1PSN8z46e9vpk26M4SQcclBnP+d6w0Hyui7M6PzrN/OzO1BYrFvFoZHa42YHk2ch1y+6+ZQ2VQKREMnF1ORGZoPIqFPHaPZoShEXir3dwxmdRx5DSweAwcU6EmhP5TCQAfFodn+apTWwXLE5lXpsAwhKkl6W6KfGgSsiPFcQFPUY9+HjxuL9etujGZ0bmNkFRszkP/BLPkMzcvVuGQyJkZO3HZ1aUOHo9pgSqQzwL5HU7cfsmFwIC5HHsybJkvB/fHvx7yGxieAKxP6laR92Kl9vh9VP+F0YcCReH9ON6sfGC+ohpe+gp0ewYBgB"
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"facturation-api\",\"environment\":null,\"exposure\":\"interne\",\"ports\":[\"8443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"environment\"],\"questions\":[\"Pour quel environnement souhaitez-vous cette ouverture (dev, recette ou prod) ?\"],\"citations\":[],\"summary\":\"Ouverture interne du service facturation-api sur le port 8443/tcp pour l'équipe finance (10.40.12.0/24), demandée comme assez pressée mais sans incident en cours, avec l'environnement non précisé.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 2362,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 440,
+     "cache_read_input_tokens": 2362,
+     "cache_creation_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 440,
+   "output_tokens_details": {
+    "thinking_tokens": 208
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

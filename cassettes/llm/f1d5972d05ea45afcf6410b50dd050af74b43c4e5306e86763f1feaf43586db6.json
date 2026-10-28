@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs1yM5JHk4KQP7U2E86",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSlAYKEAgTGAI4AUIIdGhpbmtpbmcSDFUXjFOG/vN0ykELoBoM0Iu0gHDZ+M92RQCPIjCx8dx2TIS39ltx9SngJXi9/m81bEAAhsmlqB7W9BOOrJ8bHpIH6g3lR4K3YckwkBAqsQX286uDG+TnVXogFJjXb9I39Qu/yvm2vLkh19oxVFPHsb69AM5ew/2ViSr1Y05qov+d2EKo6YHUNaaSZv0Mq1fne9Bx08K9TFTUZB5NnWsbffDhrny5UPKNaKKD0BqvfKqcjOhK+SAKXj69FRo6VueYA1l7PArNffFOI4XW16y9XHduxbDPzoc4odGZe5Z2TcewMt+2Zu4fHhtTxl16oE9oM+6iQ4YwCd5IO+EJNrlgJrgkY4qOQAk/rxAk2Gz4pA1Mkj7x0Lg5o1a0fftdVcYhYvNaMQ/FLQiQNGkltO7K25SgccsKqQv4E3Mnhvp05bJvvvx/P4DKX0cR7YDyekY/WAGm2czJcxKGdnxqbk5L1ZFOziS+eC4C9/NDWpBwOZtYbeUFx1Y0yS5GKvEpF2Gs4wjJ6YLcKrPyKC6iZ65L/QW98TLtDnWGnTFjTycTrMqIWtSlwyMdwu6wmgLdpiPgXWcRDLLBFF7at8WD1+IIRUDbC1ZkBFX7A+oRqVKaEz+MqhPTjnMxhlIBDfudqI/DCNnWlyHbCmjSnu5xW0mBXY0KvfPDKON3V1g81/Lge9BCaGtoyQycFy/2J88gx23+VthF40gvTz2GRg3Mjsme1ULh9UMvYqoGIF2R/uWQrZtuNus4fwHb6Rn0d1FkJDOjwUHuPym82YicNxQys5v+4nh0vloHnZ3G3scAivHqIeCcYbtkJP3gce4t+GsO4nCJyAbL66jYF1Wq/xySrw022TFO6pDoWJ2kS7EWPt9VnJmQaeVE11Zgn6zk8S8+n4HPWaMy1Wa95z7Xp1Vsahsm7MmGE+tE8qWWHLM6yxP8WE86wiMR/n11+M79AQppcwNpREfoHLdecnXZzcB79eT587a03MPOAS+vg2ot8NcwKTfgxiE2twgN7BkwRyUywJugCBgB"
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"inventaire-api\",\"environment\":\"dev\",\"exposure\":\"interne\",\"ports\":[\"8080/tcp\"],\"source_networks\":[\"10.20.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| dev | 10.20.0.0/16 | Postes et outils des équipes de développement |\"},{\"rule\":\"PORT-02\",\"passage\":\"Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"},{\"rule\":\"EXP-01\",\"passage\":\"`interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"Demande d'accès au service inventaire-api en dev, sur le port 8080, depuis le réseau des développeurs (exposition interne).\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 3842,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 421,
+     "cache_read_input_tokens": 3842,
+     "cache_creation_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 421,
+   "output_tokens_details": {
+    "thinking_tokens": 53
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

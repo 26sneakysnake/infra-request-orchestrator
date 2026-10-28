@@ -1,7 +1,9 @@
-"""Start one expose_service instance per new NetCo request in ServiceNow.
+"""Bridge from ServiceNow to the process, by polling the Table API.
 
-ServiceNow cannot call the local Camunda stack (no public address), so the orchestrator polls the
-Table API for open requests of the NetCo catalog item.
+ServiceNow cannot call the local Camunda stack (no public address), so the orchestrator polls:
+- open requests of the NetCo catalog item start one expose_service instance each;
+- pending requests (the process asked the requester for missing information) are checked for a
+  reply comment, which is correlated to the waiting instance as the requester-reply message.
 """
 
 import logging
@@ -10,11 +12,17 @@ from collections.abc import Callable
 from typing import Any
 
 from integrations.seed import CATALOG_ITEM
-from integrations.servicenow import RITM_WORK_IN_PROGRESS, ServiceNowClient, ServiceNowError
+from integrations.servicenow import (
+    RITM_OPEN,
+    RITM_PENDING,
+    RITM_WORK_IN_PROGRESS,
+    ServiceNowClient,
+    ServiceNowError,
+)
+from workers.handlers import REQUESTER_MARKER
 
 log = logging.getLogger(__name__)
 
-RITM_OPEN = "1"
 # ServiceNow catalog variable -> process variable
 FORM_FIELDS = {
     "request_text": "requestText",
@@ -30,6 +38,7 @@ FORM_FIELDS = {
 BOOLEAN_FIELDS = {"vmRequired", "urgent"}
 
 StartInstance = Callable[[dict[str, Any], str], str]
+CorrelateReply = Callable[[str, str], None]  # (request number, reply text)
 
 
 def ritm_variables(ritm: dict[str, Any]) -> dict[str, Any]:
@@ -47,15 +56,19 @@ def catalog_item_id(client: ServiceNowClient) -> str:
     return items[0]["sys_id"]
 
 
+def _requests(client: ServiceNowClient, item_id: str, state: str, only, fields) -> list[dict]:
+    query = f"cat_item={item_id}^state={state}"
+    if only:
+        query += "^numberIN" + ",".join(only)
+    return client.query("sc_req_item", query, fields, limit=20)
+
+
 def poll_once(
     client: ServiceNowClient, start: StartInstance, item_id: str, only: list[str] | None = None
 ) -> list[str]:
-    query = f"cat_item={item_id}^state={RITM_OPEN}"
-    if only:
-        query += "^numberIN" + ",".join(only)
     fields = ["sys_id", "number"] + [f"variables.{name}" for name in FORM_FIELDS]
     started = []
-    for ritm in client.query("sc_req_item", query, fields, limit=20):
+    for ritm in _requests(client, item_id, RITM_OPEN, only, fields):
         # Claim the request first, so that a second poll does not start it twice.
         client.set_state("sc_req_item", ritm["sys_id"], RITM_WORK_IN_PROGRESS)
         try:
@@ -73,9 +86,45 @@ def poll_once(
     return started
 
 
+def reply_since_question(comments: list[dict[str, Any]]) -> str:
+    """Requester comments posted after the last question of the process (comments newest first)."""
+    replies = []
+    for comment in comments:
+        if comment["value"].startswith(REQUESTER_MARKER):
+            break
+        replies.append(comment["value"].strip())
+    return "\n".join(reversed(replies))
+
+
+def poll_replies(
+    client: ServiceNowClient,
+    correlate: CorrelateReply,
+    item_id: str,
+    only: list[str] | None = None,
+) -> list[str]:
+    answered = []
+    for ritm in _requests(client, item_id, RITM_PENDING, only, ["sys_id", "number"]):
+        comments = client.query(
+            "sys_journal_field",
+            f"element_id={ritm['sys_id']}^element=comments^ORDERBYDESCsys_created_on",
+            ["value", "sys_created_on"],
+            limit=10,
+        )
+        reply = reply_since_question(comments)
+        if not reply:
+            continue
+        # Correlation fails while the instance is not yet waiting: the request stays pending and the
+        # next poll tries again.
+        correlate(ritm["number"], reply)
+        client.set_state("sc_req_item", ritm["sys_id"], RITM_WORK_IN_PROGRESS)
+        answered.append(ritm["number"])
+    return answered
+
+
 def poll_forever(
     client: ServiceNowClient,
     start: StartInstance,
+    correlate: CorrelateReply,
     stop: threading.Event,
     only: list[str] | None = None,
     interval: float = 10.0,
@@ -86,7 +135,10 @@ def poll_forever(
         try:
             for number in poll_once(client, start, item_id, only):
                 log.info("Started expose_service for %s", number)
+            for number in poll_replies(client, correlate, item_id, only):
+                log.info("Correlated the requester's reply for %s", number)
         except Exception:
-            # Keep polling: a developer instance can be briefly unavailable (hibernation).
+            # Keep polling: a developer instance can be briefly unavailable (hibernation), and a
+            # reply may arrive before its instance waits for it.
             log.exception("ServiceNow poll failed")
         stop.wait(interval)

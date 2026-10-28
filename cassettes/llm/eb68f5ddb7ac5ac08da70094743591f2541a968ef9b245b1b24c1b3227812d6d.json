@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUsXLi29J3dVmcjVr3NE",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS3wcKEAgTGAI4AUIIdGhpbmtpbmcSDKZ59kexTKM2viRFhxoMaMRV+d6Kay3ApYFlIjDn/QICy+CZ4qgcgciGZcFWg5gV1ul/8OSYu4UB5Mk/SNm842tWc1tkvODz4TZZpaoq/AbtHSWxq+EzriWHicFT+i0e8BaNZ0crXmT5iAxpBP+fg969efVe185Udox/MJ+VniWsf1wQpFnX1yetItj/+eM9CEW7hbmH+QG7pcDYs6+Mij2yZUuv8bsKTG0mCTgvLcMBKEoRxiDBIU/c//XipZ4sHdr1rPdI75Z6Eyk6uCmMfRZCUVr4C0gTErLEXD0CT9aBqDVlwY2gQHJVzKXFBL9xYS8sIlAFIx/5D0O9lU2XMUcwlJ9MraPjr15mRagM0/K1jJvexG3oHIrAyd4mvQ5axiqtnR6VWunLienO7w+M8tBrXw6T/IPIHziVgxoldctQTaHVeByZfQtt7V3qaLv9mvWuUVHdPeVtlj+xwqCCvRKHGo8mYgLJNna8tMTqTcOKVH5yXgstomcCcfRhqxeRs1zEFfrYdO02rY3DsupjiLYAIF22gjAafocorvbwKiLpAr3xshW3IOxHEy9Wxw+i5is00wDNMYUNP9nRhUFJ4wISlIBIpbGuskje5ht+fA7JZYznXHdefY+XGeaFl9vfh/eqDK5XwCpJ2v6kMy3zv1phHLhgBbdYuo2sQI5pqlRbl435f/bb+61mdKQHhvcSzU24Ilx4DnV12NKtC6KgZddi20+3aRYUpQyOHTPoRw/wzQRiJz0MoxrXimhSHdLMehNT43aZqacUjWh5YHbMZHqubyiVQCkru5FbekHdfKqRLO1ZmVbPQYsQJ2vY92SXZw39DRfoWGsAxdOQQOiVGmjeHvoZgEJtE8vknXArpzYbnbel+YK4PtjrRNrQOZgyD87qcL1rfbnWZ5iq/FJ7WqBKeyirAuTyDlh58lw0vPSrkO7dF2h2Ajc869rXq5Nr2dt36jjr66ZTfyBFEovpPCp7yc4IDQH1PBs2qyPm8askREwGJqto6xCvBC/YtLZjWFkS5+eJ1DI9OHIS5w52ns/qmiANc6RhmUCz4u3J3KG3+THTdBX71OpqTHd1hATx1BjnR7qsGk4hlRcPuvZH27+na9CFYixMxGCdT8Bfo9ZVF3si5gF6n6LO++66hIeS/0mxh2iJ4O0jBlNj/bue/iXqBy8xBHvthTnMiEt+kYWT6DqDmycNmHMzErC88ng/Pr9gJbEuI9G18bEGgtGM1ziwJhZu+KcvBha4rxMbyZ7MgoQeXKfV50NSBqEFCyZW/w2ESPZ5cjm+RQz6GAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"facturation-api\",\"environment\":null,\"exposure\":\"interne\",\"ports\":[\"8443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"environment\"],\"questions\":[\"Pour quel environnement (dev, recette ou prod) souhaitez-vous ouvrir le service facturation-api ?\"],\"citations\":[],\"summary\":\"Ouverture interne du service facturation-api sur le port 8443/tcp pour l'équipe finance (10.40.12.0/24), environnement à préciser.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 125,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 125,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 359,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 125,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 125,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 359,
+   "output_tokens_details": {
+    "thinking_tokens": 145
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

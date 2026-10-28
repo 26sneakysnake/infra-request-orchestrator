@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUrxSd3qjm6ZKsoyZmA2",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"paiement-front\",\"environment\":\"prod\",\"exposure\":\"externe\",\"ports\":[\"443/tcp\"],\"source_networks\":[\"0.0.0.0/0\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-02\",\"passage\":\"La zone `internet` (0.0.0.0/0) n'est acceptée que pour une exposition `externe`.\"},{\"rule\":\"PORT-02\",\"passage\":\"- Exposition externe : 443 uniquement (HTTPS).\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"}],\"summary\":\"Exposition externe en production du service paiement-front en HTTPS (443/tcp) depuis Internet pour le lancement d'un nouveau parcours client.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1494,
+   "cache_read_input_tokens": 2356,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1494,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 304,
+     "cache_read_input_tokens": 2356,
+     "cache_creation_input_tokens": 1494,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1494,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 304,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

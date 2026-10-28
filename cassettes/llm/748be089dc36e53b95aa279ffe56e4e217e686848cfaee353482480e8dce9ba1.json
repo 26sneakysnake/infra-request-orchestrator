@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs6E5hyx1JXyCR27pb4",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"stats-db\",\"environment\":null,\"exposure\":\"interne\",\"ports\":[\"5432/tcp\"],\"source_networks\":[\"10.30.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"environment\"],\"questions\":[\"Dans quel environnement (dev, recette ou prod) le service stats-db doit-il être exposé ?\"],\"citations\":[{\"rule\":\"ENV-01\",\"passage\":\"Une demande sans environnement, ou avec un autre environnement, est incomplète : elle ne peut pas être traitée.\"},{\"rule\":\"PORT-02\",\"passage\":\"Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"ZONE-01\",\"passage\":\"| data | 10.30.0.0/16 | Plateformes data et reporting |\"}],\"summary\":\"Ouverture du port PostgreSQL 5432 du service stats-db en interne pour le réseau data 10.30.0.0/16, environnement non précisé.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1217,
+   "cache_read_input_tokens": 2340,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1217,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 360,
+     "cache_read_input_tokens": 2340,
+     "cache_creation_input_tokens": 1217,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1217,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 360,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

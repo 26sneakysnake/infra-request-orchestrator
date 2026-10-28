@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs7mRPmPbqRt9k9Nuid",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":true,\"service_name\":null,\"environment\":null,\"exposure\":null,\"ports\":[],\"source_networks\":[],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[],\"summary\":\"Commande de matériel (deux écrans 27 pouces) pour l'équipe data, qui ne concerne pas l'exposition d'un service réseau.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 110,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 110,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 145,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 110,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 110,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 145,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

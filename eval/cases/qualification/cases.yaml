@@ -1,0 +1,481 @@
+# Qualification agent evaluation: 30 synthetic requests for the fictional company NetCo.
+# Frozen: cases.sha256 holds the SHA-256 of this file and `make eval` refuses to run if it changed.
+# Do not edit by hand (CLAUDE.md); a new version of the set gets a new file and a new hash.
+#
+# expected:
+#   fields scored one by one (null or [] = must stay empty); ports and networks compared as sets.
+#   missing: required fields the process must ask for (after merging with the form).
+#   verdict: final decision of the process on the merged fields:
+#            valid | missing | out_of_scope | a rule id expected among the rejection reasons.
+
+- id: Q01
+  category: claire
+  text: >-
+    Bonjour, pouvez-vous exposer catalogue-api en dev, en interne, sur le port 8080/tcp, pour le
+    réseau des développeurs 10.20.0.0/16 ? Pas de VM. Merci.
+  expected:
+    service_name: catalogue-api
+    environment: dev
+    exposure: interne
+    ports: [8080/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q02
+  category: claire
+  text: >-
+    Le front paiement-front doit être accessible depuis Internet en HTTPS (443/tcp), en production,
+    pour le lancement du nouveau parcours client.
+  expected:
+    service_name: paiement-front
+    environment: prod
+    exposure: externe
+    ports: [443/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q03
+  category: claire
+  text: >-
+    Nous avons besoin d'ouvrir la base PostgreSQL de reporting-db en recette, uniquement pour le
+    réseau data 10.30.0.0/16.
+  expected:
+    service_name: reporting-db
+    environment: recette
+    exposure: interne
+    ports: [5432/tcp]
+    source_networks: [10.30.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q04
+  category: claire
+  text: >-
+    Merci d'exposer stocks-api en recette sur le 8443/tcp, en interne, pour 10.40.12.0/24.
+  expected:
+    service_name: stocks-api
+    environment: recette
+    exposure: interne
+    ports: [8443/tcp]
+    source_networks: [10.40.12.0/24]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q05
+  category: claire
+  text: >-
+    Exposition interne de monitoring-ui en dev, port 9090, accessible depuis les postes
+    bureautiques 10.50.0.0/16.
+  expected:
+    service_name: monitoring-ui
+    environment: dev
+    exposure: interne
+    ports: [9090/tcp]
+    source_networks: [10.50.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q06
+  category: claire
+  text: >-
+    Le cache Redis cache-sessions de production (6379/tcp) doit être joignable en interne depuis
+    10.20.0.0/16.
+  expected:
+    service_name: cache-sessions
+    environment: prod
+    exposure: interne
+    ports: [6379/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q07
+  category: claire
+  text: >-
+    Le portail portail-rh doit être ouvert à l'extérieur en HTTPS, en prod, pour les salariés en
+    déplacement.
+  expected:
+    service_name: portail-rh
+    environment: prod
+    exposure: externe
+    ports: [443/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q08
+  category: claire
+  text: >-
+    Pour api-factures en recette : une VM de taille L, et le port 443/tcp ouvert en interne pour
+    10.40.12.0/24.
+  expected:
+    service_name: api-factures
+    environment: recette
+    exposure: interne
+    ports: [443/tcp]
+    source_networks: [10.40.12.0/24]
+    vm_required: true
+    vm_size: L
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q09
+  category: claire
+  text: >-
+    Ouvrir MySQL (3306) de ventes-db en dev, en interne, au réseau 10.30.0.0/16.
+  expected:
+    service_name: ventes-db
+    environment: dev
+    exposure: interne
+    ports: [3306/tcp]
+    source_networks: [10.30.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q10
+  category: claire
+  text: >-
+    Incident en cours sur commandes-api en production : il faut ouvrir le 8443/tcp en interne
+    pour le réseau 10.30.0.0/16 afin de basculer le trafic.
+  expected:
+    service_name: commandes-api
+    environment: prod
+    exposure: interne
+    ports: [8443/tcp]
+    source_networks: [10.30.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: true
+    missing: []
+    verdict: valid
+
+- id: Q11
+  category: ambigue
+  text: >-
+    Est-ce que inventaire-api pourrait être accessible depuis le réseau des développeurs, en dev,
+    sur le 8080 ?
+  expected:
+    service_name: inventaire-api
+    environment: dev
+    exposure: interne
+    ports: [8080/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q12
+  category: ambigue
+  text: >-
+    L'équipe finance a besoin d'atteindre budget-web en recette, en HTTPS.
+  expected:
+    service_name: budget-web
+    environment: recette
+    exposure: interne
+    ports: [443/tcp]
+    source_networks: [10.40.12.0/24]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q13
+  category: ambigue
+  text: >-
+    Merci d'ouvrir crm-api en préprod sur le 8443 pour les développeurs, en interne.
+  expected:
+    service_name: crm-api
+    environment: null
+    exposure: interne
+    ports: [8443/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [environment]
+    verdict: missing
+
+- id: Q14
+  category: ambigue
+  text: >-
+    Le site vitrine-web doit être visible de tout Internet, en production, en HTTPS évidemment.
+  expected:
+    service_name: vitrine-web
+    environment: prod
+    exposure: externe
+    ports: [443/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q15
+  category: ambigue
+  text: >-
+    Les postes bureautiques doivent pouvoir interroger annuaire-db en recette, sur le port habituel
+    de PostgreSQL.
+  expected:
+    service_name: annuaire-db
+    environment: recette
+    exposure: interne
+    ports: [5432/tcp]
+    source_networks: [10.50.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q16
+  category: ambigue
+  text: >-
+    Pour tests-api en dev, ouvrir le 8080/tcp en interne au seul sous-réseau 10.20.5.0/24 de
+    l'équipe qualité.
+  expected:
+    service_name: tests-api
+    environment: dev
+    exposure: interne
+    ports: [8080/tcp]
+    source_networks: [10.20.5.0/24]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: valid
+
+- id: Q17
+  category: port_interdit
+  text: >-
+    Merci d'ouvrir le bureau à distance (RDP, 3389/tcp) du serveur legacy-erp depuis l'extérieur,
+    en production, pour notre prestataire.
+  expected:
+    service_name: legacy-erp
+    environment: prod
+    exposure: externe
+    ports: [3389/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: PORT-01
+
+- id: Q18
+  category: port_interdit
+  text: >-
+    Il nous faut un accès SSH (port 22) à batch-compta en recette, depuis 10.20.0.0/16, en interne.
+  expected:
+    service_name: batch-compta
+    environment: recette
+    exposure: interne
+    ports: [22/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: PORT-01
+
+- id: Q19
+  category: port_interdit
+  text: >-
+    Partage de fichiers fichiers-commun en dev : ouvrir le SMB (445/tcp) en interne pour le réseau
+    10.30.0.0/16.
+  expected:
+    service_name: fichiers-commun
+    environment: dev
+    exposure: interne
+    ports: [445/tcp]
+    source_networks: [10.30.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: PORT-01
+
+- id: Q20
+  category: port_interdit
+  text: >-
+    echange-partenaires doit accepter le FTP (21) depuis Internet en production pour nos
+    fournisseurs.
+  expected:
+    service_name: echange-partenaires
+    environment: prod
+    exposure: externe
+    ports: [21/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: []
+    verdict: PORT-01
+
+- id: Q21
+  category: environnement_manquant
+  text: >-
+    Il faudrait ouvrir le service facturation-api sur le 8443 pour l'équipe finance
+    (10.40.12.0/24), en interne. C'est assez pressé.
+  expected:
+    service_name: facturation-api
+    environment: null
+    exposure: interne
+    ports: [8443/tcp]
+    source_networks: [10.40.12.0/24]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [environment]
+    verdict: missing
+
+- id: Q22
+  category: environnement_manquant
+  text: >-
+    Notre API mobile-api doit être joignable depuis Internet en HTTPS pour l'application mobile.
+  expected:
+    service_name: mobile-api
+    environment: null
+    exposure: externe
+    ports: [443/tcp]
+    source_networks: [0.0.0.0/0]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [environment]
+    verdict: missing
+
+- id: Q23
+  category: environnement_manquant
+  text: >-
+    Ouvrir le 5432 de stats-db au réseau data 10.30.0.0/16, en interne.
+  expected:
+    service_name: stats-db
+    environment: null
+    exposure: interne
+    ports: [5432/tcp]
+    source_networks: [10.30.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [environment]
+    verdict: missing
+
+- id: Q24
+  category: environnement_manquant
+  text: >-
+    Exposer reporting-web en interne sur le 8080 pour les développeurs, au plus vite s'il vous
+    plaît.
+  expected:
+    service_name: reporting-web
+    environment: null
+    exposure: interne
+    ports: [8080/tcp]
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [environment]
+    verdict: missing
+
+- id: Q25
+  category: autre_manque
+  text: >-
+    Pouvez-vous exposer catalogue-api en recette pour les développeurs, en interne ?
+  expected:
+    service_name: catalogue-api
+    environment: recette
+    exposure: interne
+    ports: []
+    source_networks: [10.20.0.0/16]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [ports]
+    verdict: missing
+
+- id: Q26
+  category: autre_manque
+  text: >-
+    Merci d'ouvrir paie-api en production sur le 8443, en interne.
+  expected:
+    service_name: paie-api
+    environment: prod
+    exposure: interne
+    ports: [8443/tcp]
+    source_networks: []
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [source_networks]
+    verdict: missing
+
+- id: Q27
+  category: autre_manque
+  text: >-
+    Il faut ouvrir le 443 en recette pour l'équipe finance, en interne, pour notre nouvel outil.
+  expected:
+    service_name: null
+    environment: recette
+    exposure: interne
+    ports: [443/tcp]
+    source_networks: [10.40.12.0/24]
+    vm_required: false
+    vm_size: null
+    urgent: false
+    missing: [service_name]
+    verdict: missing
+
+- id: Q28
+  category: hors_perimetre
+  text: >-
+    Bonjour, pouvez-vous réinitialiser mon mot de passe Jira ? Je n'arrive plus à me connecter.
+  expected:
+    out_of_scope: true
+    verdict: out_of_scope
+
+- id: Q29
+  category: hors_perimetre
+  text: >-
+    Commande de deux écrans 27 pouces pour l'équipe data, livraison au 3e étage.
+  expected:
+    out_of_scope: true
+    verdict: out_of_scope
+
+- id: Q30
+  category: hors_perimetre
+  text: >-
+    Merci de me donner accès en lecture à l'application RH, mon manager est d'accord.
+  expected:
+    out_of_scope: true
+    verdict: out_of_scope

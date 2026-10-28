@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from camunda_orchestration_sdk import JobError
 
+from agents.qualification import Qualification
 from workers import handlers
 from workers.handlers import Deps
 
@@ -178,3 +179,46 @@ def test_retried_jobs_do_not_duplicate_the_change_or_the_issue(deps: Deps) -> No
     assert handlers.create_jira_issue(v, deps) == handlers.create_jira_issue(v, deps)
     assert [c[0] for c in deps.jira.calls].count("create") == 1
     assert [c[0] for c in deps.servicenow.calls].count("update_change") == 1
+
+
+def test_qualify_request_appends_the_reply_and_merges_the_form(deps: Deps) -> None:
+    seen = {}
+
+    def fake_qualify(text: str, form: dict) -> Qualification:
+        seen["text"], seen["form"] = text, form
+        answer = {
+            "out_of_scope": False,
+            "service_name": "facturation-api",
+            "environment": "recette",
+            "exposure": "interne",
+            "ports": ["8443/tcp"],
+            "source_networks": ["10.40.12.0/24"],
+            "vm_required": False,
+            "vm_size": None,
+            "urgent": False,
+            "missing": [],
+            "questions": [],
+            "citations": [],
+            "summary": "s",
+        }
+        return Qualification(answer, "claude-sonnet-5-5", 1, {})
+
+    deps.qualify = fake_qualify
+    v = {
+        "requestText": "Ouvrir facturation-api",
+        "reply": "C'est pour la recette.",
+        "serviceName": "",
+    }
+    result = handlers.qualify_request(v, deps)
+    assert seen["text"].endswith("Réponse du demandeur : C'est pour la recette.")
+    assert result["environment"] == "recette" and result["reply"] is None
+    assert result["requestText"] == seen["text"]
+
+
+def test_ask_requester_posts_the_questions_and_waits(deps: Deps) -> None:
+    v = {"ritmSysId": "ritm-sys", "qualification": {"questions": ["Pour quel environnement ?"]}}
+    assert handlers.ask_requester(v, deps) == {"questionsAsked": 1}
+    (_, (_, text, internal)), state = deps.servicenow.calls
+    assert text.startswith(handlers.REQUESTER_MARKER) and "Pour quel environnement ?" in text
+    assert internal is False  # visible to the requester
+    assert state == ("state", ("ritm-sys", "-5"))

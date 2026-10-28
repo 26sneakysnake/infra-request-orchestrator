@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs3zWbBwLM5sTNzQagh",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS3AcKEAgTGAI4AUIIdGhpbmtpbmcSDP5Zk1jd7I/UnWzXMBoMrBtBx1ubD6okVC1oIjCu62212YwXYQ1oDPWOuH30jv8HCeMV18TsT9zSEmzj7Xm3Inrwu+idfbZfeKRoCMcq+QZiz1tEKnuqOTFbCxDMTbSHwKmi48PSr9pEDRGZCg8xJTqiVpjiQXCGDhCVYCIJqrIpb8zkNnQ+X1k9aglXLQ4QF3by8OBad8bj9lNolL9VR/Zqy9JgwUqNF3zilnOql7UdjhxT/jURtosgZYnKHUjg/cYMAGBF8uoGR4UIAyVElvJqsLb/h7G2WtRBvurhQRmRjLKpZmT3tdAM6si93b15EiX1+LZIYeBCfdbl102juVsHFkChSqBiRIz1AyxeW8ftXMIYrjBJchzpZ0qDh5VtoQVPpIud9oOlQLrrlJTEzoL7Va8Rh0pG6joBSDlbjD9owFF1uxSSGrhNf/bvYJc8h20X4HAxApkjev/momZVIoRNP6h+VYWgrRClBDfd1EUJJYUVS4B28Dxlwix6ts4SDbZaMs3KCdyDj53Fos5wTvnsYd8/QSUzhT+DF2oaDGGzhrdoXzMN/EVwPapAIvj8F4JEHg/JI1ESf6MMtCs1GzhuvzhP00dejWYpeaCp8YcSq7xaJIcIo2NBXNWR8REZdonxw8CofXG/eDbTA8dT8tKGqADn9AW/BP9RciqlovqsRmlL4Fl4rihxO7LnHIJvAMC3loAKbdnJ5Jk7/cv1tnbSHgQYHzoamQITkr95nGyr8l2dBhK7sjg81Dznw0TX7euUXurUhtQX/6YYta0wmyIwvXYd5QsIBviVc1RpMAqa6WdAM7uosj0fmbCfOQ+DVNOQRif+xBx+phhOd4qlfb8DrIRF2M0qxIY4/EAv3NI6JthgpvuStrYKmtG4i217pFV+2PJsMOph0UKSnfW6tnnX9cr+TJ5kG52gur2uknevG6yOuXWBPtdQwsB4oUJbMCMQ8VLpd17MXoqNh7usT0bCi73Wqahv28knAcGmmydrZ73nVMPvEsmnNcXNYkhsewNIrkw1DQQMphqKcnaMd4yPUAk+qXRsOnOEcm7jrcJhMjaak+wwtzTCa2Woc+fs6dyw/7u+ooVzCZmlyigjbEi01ZdGBZcD8zgen+Zojba/Bevd2E3wj65f2oEZ8aPSOHvE+cJotOZJqz7Zw0lAgrMHtOkjq9RnyMTw1tOEep2KOyAobofgbK/cxptpbynlnuPRwdioUqXtZ+Mm98Ybzoav4UqFn4G6kX/XBaCIeEigKPT81ROYr90Oq++VmO0U7oY6jh7FB54TGAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"legacy-erp\",\"environment\":\"prod\",\"exposure\":\"externe\",\"ports\":[\"3389/tcp\"],\"source_networks\":[\"0.0.0.0/0\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"PORT-01\",\"passage\":\"| 3389 | RDP | Bureau à distance : accès prestataire par le bastion uniquement |\"},{\"rule\":\"ZONE-02\",\"passage\":\"La zone `internet` (0.0.0.0/0) n'est acceptée que pour une exposition `externe`.\"},{\"rule\":\"EXP-01\",\"passage\":\"`externe` : le service est en plus joignable depuis Internet (zone `internet`). Une exposition externe impose le\"}],\"summary\":\"Demande d'ouverture du RDP (3389/tcp) du service legacy-erp en production, depuis l'extérieur (Internet), pour un prestataire. Le port 3389 figure parmi les ports interdits (PORT-01), et le processus de validation tranchera.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1104,
+   "cache_read_input_tokens": 2366,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1104,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 521,
+     "cache_read_input_tokens": 2366,
+     "cache_creation_input_tokens": 1104,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1104,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 521,
+   "output_tokens_details": {
+    "thinking_tokens": 149
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

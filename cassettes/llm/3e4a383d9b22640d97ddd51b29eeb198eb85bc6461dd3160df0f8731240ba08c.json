@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUrxrZThHdvzZ3piG5Jk",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSxgYKEAgTGAI4AUIIdGhpbmtpbmcSDMBSxfxdILqMagpGqRoMC1S59/yF/C+f7r3sIjB47MRMrTWBWAD2YgFN/LMrMLiCoKnaJn1Y7zolXbvWXqgNx8OlZY1Xvv6BH5JZ5w0q4wUrXoIki/iilyhBcglBPUMCgyxg+BRHXtCrdcMtKe1M7bsNnWB0qp6LtvuE2qdV/3q4BYcKQXV9VlDc+HraQgbBzIZh5cE5c9GzMaVP3kRo9oupKqbHQ05SVzOywjyoQ7ydDfDtVNT08XtIbBKMlHl1Xro6WSrfJvgiGXw3Twa8U9rTlJzY9oOCTr7QyP4hzIATLeJNWJKP7c+HlaJKqxF4OdG8l7GVsmboVf2Jdng9oNmJVrCQ8ygmJxfoL4tbh8tC/UgslYbrspKn1jw7TcX1wcfGy1UvHUE9Tbu8Cd2e62cV8/u2cxLWNSHWBx7HYhIKml8wkRG4+T/Zhp+yxt1T+bKkunsqicqa6HLGOzR0+kPPEa45aXkvsol88RU81g33tcw1qkQ+XJEOnXd/ujr0ylb0ofWvwdaKL23BGzFYiHvdkm7QLhbxlEouorn/CDepckv4SMBq8UjbHKO55/iEb65fmzQSCPWXx5ALZCe3doypunGoudgE+kRG6MmVcIE7guh4q+gA8SOxP37G+4b+VD4cTnszFoQUl5EUmoSTzGm1BT+KygZYdo0PCdQIlgprKo0VprCMyACAD1CiNA79Wkw1kO4gPEFse2UbbzUwrd8xsF3ndS2bgowo0PfaoHjf1Uu3SkhMqRvIszsypqVHCU8S3rdk5nXbX5Pf4tVB7Nj8RMT4Sum4qXw1IwWIaNljQ6hyhC0gH49Tuc30eIss5b/p2YwaV2FwLUvulveqOUVD8AeBL3t5mUnGslMZm+pXWltVG2+FgqDZsZrt+Y/G0TbGXEFnXaRutIi5nFDd2ty7p0OASJIt7+/QIZiylicObUuMLo0qQ3N6sY5TGAaX4hoMcY2qrQt/ocZZBSIE17f22cfLz2ig7ILdYe7SAq2XrdHacIx0zWkH8LXLP7Q3Yl38Iy7xUPYc2U+aWxLLouzFH96BcpgqXUVl707vEyES8TzvhWoqQPCs2yxlDFfbvDvkGAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"reporting-db\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"5432/tcp\"],\"source_networks\":[\"10.30.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"PORT-05\",\"passage\":\"Les ports de bases de données et de caches (3306 MySQL, 5432 PostgreSQL, 6379 Redis) sont sensibles : même en interne et hors production, leur ouverture passe par une approbation (voir [securite.md](securite.md)).\"},{\"rule\":\"PORT-02\",\"passage\":\"Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"}],\"summary\":\"Ouverture de la base PostgreSQL reporting-db en recette (5432/tcp), en interne, uniquement depuis le réseau data 10.30.0.0/16.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 579,
+   "cache_read_input_tokens": 3366,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 579,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 423,
+     "cache_read_input_tokens": 3366,
+     "cache_creation_input_tokens": 579,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 579,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 423,
+   "output_tokens_details": {
+    "thinking_tokens": 53
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

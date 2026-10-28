@@ -21,6 +21,19 @@ jobs:
       - run: make setup
       - run: make lint test
 
+  eval:
+    # Replays the qualification agent's recorded answers (no API key, no cost) and checks that the
+    # committed results are exactly what the cassettes give.
+    runs-on: ubuntu-latest
+    env:
+      NETCO_LLM_MODE: replay
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.2 # setup-uv publishes no floating major tag
+      - run: make setup
+      - run: make eval
+      - run: git diff --exit-code results/
+
   stack:
     # Starts Camunda + vcsim with docker compose and waits until every endpoint answers.
     runs-on: ubuntu-latest

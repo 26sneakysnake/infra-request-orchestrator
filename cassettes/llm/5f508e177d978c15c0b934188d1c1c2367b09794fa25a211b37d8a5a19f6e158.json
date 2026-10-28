@@ -1,0 +1,63 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUsXpi13wE5mU617np6G",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQStQkKEAgTGAI4AUIIdGhpbmtpbmcSDPg4MVclpJgtW/kv+BoMC2jG/pRVNjsCmZBEIjBsRdw1A6nSNFVLtZ+Lc9ABJEMIDWSrymACAOBIV1vC1lK+UgksN3TSbvSDIpICWjQq0ghAy8LKWUiHuu+f2cLppjTbSjhVF1XnKy7Xm4s4mSG5b3F83IdbJq4PzVQ2c4dTETkGzfE4CAe3kwibd8I5UbCWQFW3ySuqevS5mqJB/0134+64+sMSkBpmvqQn/6bkc8hEfx6Op6eFxYhTpGI8W82Tgjhmw9VY5ZEKYVCQ/a7+GmjwZVIbm1qJqRMjhw0G4IFGBj1dvPJIbRhDGFSo5u9ftxvcjZ3kvmTxzidIv672aVFVWXjcB7zO1j6ThIUmIY8Y/6DgvzVLfbubxTis+XyGhSd72ElubMkDRbuNHQbb29XCGkeICmd3BVp9YhBT0KjH7MyCD+yGhSznQOJ0IGhn9maK5sFkBCLX2NfECphdVpw8j1OgRVV5H4PuRlfCNA64JxhCKoQC1HPbsAhekmZcMcHINq12ebaD8SG7dyE5MqxVH+oDUAQspS0OMGcCE6pj2uyUBy3AQPBPUvQiQhZvSA62roxXQeInNk5cibekTnP67SkaZnWkFC6CWpWi70enASHlQ3vud083c6i2FUyhDzfDU/ioVV2z5Xuz/k6RNSzePjhPsxTTgwnx4sk8dVMra5fzWL6YVw3Vk4NDpTbvICQskDl+w3T9xQJiuzoi1Qe4F6fU4Ci1eDkRRQd1ruPzmS8T/Dven6bVDCQp6iLQ5K2A3dLg0gqh5UBg2QZcT2/q4jxP4enWBMpTXpWdVrVrxZjCMR+ibJVV9/sc2JmgZi0qkOYvURFCxXuPq0eIsQp1I46Ads9dyjGJwCT83sw9KrMdCVFv7+vA6uOEQQZPxsvqf7s9PePdQAGk4p2bOsexAXy536e3v5D1TfBoECJL7/97w6tby+t6OFxwmAgV6XIrBQXT3l9nxYX1gvnNp9lbEk8aRQwZbjrBYqWW9hc0l0J449om2IPA47oVlM+9jBhGZrMMAH9fGhDQcCrx/rAyDvOavlsbWWaRnTNErqYabZ00NVHGyPMGumpEmAPrQBFmTtPKwsj/N3is0/N37B6iJxxc9jVinkMchnVCvFrvVGdgebjgdoC8ouwMlgGmMqgfR9bxVlGZ2Qr4FtPX85P1R2aHRrXBjH4jLffZD2obgzGECrFt3ST/syCWpw1VGJkustr9uSpGw6rr9fEE/5niyYUEZsZZkzEtvmB19Nr3H9fSwSyOv3t7WCkou3iu+PU/mUC4Ab9JKJ8fiaqgXtys1htFTQtoTfQwbetv3pcFG+y2YUZoaMyPsx8hxcVpJy76djYWdBLudtPbuqcXzAEzcPwjg18T+zE4Ts40Iusk1d7fIhyDCu961AlOW1ANkuOB5cgeDRAuUaVsLdv5/csoc5hzJpQgQEWxr9AZR0FTG/2Qt3wWRMUrE3zCq5ivlnMSHI3Z476bsQOhv/HLBUXSudaE8oSyv5IYMqSZnfHParkY9ZSCAlCnx3iBwZbYsHJw3Z0AuqvB3IRB+/WrC2Uoal5xIUtwW8JSUPhsJ0VHDRgB"
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01Tz2hA1n5iYPog26EaCeX3t",
+    "name": "search_referentiel",
+    "input": {
+     "query": "port 8443 recette"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 217,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 217,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 265,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 217,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 217,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 265,
+   "output_tokens_details": {
+    "thinking_tokens": 208
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs5B3coPN1L5RV7Jcqf",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"echange-partenaires\",\"environment\":\"prod\",\"exposure\":\"externe\",\"ports\":[\"21/tcp\"],\"source_networks\":[\"0.0.0.0/0\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| internet | 0.0.0.0/0 | Internet, pour l'exposition externe uniquement |\"},{\"rule\":\"PORT-01\",\"passage\":\"| 21 | FTP en clair | Identifiants transmis en clair |\"},{\"rule\":\"EXP-01\",\"passage\":\"Une exposition externe impose le\\n  port 443 (voir [ports.md](ports.md)).\"}],\"summary\":\"Le service echange-partenaires doit accepter le FTP (21/tcp) depuis Internet en production pour les fournisseurs, ce que le référentiel interdit (PORT-01) et que le processus de validation devra donc traiter.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1689,
+   "cache_read_input_tokens": 2342,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1689,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 340,
+     "cache_read_input_tokens": 2342,
+     "cache_creation_input_tokens": 1689,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1689,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 340,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

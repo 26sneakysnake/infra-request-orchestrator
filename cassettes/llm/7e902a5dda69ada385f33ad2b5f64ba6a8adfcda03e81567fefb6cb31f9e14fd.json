@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs5nLf5pj6Psuoy8RsJ",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQShgUKEAgTGAI4AUIIdGhpbmtpbmcSDNLyfsbArmwrbtHl3xoM4iQbvRGkW7h8K4hIIjA3qbxjkUS/YuN1ZgZ4Fk6Uu2uP/qe0Ny/HIzEe39C+sWzT6cODziqthAl3wjJUs7cqowQTMZExRi4aXGeAj/jC9ktmXw4b1jK+BFFqLydVf2PBm+uXd+v+9Wg2l5610YGl847AyfWis5o1wjkkSc68/rbLXpjxa0yjNURayTJ762sx5wJ5sLIjRoQI+89dwIeQgtA7+lE6xGsu3S9E/O6t+Oe0z3rLvlTRiC2HKdPUk3za1i5/BXMxjHR+abOeFsw2niNm7K3OkaR1FvuCzzrk8gvrtH9khmPzZtXhNbZ87KMLuLdOR8DZlGtjGt0hRcRhenyGB19MZfVDtLwNfaOsmEe05kV0qluqqeNc2w6BIa53UgeZ/325v9llQsO/tDu/oYuvzJ7kvcstmf3iEReaP7KX7WOVxaMRnbLevArSe/RoaLTuHU5KVx6xZjQYW2DD5Fc0FZmJGZVrfgAAvZNLaMFMcqP7Q8wudEgGO4caafuYFdPKXXS2MScfQ2VKzyfvlF01d+C59YFIdWziTbL9veB9jqq8xaZaAUVLwBLyqulZ9w7PXhLwQUoVKc83oIX7W13Ni6jOqytud5VsHm+1jKvqGrWaQjHUvwrBeZPS9UQgHy+Kj+up57zRj/rgpSgL09Fg+ErdY0GvDyFMam/Fr5u5u3Is1PXFXx6Z03SjfkVup9Y3OEFGb3Q2YtrY6D7BviUHtXxvOr66DjZvlEnPUbez+hlPNyXsBvXjKJWKwwXESolQgGL8q8ppokY2mQl+k4Bx4eXblSRwF+UjaNiwTtzxWlBTGAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"mobile-api\",\"environment\":null,\"exposure\":\"externe\",\"ports\":[\"443/tcp\"],\"source_networks\":[\"0.0.0.0/0\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"environment\"],\"questions\":[\"Pour quel environnement (dev, recette ou prod) souhaitez-vous cette exposition ?\"],\"citations\":[{\"rule\":\"ZONE-02\",\"passage\":\"La zone `internet` (0.0.0.0/0) n'est acceptée que pour une exposition `externe`.\"},{\"rule\":\"PORT-02\",\"passage\":\"- Exposition externe : 443 uniquement (HTTPS).\"},{\"rule\":\"ZONE-01\",\"passage\":\"| internet | 0.0.0.0/0 | Internet, pour l'exposition externe uniquement |\"}],\"summary\":\"L'équipe demande l'exposition externe du service mobile-api en HTTPS (443/tcp) depuis Internet pour l'application mobile, sans préciser l'environnement.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 997,
+   "cache_read_input_tokens": 2340,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 997,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 373,
+     "cache_read_input_tokens": 2340,
+     "cache_creation_input_tokens": 997,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 997,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 373,
+   "output_tokens_details": {
+    "thinking_tokens": 12
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

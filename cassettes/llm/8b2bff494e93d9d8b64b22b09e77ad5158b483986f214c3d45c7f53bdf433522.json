@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs3JDAxeUuUMbmfkN8P",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSggcKEAgTGAI4AUIIdGhpbmtpbmcSDM1+aO9OzvogWnicmxoMPsTd77TntAgneTSkIjCses0ElGOwIIvni2s9M/orwbwB4ET/w1zuER9D++J/Nk+x8QX8XhIKqnskFCP1/yQqnwYpyTQmxmT0Tq4X26FwtQ0p+mPFu7YtnJw3A2NlYI0yax7NhBwQFKyPPI8Ob3YJL8iaQRjB4k4mC1W122AObTAEZ4n5qQQBHoYNMxw8pZvux0SVkuB7HanvmRa6eej0BvYqs1c/C/sE8hA6bBz5WLxpry8sCisO8ohqFL0Vqjm/24QR2XvRUBlf2SbMUURZd33aBDU0lrUIbyehdjN26vi8/OQthezK94qKe6MbzzSYpzI/5RzUBAjBqfGQHgSunuAr27YujF1Qm6HIfrq9CttbS7YzMKKCAERVr3rzT5srNyQE8FZudDy9irXZs/i+cXNTCICPNxRjsFMTWOCGM6QeHEr8tdMUf2DuV+0dJiyX2mOuMTik4TGfqg1a2xueSj/vcnJSv4lbeNvZxkU0b+XSFjWCIu0P5kplRq+XhnS19n8DAT+o+nbyZlij3/u9oUh7/MfQAXyCWUQmePMT/u2WmrMVyzG9ydAwn1BRaCPRGjnANoYhErkhmFX3cA8Loze46UqdErEwXeUnv5RBUNuDJbFNNQ8CpGk24tNvNVPuyqHajm2opOSMebl55ydaJRK56mNJALm2R31cZnqgSO9A5s6BHzX1yAMGICggdv5KzMyOB3JZfH6lD020NLJmqvcH1awSzauP0ISsJApzV+fBZVeGV0HSDK4hI86GX93jmlxSDu+gZ7EyyLBCgzju4drbWeGUNFeEOz4tlvoTIdPf9botRR5KxOq+Rkc2XF5Yzwt6Wo8RhLgZkD6sLi81d7Dj7yfrBbYD1ruj1cj8O60oaMbJkAFQl+UXax9IscOxO9BZPCjQO2fnr+UGDUTf8Q55pWAZ9H+s3meMOzapVLSi1d6DviadTIQ3YPMOzZdcXpkHquD3/bRh1gic21Skz07lf5SGyTTZJH1hkTQCt8004NaBB35UhTMBcg7uAeuP64pzLonQ1BS2PbnEKDAHv9DVQYnbckLCujydiJRR/4iE3VYyuRs0cOv6eGYaRU7xtskHLE358O2s0xvuYr0CS4fb1nBWWh7mhxFFf9sPoxFXjik+rhyhs9vre3EjXz4sGAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"annuaire-db\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"5432/tcp\"],\"source_networks\":[\"10.50.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| bureautique | 10.50.0.0/16 | Postes bureautiques |\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"},{\"rule\":\"EXP-01\",\"passage\":\"`interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"Les postes bureautiques doivent pouvoir accéder au service annuaire-db en recette sur le port PostgreSQL (5432/tcp), en exposition interne.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1598,
+   "cache_read_input_tokens": 2350,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1598,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 426,
+     "cache_read_input_tokens": 2350,
+     "cache_creation_input_tokens": 1598,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1598,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 426,
+   "output_tokens_details": {
+    "thinking_tokens": 102
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

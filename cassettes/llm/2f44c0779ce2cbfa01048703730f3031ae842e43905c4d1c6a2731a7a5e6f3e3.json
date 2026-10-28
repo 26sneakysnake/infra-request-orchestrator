@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUry6R9yb1ZGT8YXX91L",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSswgKEAgTGAI4AUIIdGhpbmtpbmcSDCwNgIAvzOOzoYD/LRoMX7+ULjx19GJUbheaIjDPRUgE2gSIUPC1Uw3b2DD1iER1iq3SmcjAuAZD3qp8ZBKyWYLQlyEAcRmGXCJ9l50q0Ae8W93W4zwW6nknYzqm7kO5OtE8SKx4nLCRG9GKW+21ZA8ezFuUz4Ucbs5tvM+TjtfYgPrRA1XFWh0V6axV73csPoFrAC8kmFV6IK/ZOrU+MvPNMQKRdEP3aJWVxY0rqbKH0R3EjydqKzdONTMp9tStk/sk13h12td2ds9X+lY1AyGGfymEQuMe4Fd/2dQLLKW+3TdixSEllI/MjjW1NL3cIB0Mf5ivZOmLhYZzGwNsE69Euq4H6oQWnkp373Bz2HsBxx1Zg0oVvm5Y05MgvNAYlWlQ8T6+M80k4zpJLbncj8yvtgiDbaAvFnKxpJUJyDuOP1f8KloZGMWUMF5rH6E09kl2eUHM+6po6P2Gb8+Ms8vkDd7rTaWs241xv4LIb1Rn6NxYUrdv9HaH1Ui24XBjUHh/cyr4mwrrAUiuc2oZ6gb50N2EDe4PE99X9L0lE3Tc2oFwDsRd5x+W/xxK2cdxwi4gEgtBbMdsfHA2hy1czsLKgyuSJcKekSH/tRQAOvzWgtph5qTakZMeg9bKHHW0ST+Eir7zaEi25HJX39gQrzxJNRW4Q7L8Ur+8NtpDUzyHOvt2MB+HFuAqwfejlJOvYPA2GFrbLZ62pBuRH1jGvLm0s81UhGZducI8Rzfig8tK7FBDgHnyv4kdSS61o5MYlGwfExmzpXXZqhalCmgWPSGaxSpojK0ZeddS6BzRGh9jJDAGaC4XGgJRzcB1TKvhmTUssFM9dPmHL9/O1VkeoHRSNAgIOekCsxX8GkT7rxZkAj/eyKMKcbnSEo+jIyDpPguxUni+XksRN7kLK23pSu9zK41OGe1T9IpLu0vs/YRctupLMxuka46KtvFtcaczsXpBrqktjh3Xshr4xORdsu1VIIEntH6R9aT02o4EKHd6zyQl5iP/hiO4q1KeP7CsvOVULx8cfP3MZDZVxI8TLU73kDI4/QyiOGw8SWgKaWVhGZAhwtFQ0tyk8hPbaqR0DcekwmQb3YcCFZp1aHp5GkcWEXymG2w5XNzGE29Nxy0B1UYsG4GL4Yvu8AjAstyhQ7yWS6CZlHc28If/umsSK9Bu4X0TSNF8rxJwiDFxZ9oEoErVb8faORIxMYTwQpBJEjo4mfmA3rOD9akrq/nQf1Ch8JXtc41uQlthz0LIJfld4dLqZYwA8EaMoLx60RhL4iP9OKLpG86fdEUD4bOasw936A0aAfSSPm+a2Ci3A8dmKixWh93lSqe4istYK5u9XMLs+bzJseboPamEp07WhHkNn47haMyAOcz/4IO9KMyYEx9+AiJZZgcUZR9loUv1GAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"stocks-api\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"8443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[],\"summary\":\"Exposition interne de stocks-api en recette sur le port 8443/tcp pour le réseau 10.40.12.0/24.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 120,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 120,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 340,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 120,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 120,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 340,
+   "output_tokens_details": {
+    "thinking_tokens": 180
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

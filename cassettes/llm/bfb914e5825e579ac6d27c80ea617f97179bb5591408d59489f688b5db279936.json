@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs6m5Xj8r4AhHr2wGcH",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSgwUKEAgTGAI4AUIIdGhpbmtpbmcSDO3oz0R0MUerpHe+YhoMKXe0xktdfH0pGP+qIjCK8ZRdYKuG8Ao3YIep+h/lZ3t4AWMMs3A94hCfc6aWXlPIc5jrfN2M9u7pog3MbTsqoAQYIEF2PZhW4cAJYTJ8orWXWtiSbby90BejOPs2ycoIu+qqrwffU16yBw8tAOx9iOWQlI55u3Z7oiNdFn6McB6/kZHqMHG2DAnlBlHVordDnTh9d78lBJikaCnzD/sRAKlEz6ccnBmZ6ywoL48/ZpO/DMlA7k4s5d6Z0zvOltgIHZwmS28MrWU4uV6+QSfp22NhKv2fOOru+D+BBprlrXBOEYQ+qSsguYlE0aZyC4Q41Nd2x3zOHoXd3OudzE+Vlyp8dY+TQ7vP/DKfDvmzpxE2X0GMPbinhqppdqMePx5/BDs08XzfZ8NJe9oeUgxnJ4bodbnhBQi7v9QO2QI/rVaXbVE6fA1rlzqesWK/97fg/KNsFmfzQkU1c9ThBAPMzKPftEjPivUAiXd70oQ+rsl+wtxmcpZUTLWiBBGJQbGluM2y7B0xvUnOzrAjy9SxGoXdg1aSVr7g6Etn/rKeVqh4gTj9hjlv5EYWo9JF73SLQ7ZZnLiIGuT+qZg2qj9QvXYva380+0cBqxZKyoDY6WgLtGc2Dp0N0fMa8TUpS7ByCH6/geBK9tWyOhbIUfdy705EHygY45HqfXrjj2pKtSOU68GQ/e19NU+N21qMxWUOflu9JmVlgQQehKzZ6z4ZiesuKxkTyn1tX5y2k1HmrGetzIkz0Uzupxozi75tf6KGv7ar12tSiaC/7Epk4paxPYhmDQ4IOpH/wOwJJVb7EYD5GAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"catalogue-api\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[],\"source_networks\":[\"10.20.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[\"ports\"],\"questions\":[\"Sur quel(s) port(s) et protocole(s) catalogue-api doit-il être exposé (par exemple 443/tcp) ?\"],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| dev | 10.20.0.0/16 | Postes et outils des équipes de développement |\"},{\"rule\":\"EXP-01\",\"passage\":\"`interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"Exposition interne de catalogue-api en recette pour les développeurs (zone dev), ports à préciser.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 571,
+   "cache_read_input_tokens": 2337,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 571,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 322,
+     "cache_read_input_tokens": 2337,
+     "cache_creation_input_tokens": 571,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 571,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 322,
+   "output_tokens_details": {
+    "thinking_tokens": 13
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

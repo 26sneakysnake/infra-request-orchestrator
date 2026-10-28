@@ -69,3 +69,35 @@ def test_failed_start_releases_the_request() -> None:
     with pytest.raises(ConnectionError):
         poll_once(sn, start, "item-sys")  # type: ignore[arg-type]
     assert sn.states == ["2", "1"]
+
+
+def test_reply_is_what_the_requester_wrote_after_the_question() -> None:
+    from workers.poller import reply_since_question
+
+    newest_first = [
+        {"value": "Et en interne."},
+        {"value": "C'est pour la recette."},
+        {"value": "[NetCo] Il manque des informations : ..."},
+        {"value": "Ancien commentaire"},
+    ]
+    assert reply_since_question(newest_first) == "C'est pour la recette.\nEt en interne."
+    assert reply_since_question([{"value": "[NetCo] question"}]) == ""
+
+
+def test_poll_replies_correlates_then_resumes_the_request() -> None:
+    from workers.poller import poll_replies
+
+    class ReplyServiceNow(FakeServiceNow):
+        def query(self, table: str, query: str, fields: list[str], limit: int) -> list:
+            self.queries.append(query)
+            if table == "sys_journal_field":
+                return [{"value": "C'est pour la recette."}, {"value": "[NetCo] question"}]
+            return [{"sys_id": "ritm-sys", "number": "RITM0010042"}]
+
+    sn = ReplyServiceNow([])
+    correlated = []
+    answered = poll_replies(sn, lambda number, reply: correlated.append((number, reply)), "item")
+    assert answered == ["RITM0010042"]
+    assert correlated == [("RITM0010042", "C'est pour la recette.")]
+    assert sn.states == ["2"]
+    assert sn.queries[0] == "cat_item=item^state=-5"

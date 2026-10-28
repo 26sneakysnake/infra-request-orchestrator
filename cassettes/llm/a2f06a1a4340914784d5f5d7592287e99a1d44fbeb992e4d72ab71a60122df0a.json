@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUsXAX6uELBikJGxJfGn",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS9QUKEAgTGAI4AUIIdGhpbmtpbmcSDKARMNLVtpIUVNgVNhoMMA7RmOE7q4H3AXQnIjDnO3yGU2KEA9sRPJzPeUHHyR3oFjWZKxO9kEGHGy6SI7NUJvWZ1IdJvMOILbFSDg4qkgWO1cwN/YSqcb3bRx14zzsjCDVjtPr67VYPktUqyF0xZI+p8AMtpQgt/XhQ8uS8jmCx/K/lBVW3Svn6b2zo91gf9wCYbvUYbhgir/ssiSSTT6RbPxRIzfmc23YqJ2suqDmWP4BfQecQ7aDrv4oB6qiFxssAtcWXhZpU4biEymX/OYxMNoWJqdwLgSYZNsNwE8iQ4Ykiq/ghY0w05Gq5aF9O9GPL2+q01X18DofmZxj0Od4KJcWRvuzFTXtbiL7T5jWyGTr4s+9yxMUieNYq/Sqqt7HjSaVBTj32jKzguuD1CeMUbtFPf78vbH7CFrzFPkHPiSVP7KE6MBvIS2P0BZrv9w5iVdqyO8XWpXpGCNl5RB5QW4qS+ty62K768bDrjGO/FWYpkgUI58lS5cereYEunLpe6oh4gSqDD7aRwc6lzo4b8XxJc+mtHacNzm+mMtje3bTf/bCJKPiwHFriADrbyFxlq6MkFt9oyoIPSjcq4Va2AxKNsPPkX+VToCMdeIYyYBs/bnrkhmcVLnM8zsu1a7grl2JugWpS9YYnd+tSr/PwbqbWPol84Mgr6jy2k7p3sGxKP3X3eWckZfkAcOGERwn9SgLRx1DhfYE12f4DgN3qOTY9p+le9m1dk7VpnntZ8HYIhopBdHMS/HCzDzpFN+vDXihTPWJBs9W0gahu/9M4ROCapngeqRsc0Wj2v22yOvN/vCnkaxcilegC/U5jseT0hUYDcbo4mMk5Vfw6OsCGM+VdHyKnllX424v/b+ffJNLPyfAjYIZRZEPQU20XTqgqFRdphXaZ5WtZYKMC5oWJppcwSUEbkeL+9TWVpGpQFVKKA8IQM6+agz5wWX4ii+R/zgzXImlh6TvQDUV0jR85GAE="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"reporting-db\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"5432/tcp\"],\"source_networks\":[\"10.30.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| data | 10.30.0.0/16 | Plateformes data et reporting |\"}],\"summary\":\"Ouverture de PostgreSQL (5432/tcp) pour le service reporting-db en recette, en interne, depuis la zone data (10.30.0.0/16) uniquement.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1208,
+   "cache_read_input_tokens": 2410,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1208,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 288,
+     "cache_read_input_tokens": 2410,
+     "cache_creation_input_tokens": 1208,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1208,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 288,
+   "output_tokens_details": {
+    "thinking_tokens": 65
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

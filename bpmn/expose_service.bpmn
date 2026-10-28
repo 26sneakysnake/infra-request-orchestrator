@@ -1,15 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_expose_service" targetNamespace="http://bpmn.io/schema/bpmn" exporter="infra-request-orchestrator" exporterVersion="0.1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
   <bpmn:process id="expose_service" name="Exposition d'un service (NetCo)" isExecutable="true">
-    <bpmn:documentation>Demande d'exposition d'un service sur le réseau NetCo (entreprise fictive), de la demande ServiceNow aux tickets clos. Phase P2 : sans IA.</bpmn:documentation>
+    <bpmn:documentation>Demande d'exposition d'un service sur le réseau NetCo (entreprise fictive), de la demande ServiceNow aux tickets clos. Phase P3 : qualification par un agent IA et relance du demandeur quand une information manque.</bpmn:documentation>
     <bpmn:startEvent id="StartEvent_RequestReceived" name="Demande reçue (ServiceNow)">
-      <bpmn:outgoing>Flow_ToValidate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToJoinQualify</bpmn:outgoing>
     </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_JoinQualify">
+      <bpmn:incoming>Flow_ToJoinQualify</bpmn:incoming>
+      <bpmn:incoming>Flow_ReplyToQualify</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToQualify</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_QualifyRequest" name="Qualifier la demande (agent IA)">
+      <bpmn:documentation>L'agent transforme le texte libre en formulaire structuré et cite le référentiel. Il propose ; la validation et la table DMN qui suivent décident.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="qualify-request" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToQualify</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToQualificationGateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_Qualification" name="Qualification ?" default="Flow_Complete">
+      <bpmn:incoming>Flow_ToQualificationGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_OutOfScope</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Missing</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Complete</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_AskRequester" name="Demander les informations manquantes">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ask-requester" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Missing</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToWaitReply</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:eventBasedGateway id="Gateway_WaitReply">
+      <bpmn:incoming>Flow_ToWaitReply</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToReply</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToNoReply</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="Event_RequesterReply" name="Réponse du demandeur">
+      <bpmn:incoming>Flow_ToReply</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReplyToQualify</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_RequesterReply" messageRef="Message_RequesterReply" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_NoReply" name="72 h sans réponse">
+      <bpmn:incoming>Flow_ToNoReply</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToRejectNoReply</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_NoReply">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Task_RejectNoReply" name="Clore la demande sans réponse">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="reject-request" retries="3" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=[&#34;Sans réponse du demandeur sous 72 h : la demande est close, elle peut être déposée à nouveau.&#34;]" target="rejectionReasons" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToRejectNoReply</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToEndNoReply</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_NoReply" name="Demande close sans réponse">
+      <bpmn:incoming>Flow_ToEndNoReply</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:serviceTask id="Task_ValidateRequest" name="Valider la demande (référentiel)">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="validate-request" retries="3" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_ToValidate</bpmn:incoming>
+      <bpmn:incoming>Flow_Complete</bpmn:incoming>
       <bpmn:outgoing>Flow_ToValidGateway</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_RequestValid" name="Demande conforme ?" default="Flow_Invalid">
@@ -22,6 +78,7 @@
         <zeebe:taskDefinition type="reject-request" retries="3" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Invalid</bpmn:incoming>
+      <bpmn:incoming>Flow_OutOfScope</bpmn:incoming>
       <bpmn:outgoing>Flow_ToEndInvalid</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="End_Invalid" name="Demande refusée">
@@ -103,6 +160,12 @@
       <bpmn:outgoing>Flow_ToClose</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_VerificationFailed" name="Vérification en échec" attachedToRef="Task_VerifyExposure">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=verification" target="verification" />
+          <zeebe:output source="=verificationAttempts" target="verificationAttempts" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_ToManualFix</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_VerificationFailed" errorRef="Error_VerificationFailed" />
     </bpmn:boundaryEvent>
@@ -126,7 +189,22 @@
     <bpmn:endEvent id="End_Exposed" name="Service exposé">
       <bpmn:incoming>Flow_ToEndExposed</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_ToValidate" sourceRef="StartEvent_RequestReceived" targetRef="Task_ValidateRequest" />
+    <bpmn:sequenceFlow id="Flow_ToJoinQualify" sourceRef="StartEvent_RequestReceived" targetRef="Gateway_JoinQualify" />
+    <bpmn:sequenceFlow id="Flow_ToQualify" sourceRef="Gateway_JoinQualify" targetRef="Task_QualifyRequest" />
+    <bpmn:sequenceFlow id="Flow_ToQualificationGateway" sourceRef="Task_QualifyRequest" targetRef="Gateway_Qualification" />
+    <bpmn:sequenceFlow id="Flow_OutOfScope" name="hors périmètre" sourceRef="Gateway_Qualification" targetRef="Task_RejectInvalid">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=qualification.outOfScope = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Missing" name="informations manquantes" sourceRef="Gateway_Qualification" targetRef="Task_AskRequester">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=count(qualification.missing) &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Complete" name="complète" sourceRef="Gateway_Qualification" targetRef="Task_ValidateRequest" />
+    <bpmn:sequenceFlow id="Flow_ToWaitReply" sourceRef="Task_AskRequester" targetRef="Gateway_WaitReply" />
+    <bpmn:sequenceFlow id="Flow_ToReply" sourceRef="Gateway_WaitReply" targetRef="Event_RequesterReply" />
+    <bpmn:sequenceFlow id="Flow_ToNoReply" sourceRef="Gateway_WaitReply" targetRef="Event_NoReply" />
+    <bpmn:sequenceFlow id="Flow_ReplyToQualify" sourceRef="Event_RequesterReply" targetRef="Gateway_JoinQualify" />
+    <bpmn:sequenceFlow id="Flow_ToRejectNoReply" sourceRef="Event_NoReply" targetRef="Task_RejectNoReply" />
+    <bpmn:sequenceFlow id="Flow_ToEndNoReply" sourceRef="Task_RejectNoReply" targetRef="End_NoReply" />
     <bpmn:sequenceFlow id="Flow_ToValidGateway" sourceRef="Task_ValidateRequest" targetRef="Gateway_RequestValid" />
     <bpmn:sequenceFlow id="Flow_Valid" name="oui" sourceRef="Gateway_RequestValid" targetRef="Task_ClassifyChange">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=valid = true</bpmn:conditionExpression>
@@ -154,6 +232,11 @@
     <bpmn:sequenceFlow id="Flow_ToManualFix" sourceRef="Event_VerificationFailed" targetRef="Task_ManualFix" />
     <bpmn:sequenceFlow id="Flow_FixedToVerify" name="corrigé" sourceRef="Task_ManualFix" targetRef="Gateway_RetryVerify" />
   </bpmn:process>
+  <bpmn:message id="Message_RequesterReply" name="requester-reply">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=ritmNumber" />
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:error id="Error_VerificationFailed" name="Vérification en échec" errorCode="VERIFICATION_FAILED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_expose_service">
     <bpmndi:BPMNPlane id="BPMNPlane_expose_service" bpmnElement="expose_service">
@@ -161,142 +244,209 @@
         <dc:Bounds x="152" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="127" y="225" width="86" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_JoinQualify_di" bpmnElement="Gateway_JoinQualify" isMarkerVisible="true">
+        <dc:Bounds x="235" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_QualifyRequest_di" bpmnElement="Task_QualifyRequest">
+        <dc:Bounds x="320" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Qualification_di" bpmnElement="Gateway_Qualification" isMarkerVisible="true">
+        <dc:Bounds x="475" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="410" y="128" width="70" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AskRequester_di" bpmnElement="Task_AskRequester">
+        <dc:Bounds x="450" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_WaitReply_di" bpmnElement="Gateway_WaitReply">
+        <dc:Bounds x="475" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_RequesterReply_di" bpmnElement="Event_RequesterReply">
+        <dc:Bounds x="382" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="358" y="475" width="84" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_NoReply_di" bpmnElement="Event_NoReply">
+        <dc:Bounds x="582" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="558" y="475" width="84" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RejectNoReply_di" bpmnElement="Task_RejectNoReply">
+        <dc:Bounds x="660" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_NoReply_di" bpmnElement="End_NoReply">
+        <dc:Bounds x="812" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="788" y="475" width="84" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_ToJoinQualify_di" bpmnElement="Flow_ToJoinQualify">
+        <di:waypoint x="188" y="200" /><di:waypoint x="235" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToQualify_di" bpmnElement="Flow_ToQualify">
+        <di:waypoint x="285" y="200" /><di:waypoint x="320" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToQualificationGateway_di" bpmnElement="Flow_ToQualificationGateway">
+        <di:waypoint x="420" y="200" /><di:waypoint x="475" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OutOfScope_di" bpmnElement="Flow_OutOfScope">
+        <di:waypoint x="500" y="175" /><di:waypoint x="500" y="60" /><di:waypoint x="820" y="60" />
+        <bpmndi:BPMNLabel><dc:Bounds x="508" y="42" width="75" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Missing_di" bpmnElement="Flow_Missing">
+        <di:waypoint x="500" y="225" /><di:waypoint x="500" y="290" />
+        <bpmndi:BPMNLabel><dc:Bounds x="508" y="243" width="70" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Complete_di" bpmnElement="Flow_Complete">
+        <di:waypoint x="525" y="200" /><di:waypoint x="560" y="200" />
+        <bpmndi:BPMNLabel><dc:Bounds x="519" y="205" width="47" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToWaitReply_di" bpmnElement="Flow_ToWaitReply">
+        <di:waypoint x="500" y="370" /><di:waypoint x="500" y="425" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToReply_di" bpmnElement="Flow_ToReply">
+        <di:waypoint x="475" y="450" /><di:waypoint x="418" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToNoReply_di" bpmnElement="Flow_ToNoReply">
+        <di:waypoint x="525" y="450" /><di:waypoint x="582" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ReplyToQualify_di" bpmnElement="Flow_ReplyToQualify">
+        <di:waypoint x="382" y="450" /><di:waypoint x="260" y="450" /><di:waypoint x="260" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToRejectNoReply_di" bpmnElement="Flow_ToRejectNoReply">
+        <di:waypoint x="618" y="450" /><di:waypoint x="660" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToEndNoReply_di" bpmnElement="Flow_ToEndNoReply">
+        <di:waypoint x="760" y="450" /><di:waypoint x="812" y="450" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_ValidateRequest_di" bpmnElement="Task_ValidateRequest">
-        <dc:Bounds x="240" y="160" width="100" height="80" />
+        <dc:Bounds x="560" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_RequestValid_di" bpmnElement="Gateway_RequestValid" isMarkerVisible="true">
-        <dc:Bounds x="395" y="175" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="380" y="232" width="80" height="27" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="715" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="700" y="232" width="80" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_RejectInvalid_di" bpmnElement="Task_RejectInvalid">
-        <dc:Bounds x="500" y="40" width="100" height="80" />
+        <dc:Bounds x="820" y="40" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_Invalid_di" bpmnElement="End_Invalid">
-        <dc:Bounds x="662" y="62" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="638" y="105" width="85" height="14" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="982" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="958" y="105" width="85" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_ClassifyChange_di" bpmnElement="Task_ClassifyChange">
-        <dc:Bounds x="500" y="160" width="100" height="80" />
+        <dc:Bounds x="820" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_NeedsApproval_di" bpmnElement="Gateway_NeedsApproval" isMarkerVisible="true">
-        <dc:Bounds x="655" y="175" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="636" y="138" width="88" height="27" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="975" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="956" y="138" width="88" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_ApproveChange_di" bpmnElement="Task_ApproveChange">
-        <dc:Bounds x="760" y="290" width="100" height="80" />
+        <dc:Bounds x="1080" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_Approved_di" bpmnElement="Gateway_Approved" isMarkerVisible="true">
-        <dc:Bounds x="915" y="305" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="912" y="281" width="56" height="14" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1235" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1232" y="281" width="56" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_RejectRefused_di" bpmnElement="Task_RejectRefused">
-        <dc:Bounds x="990" y="410" width="100" height="80" />
+        <dc:Bounds x="1310" y="410" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_Refused_di" bpmnElement="End_Refused">
-        <dc:Bounds x="1152" y="432" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1124" y="475" width="92" height="14" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="1472" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1444" y="475" width="92" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_JoinApproval_di" bpmnElement="Gateway_JoinApproval" isMarkerVisible="true">
-        <dc:Bounds x="1020" y="175" width="50" height="50" />
+        <dc:Bounds x="1340" y="175" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_CreateChange_di" bpmnElement="Task_CreateChange">
-        <dc:Bounds x="1120" y="160" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_CreateJira_di" bpmnElement="Task_CreateJira">
-        <dc:Bounds x="1280" y="160" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_Provision_di" bpmnElement="Task_Provision">
         <dc:Bounds x="1440" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CreateJira_di" bpmnElement="Task_CreateJira">
+        <dc:Bounds x="1600" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Provision_di" bpmnElement="Task_Provision">
+        <dc:Bounds x="1760" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_RetryVerify_di" bpmnElement="Gateway_RetryVerify" isMarkerVisible="true">
-        <dc:Bounds x="1595" y="175" width="50" height="50" />
+        <dc:Bounds x="1915" y="175" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_VerifyExposure_di" bpmnElement="Task_VerifyExposure">
-        <dc:Bounds x="1690" y="160" width="100" height="80" />
+        <dc:Bounds x="2010" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_VerificationFailed_di" bpmnElement="Event_VerificationFailed">
-        <dc:Bounds x="1722" y="222" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1760" y="265" width="72" height="27" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2042" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2080" y="265" width="72" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_ManualFix_di" bpmnElement="Task_ManualFix">
-        <dc:Bounds x="1570" y="310" width="100" height="80" />
+        <dc:Bounds x="1890" y="310" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_CloseTickets_di" bpmnElement="Task_CloseTickets">
-        <dc:Bounds x="1850" y="160" width="100" height="80" />
+        <dc:Bounds x="2170" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_Exposed_di" bpmnElement="End_Exposed">
-        <dc:Bounds x="2012" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1993" y="225" width="74" height="14" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2332" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2313" y="225" width="74" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_ToValidate_di" bpmnElement="Flow_ToValidate">
-        <di:waypoint x="188" y="200" /><di:waypoint x="240" y="200" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToValidGateway_di" bpmnElement="Flow_ToValidGateway">
-        <di:waypoint x="340" y="200" /><di:waypoint x="395" y="200" />
+        <di:waypoint x="660" y="200" /><di:waypoint x="715" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Valid_di" bpmnElement="Flow_Valid">
-        <di:waypoint x="445" y="200" /><di:waypoint x="500" y="200" />
-        <bpmndi:BPMNLabel><dc:Bounds x="463" y="182" width="18" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="765" y="200" /><di:waypoint x="820" y="200" />
+        <bpmndi:BPMNLabel><dc:Bounds x="783" y="182" width="18" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Invalid_di" bpmnElement="Flow_Invalid">
-        <di:waypoint x="420" y="175" /><di:waypoint x="420" y="80" /><di:waypoint x="500" y="80" />
-        <bpmndi:BPMNLabel><dc:Bounds x="428" y="125" width="20" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="740" y="175" /><di:waypoint x="740" y="100" /><di:waypoint x="820" y="100" />
+        <bpmndi:BPMNLabel><dc:Bounds x="748" y="125" width="20" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToEndInvalid_di" bpmnElement="Flow_ToEndInvalid">
-        <di:waypoint x="600" y="80" /><di:waypoint x="662" y="80" />
+        <di:waypoint x="920" y="80" /><di:waypoint x="982" y="80" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToApprovalGateway_di" bpmnElement="Flow_ToApprovalGateway">
-        <di:waypoint x="600" y="200" /><di:waypoint x="655" y="200" />
+        <di:waypoint x="920" y="200" /><di:waypoint x="975" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Standard_di" bpmnElement="Flow_Standard">
-        <di:waypoint x="705" y="200" /><di:waypoint x="1020" y="200" />
-        <bpmndi:BPMNLabel><dc:Bounds x="840" y="182" width="45" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1025" y="200" /><di:waypoint x="1340" y="200" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1160" y="182" width="45" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_NeedsApproval_di" bpmnElement="Flow_NeedsApproval">
-        <di:waypoint x="680" y="225" /><di:waypoint x="680" y="330" /><di:waypoint x="760" y="330" />
-        <bpmndi:BPMNLabel><dc:Bounds x="688" y="270" width="60" height="27" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1000" y="225" /><di:waypoint x="1000" y="330" /><di:waypoint x="1080" y="330" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1008" y="270" width="60" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToApprovedGateway_di" bpmnElement="Flow_ToApprovedGateway">
-        <di:waypoint x="860" y="330" /><di:waypoint x="915" y="330" />
+        <di:waypoint x="1180" y="330" /><di:waypoint x="1235" y="330" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Approved_di" bpmnElement="Flow_Approved">
-        <di:waypoint x="965" y="330" /><di:waypoint x="1045" y="330" /><di:waypoint x="1045" y="225" />
-        <bpmndi:BPMNLabel><dc:Bounds x="996" y="312" width="18" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1285" y="330" /><di:waypoint x="1365" y="330" /><di:waypoint x="1365" y="225" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1316" y="312" width="18" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Refused_di" bpmnElement="Flow_Refused">
-        <di:waypoint x="940" y="355" /><di:waypoint x="940" y="450" /><di:waypoint x="990" y="450" />
-        <bpmndi:BPMNLabel><dc:Bounds x="948" y="395" width="20" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1260" y="355" /><di:waypoint x="1260" y="450" /><di:waypoint x="1310" y="450" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1268" y="395" width="20" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToEndRefused_di" bpmnElement="Flow_ToEndRefused">
-        <di:waypoint x="1090" y="450" /><di:waypoint x="1152" y="450" />
+        <di:waypoint x="1410" y="450" /><di:waypoint x="1472" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToCreateChange_di" bpmnElement="Flow_ToCreateChange">
-        <di:waypoint x="1070" y="200" /><di:waypoint x="1120" y="200" />
+        <di:waypoint x="1390" y="200" /><di:waypoint x="1440" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToCreateJira_di" bpmnElement="Flow_ToCreateJira">
-        <di:waypoint x="1220" y="200" /><di:waypoint x="1280" y="200" />
+        <di:waypoint x="1540" y="200" /><di:waypoint x="1600" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToProvision_di" bpmnElement="Flow_ToProvision">
-        <di:waypoint x="1380" y="200" /><di:waypoint x="1440" y="200" />
+        <di:waypoint x="1700" y="200" /><di:waypoint x="1760" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToRetryGateway_di" bpmnElement="Flow_ToRetryGateway">
-        <di:waypoint x="1540" y="200" /><di:waypoint x="1595" y="200" />
+        <di:waypoint x="1860" y="200" /><di:waypoint x="1915" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToVerify_di" bpmnElement="Flow_ToVerify">
-        <di:waypoint x="1645" y="200" /><di:waypoint x="1690" y="200" />
+        <di:waypoint x="1965" y="200" /><di:waypoint x="2010" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToClose_di" bpmnElement="Flow_ToClose">
-        <di:waypoint x="1790" y="200" /><di:waypoint x="1850" y="200" />
+        <di:waypoint x="2110" y="200" /><di:waypoint x="2170" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToEndExposed_di" bpmnElement="Flow_ToEndExposed">
-        <di:waypoint x="1950" y="200" /><di:waypoint x="2012" y="200" />
+        <di:waypoint x="2270" y="200" /><di:waypoint x="2332" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToManualFix_di" bpmnElement="Flow_ToManualFix">
-        <di:waypoint x="1740" y="258" /><di:waypoint x="1740" y="350" /><di:waypoint x="1670" y="350" />
+        <di:waypoint x="2060" y="258" /><di:waypoint x="2060" y="350" /><di:waypoint x="1990" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_FixedToVerify_di" bpmnElement="Flow_FixedToVerify">
-        <di:waypoint x="1620" y="310" /><di:waypoint x="1620" y="225" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1628" y="260" width="38" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="1940" y="310" /><di:waypoint x="1940" y="225" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1948" y="260" width="38" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

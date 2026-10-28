@@ -1,0 +1,56 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs2LreJLArZQ2iH41hB",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS9QYKEAgTGAI4AUIIdGhpbmtpbmcSDCkyqnIQcgUsmNOkEBoM0OVNaFNuGFD4O2ajIjAvtboic5Z1fmBAhPfGY/7Xu953yLGh3S0sg4IkIFSsVxsdDJ9iBIA25C64isUdvp8qkgZRfanvQLgmsipkbE0iGaQFkeVQy4ng8z2NDEWZBwbFo+59zaMXTcjZfeLIejkGjtFqaZ1A4JapS49+7OLMDEPmAxlfJ6C/X5JVPhVG+HtpUV4E+gWHzWEINVSwd6LUsN5mPJOHkvnqm1qjEtTP7g2fXyDukOTRDMbkocb8DqqdJEe0UTolnI43SfK0pRNKXKrXVpCLXpeKQkiaOroAw6xJwiNf24wG0tMRvYrKFPEARw0H1lGNKVZRxnmdysBo/PhEM6IDRUJZDffex0GqpL70lHIoIF9RRAAUk9sCkHQjmQZCdneg/8cfhxx8PopEieJG99GZImUPVIR0VUXJge/4RyV5wX6dNJQBQhPFmH6l3NvZjsY8ghyDDqPQbdOCYspUptjEjFkB9y5Gxq+faD6Zsh/75omFb2SBSw7LFaGFAiRAS1Z7lOZBzLPvp7P/kQiORE79rcjVAlQqyIPP8sgyX6SXF44rHQjK+Q6T1ukJpiegVZwCrjhG27nj9v6oMVkLvv+DECAfghQxRxYuNBIaYHEnjIPKDU7yveuNGHp4dNT55409FSljubsFNAPqH5q2NzJOS0sa6IqMFrdJ58TLMqws+4OGHoMG27WZGWrV60+XzH7hY3gUNjz+kSvcRw3gyC7C0+PpS3S/gpv/6dUGSLyM3oo8DDiolQ07kaRksyNT0KrSggP+StXpMCMs8QLERG04dVTkn3DUyS5Kysoivsr4mpyUpyEDZFcWE/B2mX1kYEBiXfuMNNX9x4RP6mVf1fYIQSWb0NsUlpps8AC2rLRQ+I4efsr35tqRp1ZDZVyAB3p7LxOcUZmLVzG39U7ikC0U6ewsHgfBJfu8zYIp0CWEZ0ya7sabUUliGyow4d6R02J9wqKt0fLSeT1RdagCLgp166EWoc/JRBFk9wCHMTTGUxcV8acuq55/0Y4aSRjJw1NOFLdOQ5rTx9n5DUjeLe/OCg2HyZxOIfnDOMySWNVZI+mh16lFBSFzERF8RU+P0G4EPH5N1O/Pgn/x5ZE3j47TeWAmQZBpEe8KVNsdBykYAQ=="
+   },
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"budget-web\",\"environment\":\"recette\",\"exposure\":\"interne\",\"ports\":[\"443/tcp\"],\"source_networks\":[\"10.40.12.0/24\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"ZONE-01\",\"passage\":\"| finance | 10.40.12.0/24 | Applications de la direction financière |\"},{\"rule\":\"PORT-02\",\"passage\":\"- Exposition interne : 443, 3306, 5432, 6379, 8080, 8443, 9090.\"},{\"rule\":\"ENV-01\",\"passage\":\"Trois environnements existent : `dev`, `recette` et `prod`.\"},{\"rule\":\"EXP-01\",\"passage\":\"- `interne` : le service n'est joignable que depuis les zones réseau NetCo demandées (voir [zones.md](zones.md)).\"}],\"summary\":\"L'équipe finance demande l'accès en HTTPS (443/tcp) au service budget-web en recette, depuis la zone finance, en exposition interne.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 1492,
+   "cache_read_input_tokens": 2336,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1492,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 461,
+     "cache_read_input_tokens": 2336,
+     "cache_creation_input_tokens": 1492,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1492,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 461,
+   "output_tokens_details": {
+    "thinking_tokens": 93
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -11,6 +11,7 @@ on:
       - "src/**"
       - "referentiel/**"
       - "infra/**"
+      - "cassettes/**"
       - "docker-compose.yml"
       - "Makefile"
       - ".github/workflows/e2e.yml"
@@ -36,6 +37,8 @@ jobs:
       JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
       JIRA_PROJECT_KEY: NETOPS
       CAMUNDA_REST_ADDRESS: http://localhost:8080
+      # The qualification agent replays recorded answers: no Anthropic key in CI.
+      NETCO_LLM_MODE: replay
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.2 # setup-uv publishes no floating major tag

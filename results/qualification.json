@@ -1,0 +1,849 @@
+{
+  "cases": 30,
+  "cases_sha256": "de48543b381a2a1287a15be1fa621189f484e6713edecc0b8f36c6c2ae111440",
+  "metrics": {
+    "fields": {
+      "service_name": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "environment": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "exposure": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "ports": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "source_networks": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "vm_required": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "vm_size": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      },
+      "urgent": {
+        "k": 27,
+        "n": 27,
+        "rate": 1.0,
+        "wilson95": [
+          0.8754,
+          1.0
+        ]
+      }
+    },
+    "exact_requests": {
+      "k": 27,
+      "n": 27,
+      "rate": 1.0,
+      "wilson95": [
+        0.8754,
+        1.0
+      ]
+    },
+    "missing_detected": {
+      "k": 8,
+      "n": 8,
+      "rate": 1.0,
+      "wilson95": [
+        0.6756,
+        1.0
+      ]
+    },
+    "missing_false_alarms": {
+      "k": 0,
+      "n": 19,
+      "rate": 0.0,
+      "wilson95": [
+        0.0,
+        0.1682
+      ]
+    },
+    "out_of_scope_detected": {
+      "k": 3,
+      "n": 3,
+      "rate": 1.0,
+      "wilson95": [
+        0.4385,
+        1.0
+      ]
+    },
+    "out_of_scope_false_alarms": {
+      "k": 0,
+      "n": 27,
+      "rate": 0.0,
+      "wilson95": [
+        0.0,
+        0.1246
+      ]
+    },
+    "citations_found_in_referentiel": {
+      "k": 71,
+      "n": 71,
+      "rate": 1.0,
+      "wilson95": [
+        0.9487,
+        1.0
+      ]
+    },
+    "final_decision": {
+      "k": 30,
+      "n": 30,
+      "rate": 1.0,
+      "wilson95": [
+        0.8865,
+        1.0
+      ]
+    },
+    "cost": {
+      "model": "claude-sonnet-5-5",
+      "total_usd": 0.2438,
+      "per_request_usd": 0.00813,
+      "cache_creation_input_tokens": 31119,
+      "cache_read_input_tokens": 128501,
+      "input_tokens": 170,
+      "output_tokens": 14000
+    }
+  },
+  "per_case": [
+    {
+      "id": "Q01",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 2,
+      "citations_valid": 2
+    },
+    {
+      "id": "Q02",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q03",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q04",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    },
+    {
+      "id": "Q05",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 2,
+      "citations_valid": 2
+    },
+    {
+      "id": "Q06",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q07",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 4,
+      "citations_valid": 4
+    },
+    {
+      "id": "Q08",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    },
+    {
+      "id": "Q09",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q10",
+      "category": "claire",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q11",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 4,
+      "citations_valid": 4
+    },
+    {
+      "id": "Q12",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 4,
+      "citations_valid": 4
+    },
+    {
+      "id": "Q13",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "environment"
+      ],
+      "missing_got": [
+        "environment"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q14",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q15",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q16",
+      "category": "ambigue",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "valid",
+      "decision_got": "valid",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q17",
+      "category": "port_interdit",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "PORT-01",
+      "decision_got": "PORT-01",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q18",
+      "category": "port_interdit",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "PORT-01",
+      "decision_got": "PORT-01",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q19",
+      "category": "port_interdit",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "PORT-01",
+      "decision_got": "PORT-01",
+      "decision_ok": true,
+      "citations": 2,
+      "citations_valid": 2
+    },
+    {
+      "id": "Q20",
+      "category": "port_interdit",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "PORT-01",
+      "decision_got": "PORT-01",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q21",
+      "category": "environnement_manquant",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "environment"
+      ],
+      "missing_got": [
+        "environment"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    },
+    {
+      "id": "Q22",
+      "category": "environnement_manquant",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "environment"
+      ],
+      "missing_got": [
+        "environment"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q23",
+      "category": "environnement_manquant",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "environment"
+      ],
+      "missing_got": [
+        "environment"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q24",
+      "category": "environnement_manquant",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "environment"
+      ],
+      "missing_got": [
+        "environment"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q25",
+      "category": "autre_manque",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "ports"
+      ],
+      "missing_got": [
+        "ports"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 2,
+      "citations_valid": 2
+    },
+    {
+      "id": "Q26",
+      "category": "autre_manque",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "source_networks"
+      ],
+      "missing_got": [
+        "source_networks"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q27",
+      "category": "autre_manque",
+      "fields": {
+        "service_name": true,
+        "environment": true,
+        "exposure": true,
+        "ports": true,
+        "source_networks": true,
+        "vm_required": true,
+        "vm_size": true,
+        "urgent": true
+      },
+      "missing_expected": [
+        "service_name"
+      ],
+      "missing_got": [
+        "service_name"
+      ],
+      "out_of_scope_expected": false,
+      "out_of_scope_got": false,
+      "decision_expected": "missing",
+      "decision_got": "missing",
+      "decision_ok": true,
+      "citations": 3,
+      "citations_valid": 3
+    },
+    {
+      "id": "Q28",
+      "category": "hors_perimetre",
+      "fields": {},
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": true,
+      "out_of_scope_got": true,
+      "decision_expected": "out_of_scope",
+      "decision_got": "out_of_scope",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    },
+    {
+      "id": "Q29",
+      "category": "hors_perimetre",
+      "fields": {},
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": true,
+      "out_of_scope_got": true,
+      "decision_expected": "out_of_scope",
+      "decision_got": "out_of_scope",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    },
+    {
+      "id": "Q30",
+      "category": "hors_perimetre",
+      "fields": {},
+      "missing_expected": [],
+      "missing_got": [],
+      "out_of_scope_expected": true,
+      "out_of_scope_got": true,
+      "decision_expected": "out_of_scope",
+      "decision_got": "out_of_scope",
+      "decision_ok": true,
+      "citations": 0,
+      "citations_valid": 0
+    }
+  ]
+}

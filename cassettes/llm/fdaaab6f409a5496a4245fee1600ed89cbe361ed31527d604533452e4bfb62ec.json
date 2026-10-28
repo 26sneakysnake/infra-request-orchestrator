@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs4oxcbTJ86p8DGmKTU",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"out_of_scope\":false,\"service_name\":\"fichiers-commun\",\"environment\":\"dev\",\"exposure\":\"interne\",\"ports\":[\"445/tcp\"],\"source_networks\":[\"10.30.0.0/16\"],\"vm_required\":false,\"vm_size\":null,\"urgent\":false,\"missing\":[],\"questions\":[],\"citations\":[{\"rule\":\"PORT-01\",\"passage\":\"| 445 | SMB | Surface d'attaque connue (rançongiciels) |\"},{\"rule\":\"EXP-01\",\"passage\":\"`interne` : le service n'est joignable que depuis les zones réseau NetCo demandées\"}],\"summary\":\"Demande d'exposition interne en dev du service de partage de fichiers fichiers-commun sur 445/tcp (SMB) pour le réseau 10.30.0.0/16. Le port 445 figure parmi les ports interdits (PORT-01), ce que le processus de validation devra traiter.\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 636,
+   "cache_read_input_tokens": 2359,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 636,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 311,
+     "cache_read_input_tokens": 2359,
+     "cache_creation_input_tokens": 636,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 636,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 311,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

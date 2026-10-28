@@ -13,16 +13,21 @@ from typing import Any, Protocol
 
 from camunda_orchestration_sdk import JobError
 
+from agents.qualification import PROCESS_NAMES, Qualification, merge, qualify
 from integrations.jira import JiraClient
 from integrations.servicenow import (
     RITM_CLOSED_COMPLETE,
     RITM_CLOSED_INCOMPLETE,
+    RITM_PENDING,
     ServiceNowClient,
 )
 from k8s.manifests import exposure_objects
 from netco.rules import load_rules, validate
 
 Variables = dict[str, Any]
+# Comments the process posts to the requester start with this marker; the poller treats any later
+# comment without it as the requester's reply.
+REQUESTER_MARKER = "[NetCo]"
 
 
 class ClusterOps(Protocol):
@@ -44,11 +49,35 @@ class Deps:
     jira: JiraClient
     jira_project: str
     cluster: ClusterOps
+    qualify: Callable[[str, dict[str, Any]], Qualification] = qualify
 
 
 def _exposure(v: Variables) -> str:
     zones = ", ".join(v["zones"])
     return f"{v['serviceName']} ({v['environment']}), port {v['port']}/tcp, zones {zones}"
+
+
+def qualify_request(v: Variables, deps: Deps) -> Variables:
+    """The agent fills the form from the free text; a reply to a question joins the text."""
+    text = str(v.get("requestText") or "")
+    if v.get("reply"):
+        text = f"{text}\n\nRéponse du demandeur : {v['reply']}"
+    form = {name: v.get(name) for name in PROCESS_NAMES.values()}
+    agent_form = {field: form[name] for field, name in PROCESS_NAMES.items()}
+    variables = merge(form, deps.qualify(text, agent_form))
+    return {**variables, "requestText": text, "reply": None}
+
+
+def ask_requester(v: Variables, deps: Deps) -> Variables:
+    questions = v["qualification"]["questions"]
+    text = "\n".join(
+        [f"{REQUESTER_MARKER} Il manque des informations pour traiter votre demande :"]
+        + [f"- {question}" for question in questions]
+        + ["Répondez simplement par un commentaire sur cette demande."]
+    )
+    deps.servicenow.add_comment("sc_req_item", v["ritmSysId"], text)
+    deps.servicenow.set_state("sc_req_item", v["ritmSysId"], RITM_PENDING)
+    return {"questionsAsked": int(v.get("questionsAsked") or 0) + 1}
 
 
 def validate_request(v: Variables, deps: Deps) -> Variables:
@@ -61,7 +90,7 @@ def reject_request(v: Variables, deps: Deps) -> Variables:
         lines = ["Changement refusé lors de l'approbation (CAB)."]
         lines += [f"Motif : {comment}"] if comment else []
     else:
-        lines = ["Demande non conforme au référentiel NetCo :"]
+        lines = ["Demande refusée par le processus d'exposition de service NetCo :"]
         lines += [f"- {reason}" for reason in v.get("rejectionReasons") or []]
     deps.servicenow.add_comment("sc_req_item", v["ritmSysId"], "\n".join(lines))
     deps.servicenow.set_state("sc_req_item", v["ritmSysId"], RITM_CLOSED_INCOMPLETE)
@@ -162,6 +191,8 @@ def close_tickets(v: Variables, deps: Deps) -> Variables:
 
 
 HANDLERS: dict[str, Callable[[Variables, Deps], Variables]] = {
+    "qualify-request": qualify_request,
+    "ask-requester": ask_requester,
     "validate-request": validate_request,
     "reject-request": reject_request,
     "create-sn-change": create_sn_change,

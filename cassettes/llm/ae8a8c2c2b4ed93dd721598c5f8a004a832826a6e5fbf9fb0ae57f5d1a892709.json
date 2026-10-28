@@ -1,0 +1,74 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs61gL7akRi5TZYdgWa",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSmAcKEAgTGAI4AUIIdGhpbmtpbmcSDNNXeamOHjfPsBl0HRoMb5kHzaqAANIxrwiHIjBtipGi5VNXaSDqSwOjtxVahBQrgeB8iGvikot36kjCzov6Z8g2xgIkhxeJVlpFlL4qtQbiXHtIAteuOUXUfdVrU9R+LfieKDveQ4AS7oTETeW3vStsI+SWW0TU7/qdOFT7TJWqKJUkCvwCVN1tSeQskpIa2nzPJ6ReWaxf52MxGx7t7AueaJEIVukQFgm9cG5MovsxgciKqvFGmgajLOFUo8LlXjeefdXvIFxk2Bnuiww8YaFHLlrYQ4BEHHypxVE5TwjMybXqSKh+W+iGjvFud8MwgShtSUnZohXw73gyjOYYMoweKV2MY3t5T6+Lqo6sEc1CBTy3uhBkwUYI7W2fiby1U3O4vLCQLJJEm2sKu5mnhO5TITIUzbOojnkb4iYkEDG9SxoYke2OO4knEtQb2A+Y+wkdjJTitWJEYYvMbcyEEPAKF0tbmgRcCnE7wv4pmEDsbOlyowAAQp8de5GWmqE33y54JaguQG5O8eqZB9S8+ooPoQKyQ/m1xgCWkbLWhCZVgittgiZCdpDZi+TjD/c4aDillFSQ5Dw+hUksLnTJ4uVDQcTZnhFBWu1VYxuP4fjAOs9TjdR+GdTfI25aifkx6WlUJl/uu9pukX2Dqx75yXcR75jD+gac2/uInE2csujwqSGaef2kztAhAERVJK7HQ/gUg3HnfKZlz/vEg9uPL/spZuvp4bjo/TMlcMR5b8TpeZ4Bj021NR/TMeYifu99/4NnUoK5F/x3HTSVL03YXfCtak/Vjwuw5NRpXqPBKJB05/0lh5Ml13nCLR7j7wnRXAwFoJpfvAoMzkTluaD4KEpjMgenlgSf59MHNiy3MEkEqTAAtUIQyHqgYOinifZDqk3vF7i7dFJUaSVWUqxgY93sgCXd2Pw+iTbSZZ5iWlfNjQ6gOMwjIDDYrrwt1nSnMzRy9LoE67oDBP+k+bBvptoOZIGQEyG/cobzsiLjhTRqaCZT7xlZhD9WTiVl6T16NfaLs2qPpxIgdWfxKUoySTqUZpgTT7FD+sAQlYDISozWeG3GZS1YqkaSXl8DCAjil0BcqUjkA0OZNzSRIGzE9ATmIsl3lfJf16g1Sugusgd+YPArT7gOJWTcvUNUbWo4jfYdiiWZ9u0bUZtZTHm5FEJ/x5mL1JU3MNDIV8uAJyNCa82cJRgB"
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_01KiaVAaHaZujFySBDyN3pgZ",
+    "name": "search_referentiel",
+    "input": {
+     "query": "port 5432 PostgreSQL"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_014MzAaZ4iBVWxZZHPMURiwC",
+    "name": "search_referentiel",
+    "input": {
+     "query": "environnements dev recette prod"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 112,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 112,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 232,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 112,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 112,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 232,
+   "output_tokens_details": {
+    "thinking_tokens": 115
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

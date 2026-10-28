@@ -1,0 +1,63 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgUs4aAe7FVvqRSFoxa8T",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQS8wcKEAgTGAI4AUIIdGhpbmtpbmcSDAl8jAKzJRaM5GD6pBoMvLuxm/BnZ3dOv0wAIjCDW0l7K4VKhzj+rg6Tlc+SqehqH8mvHgTt6vefo/6XDZSqvSbZvXZmLzr8z8Zn3asqkAexY8rNC3ru3wz5iunhzuYVRUcoxn3EjFwRhh6PTtKAuNnzsQQ5mQnngL+eq5KJl+XerhUK/zyq6086meQhqsu5BOh491JYerZQ9zsjGlFhJwVxOLMIol2P5kMhKFJ5SQB2wKdLyl5oQVTYxHj2NG+Mvr7WWMt8v2VDCdMKqzlZP0H03XB77gqjjnRD18LweA9PJweRl2vu2Zt1TJzv4BKLuHl5S8NKHE2mre3HEnuP9r3frbVqZZTaMufeJ335HPcSyG20oGB99XmDrcRZEJhzgcj0qERz/hO8fcxQnWRtaLK+TpUH9lvXMx4PP7LC6nHVdE1QzJFOhCOpkq7cB1+vfd6fYS/HMr1rcZn7jEhmOABPDrvAfp/aJtHA+hyh8IDIt+6acucVisd82qJJGrY/c0sJmrXjYthgqVOGlxzoaQcQS3V3t8SymzAcyGOYx4mRxYR+U8ZXMM8vrewj5SMrCwmyDNBh+ttnar311Q0HI82BN6WEQuInKT4bcPyTSlMhoJFZTIT2CY49mxfLe2WV5hkRp1oarMh0+0clF8jpQynJ8+BjV5LxgwzkJ45r7p+Ltr1RSA53vbW4K40fP294ZaZ9TqRiwfM3D04djlEj6clkvjJlFLitObihYASwIM2k59I09MceuAIfae7QNn8JZkkT8TQBwX5GzFPp5mlcnEzqzl1S3M54+5+ymzV3X6iarRUymmaw0T19kKPnEZu/bh12LsDG7yeBUtdPfCat05qtl7AWjt9AioKFUlMsYH2lPy+AChg0gMCRe3WWVqCa42DlhfP/Eri0yTb7ikdHHnYVNy1B4L7x1OOzN9telRyWPkN94WY75kH7mHNLkT7Yz0L3YQEISvonnaksNVMxk6YXUNmZMTh53Lj1wZ3E7SGP9WOYjwgboaRIHxyXcI/ywuebP0AUHfMzKcTuBrRKiybeKkN6GATnO2HqoiNwCLeN1vCjxNtTqaxogMEnVeu33ewj/CMcetcqDN2nAhdBZt6CkSnkiiPbnnoxMRIRhtkOzQLVruQXY8yDA6YIMyBxC1sVaNKolFEKTRUWNkR4QbIMuCZMna9q5zlzRNzGNTueubMZS7QmJFWzRw/yAomPfZgsTCJiF81em8Feh66jRO/v2QerCh5L3fPKbtGOcGqqLDkUDAhxQ0UKwAqOc5lcspvprmTTTZhLVhftxVrIXPygNDBNPsI36yuRKcCCF1kYAQ=="
+   },
+   {
+    "type": "tool_use",
+    "id": "toolu_018Eua8CFFXNzXemPt7H3ey7",
+    "name": "search_referentiel",
+    "input": {
+     "query": "port SMB 445"
+    },
+    "caller": {
+     "type": "direct"
+    }
+   }
+  ],
+  "container": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 131,
+   "cache_read_input_tokens": 2228,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 131,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 214,
+     "cache_read_input_tokens": 2228,
+     "cache_creation_input_tokens": 131,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 131,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 214,
+   "output_tokens_details": {
+    "thinking_tokens": 158
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}
