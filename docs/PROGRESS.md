@@ -304,9 +304,9 @@ Source : `results/diagnosis.json`. Modèle Claude Sonnet 5.5, effort `medium`, 1
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (102 tests) | vert | à compléter après le push |
-| `make eval` rejoué sans clé ni `.env`, identique au passage live (deux fichiers) | vérifié avec `cmp` | job `eval`, à compléter |
-| `make e2e` avec la panne : enregistrement, puis rejeu complet sans aucune cassette manquante | vert (deux exécutions) | à compléter (en rejeu) |
+| `make lint test` (102 tests) | vert | vert : [run 40726821959](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40726821959), commit `8532c77` |
+| `make eval` rejoué sans clé ni `.env`, identique au passage live (deux fichiers) | vérifié avec `cmp` | vert : job `eval`, sans écart sur `results/` |
+| `make e2e` avec la panne : enregistrement, puis rejeu complet sans aucune cassette manquante | vert (deux exécutions) | vert en rejeu, sans clé : [run 40726822043](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40726822043), 4 demandes en 66 s |
 
 ### Écarts et incidents
 - **Le libellé `pod-template-hash`** change à chaque déploiement : il cassait le déterminisme de l'instantané.
@@ -317,5 +317,6 @@ Source : `results/diagnosis.json`. Modèle Claude Sonnet 5.5, effort `medium`, 1
   trois premiers de chaque série viennent de l'e2e de P3 en CI.
 
 ### Reste
-- CI verte sur le commit de P4.
+- Rien pour P4 : `results/diagnosis.json` donne la cause et l'action justes 10 fois sur 10, et le job e2e couvre
+  une panne.
 - Prochaine phase : P5, seulement avec l'accord de Seif.
