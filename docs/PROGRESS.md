@@ -2,7 +2,7 @@
 
 Une section par phase : ce qui est fait, ce qui est mesuré, où c'est vérifié, ce qui reste.
 
-## P0 : Squelette
+## P0 : Squelette (terminée le 2026-10-28)
 
 ### Fait
 - Outillage : `pyproject.toml` (uv, Python 3.12) et `uv.lock`, ruff, pytest, Makefile, `.gitignore`,
@@ -25,12 +25,18 @@ Une section par phase : ce qui est fait, ce qui est mesuré, où c'est vérifié
   images compris, puis 20 s avec les images en cache.
 - Mémoire au repos : orchestration environ 620 Mo (limite 1 Go), connectors environ 390 Mo (limite 512 Mo), vcsim
   environ 15 Mo.
+- GitHub Actions : 10 s pour le job `lint-test` ; 52 s pour le job `stack`, dont 42 s pour `make up`, images
+  téléchargées comprises.
 
 ### Vérifié où
+CI de référence : [run 40690470381](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40690470381)
+sur le commit `ecf3b63`. Le premier run (commit `efa6970`) a échoué avant toute exécution : `astral-sh/setup-uv@v10`
+n'existe pas comme étiquette. Corrigé en épinglant `v10.3.2`.
+
 | Vérification | PC de Seif (Windows) | GitHub Actions (Linux) |
 |---|---|---|
-| `make lint test` | vert | en attente du premier push |
-| `make up` : les 6 points d'accès répondent | vert | en attente du premier push |
+| `make lint test` | vert | vert |
+| `make up` : les 6 points d'accès répondent | vert | vert (la sonde sort en erreur sinon) |
 | `/v2/topology` : 1 broker en 8.10.7, partition `healthy` | vérifié avec curl | non vérifié |
 | Operate et Tasklist servent leur page (HTTP 200) | vérifié avec curl | non vérifié |
 | Connexion `demo/demo` à l'API REST (recherche de définitions de processus) | vérifiée avec curl | non vérifiée |
@@ -39,5 +45,8 @@ Une section par phase : ce qui est fait, ce qui est mesuré, où c'est vérifié
 Non vérifié : la connexion interactive à Operate dans un navigateur. Je n'ai testé que les réponses HTTP.
 
 ### Reste
-- Rien pour P0 une fois la CI verte.
+- Rien pour P0.
+- À surveiller : GitHub annonce que `ubuntu-latest` passe à Ubuntu 26 à partir du 19 octobre 2026. Si le job
+  `stack` casse, épingler `ubuntu-24.04`.
 - `CONTEXT.md` reste local, ignoré par git, à la demande de Seif. `CLAUDE.md` y fait référence.
+- Prochaine phase : P1, seulement avec l'accord de Seif.
