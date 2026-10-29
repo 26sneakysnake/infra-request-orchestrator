@@ -505,6 +505,7 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
 | `make lint test` (140 tests) | vert | vert : [run 40904692432](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904692432), commit `ea07d8a` |
+| e2e en rejeu | vert | vert : [run 40904692332](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904692332) |
 | Rendu des deux SVG contrôlé à l'œil (capture par Edge sans interface) | vérifié | sans objet |
 
 ### Écarts et incidents
@@ -548,8 +549,9 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (151 tests) | vert | à venir |
-| `make readme` sans écart avec le README commité | vert (test) | à venir (job `eval`) |
+| `make lint test` (151 tests) | vert | vert : [run 40905489043](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40905489043), commit `f4313c7` |
+| `make readme` sans écart avec le README commité | vert (test) | vert : job `eval`, étape `git diff --exit-code README.md` |
+| e2e en rejeu | vert | vert : [run 40905489091](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40905489091) |
 | Démo complète en suivant `docs/DEMO.md` | **à faire par Seif** | sans objet |
 
 ### Reste (pour Seif)
@@ -561,5 +563,5 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 P8 sera terminée quand la démo tournera chez Seif en suivant `docs/DEMO.md` sans aide.
 
 ### Bilan du projet
-- **Phases** : P0 à P7 terminées et vertes en CI. P8 est terminée côté code et attend la répétition de Seif.
+- **Phases** : P0 à P7 terminées et vertes en CI. P8 est verte en CI côté code et attend la répétition de Seif.
 - **Dépense LLM totale depuis P3** : 1,206 $ sur un budget de 3 $.
