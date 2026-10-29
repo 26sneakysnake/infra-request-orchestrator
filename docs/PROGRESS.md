@@ -556,6 +556,7 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 | `make lint test` (151 tests) | vert | vert : [run 40905489043](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40905489043), commit `f4313c7` |
 | `make readme` sans écart avec le README commité | vert (test) | vert : job `eval`, étape `git diff --exit-code README.md` |
 | e2e en rejeu | vert | vert : [run 40905489091](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40905489091) |
+| `make kind-up` idempotent (commit `ca2cf30`) | vert : cluster existant gardé, zones réappliquées | vert : cluster créé de zéro, [ci 40916987258](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987258), [e2e 40916987340](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987340) |
 | Démo complète en suivant `docs/DEMO.md` | **à faire par Seif** | sans objet |
 
 ### Reste (pour Seif)
