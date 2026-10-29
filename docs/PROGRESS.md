@@ -369,10 +369,10 @@ L'échantillon est petit : il montre que le chemin fonctionne, pas un taux de r�
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (127 tests) | vert | à venir |
-| `make eval` rejoué, `results/` inchangé après la modification de la boucle et l'ajout de VM-01 | vérifié avec `git status` | à venir |
+| `make lint test` (127 tests) | vert | vert : [run 40899763802](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40899763802), commit `4d2985c` |
+| `make eval` rejoué, `results/` inchangé après la modification de la boucle et l'ajout de VM-01 | vérifié avec `git status` | vert : job `eval`, sans écart sur `results/` |
 | `vsphere/vm.py` contre vcsim : création, démarrage, idempotence, relecture | vérifié | via l'e2e |
-| `make e2e` avec VM et documentation, sur namespaces neufs : enregistrement, puis rejeu complet sans cassette manquante | vert | à venir |
+| `make e2e` avec VM et documentation, sur namespaces neufs : enregistrement, puis rejeu complet sans cassette manquante | vert | vert en rejeu, sans clé : [run 40899763796](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40899763796), 4 demandes en 67 s, VM relue dans vcsim, 2 fichiers sur chaque ticket Jira et chaque changement |
 
 ### Écarts et incidents
 - **Premier e2e rouge en CI** ([run 40896757960](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40896757960),
@@ -396,10 +396,11 @@ L'échantillon est petit : il montre que le chemin fonctionne, pas un taux de r�
   (`runtime.powerState`, `config.hardware.numCPU`…), via le PropertyCollector.
 - **L'identifiant de la VM** est exclu du dossier de faits : il change d'une exécution à l'autre et casserait le
   rejeu.
-- **Données de test créées** : RITM0010045 à RITM0010068, CHG0030037 à CHG0030060, NETOPS-40 à NETOPS-63. Cela
-  représente 4 e2e locaux et 2 runs CI. Les 2 runs CI, sur `8938a2c` et `2bda90b`, ont été tous deux exécutés,
-  car je ne pouvais pas annuler le premier sans jeton GitHub.
+- **Données de test créées** : RITM0010045 à RITM0010072, CHG0030037 à CHG0030064, NETOPS-40 à NETOPS-67. Cela
+  représente 4 e2e locaux et 3 runs CI. Les 2 premiers runs CI, sur `8938a2c` et `2bda90b`, ont été tous deux
+  exécutés, car je ne pouvais pas annuler le premier sans jeton GitHub.
 
 ### Reste
-- Rien pour P5 une fois la CI verte.
+- Rien pour P5 : en CI, la demande avec VM va au bout, et les deux fichiers sont joints au ticket Jira et au
+  changement ServiceNow de chacune des 4 demandes.
 - Prochaine phase : P6, seulement avec l'accord de Seif.
