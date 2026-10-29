@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_AsIs" targetNamespace="http://netco.example/bpmn/as-is" exporter="infra-request-orchestrator" exporterVersion="0.1.0">
+  <bpmn:collaboration id="Collaboration_AsIs">
+    <bpmn:participant id="Participant_NetCo" name="NetCo (fictive) : exposition d'un service, existant" processRef="expose_service_as_is" />
+  </bpmn:collaboration>
+  <bpmn:process id="expose_service_as_is" name="Exposition d'un service : existant (hypothèse)" isExecutable="false">
+    <bpmn:documentation>Modèle de documentation, non exécutable : le traitement manuel supposé d'une exposition de service chez NetCo (entreprise fictive). Les étapes AS-01 à AS-09 et leurs ordres de grandeur sont des hypothèses déclarées (hypotheses/as-is.yaml), pas des mesures.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_AsIs">
+      <bpmn:lane id="Lane_Requester" name="Demandeur">
+        <bpmn:flowNodeRef>Start_Need</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Send</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Complete</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ServiceDesk" name="Service desk">
+        <bpmn:flowNodeRef>Task_Triage</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Complete</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Close</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Exposed</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Network" name="Équipe réseau">
+        <bpmn:flowNodeRef>Task_Analyse</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Normal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_CabJoin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Firewall</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Test</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Cab" name="CAB">
+        <bpmn:flowNodeRef>Task_Cab</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Platform" name="Plateforme et virtualisation">
+        <bpmn:flowNodeRef>Task_Deploy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Vm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Vm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_VmJoin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Doc</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_Need" name="Besoin d&#x27;exposer un service">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:manualTask id="Task_Send" name="Envoyer la demande par e-mail ou ticket libre (AS-01)">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Task_Triage" name="Trier la demande (AS-02)">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="Gateway_Complete" name="Demande complète ?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="Task_Complete" name="Compléter la demande, allers-retours (AS-02)">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Task_Analyse" name="Analyser la conformité : ports, zones, nommage (AS-03)">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="Gateway_Normal" name="Changement normal ?">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="Task_Cab" name="Passer en CAB hebdomadaire (AS-04)">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="Gateway_CabJoin">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="Task_Firewall" name="Ouvrir le flux sur le pare-feu (AS-05)">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Task_Deploy" name="Déployer et exposer le service (AS-05)">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="Gateway_Vm" name="VM demandée ?">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="Task_Vm" name="Créer la VM (AS-06)">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="Gateway_VmJoin">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="Task_Test" name="Tester le flux à la main (AS-07)">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Task_Doc" name="Rédiger fiche et compte rendu, souvent reporté (AS-08)">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Task_Close" name="Clore changement, ticket et demande (AS-09)">
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="End_Exposed" name="Service exposé">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Need" targetRef="Task_Send" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_Send" targetRef="Task_Triage" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Triage" targetRef="Gateway_Complete" />
+    <bpmn:sequenceFlow id="Flow_4" name="non" sourceRef="Gateway_Complete" targetRef="Task_Complete" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_Complete" targetRef="Task_Triage" />
+    <bpmn:sequenceFlow id="Flow_6" name="oui" sourceRef="Gateway_Complete" targetRef="Task_Analyse" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_Analyse" targetRef="Gateway_Normal" />
+    <bpmn:sequenceFlow id="Flow_8" name="oui" sourceRef="Gateway_Normal" targetRef="Task_Cab" />
+    <bpmn:sequenceFlow id="Flow_9" name="non (standard)" sourceRef="Gateway_Normal" targetRef="Gateway_CabJoin" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_Cab" targetRef="Gateway_CabJoin" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_CabJoin" targetRef="Task_Firewall" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_Firewall" targetRef="Task_Deploy" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_Deploy" targetRef="Gateway_Vm" />
+    <bpmn:sequenceFlow id="Flow_14" name="oui" sourceRef="Gateway_Vm" targetRef="Task_Vm" />
+    <bpmn:sequenceFlow id="Flow_15" name="non" sourceRef="Gateway_Vm" targetRef="Gateway_VmJoin" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_Vm" targetRef="Gateway_VmJoin" />
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Gateway_VmJoin" targetRef="Task_Test" />
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_Test" targetRef="Task_Doc" />
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="Task_Doc" targetRef="Task_Close" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_Close" targetRef="End_Exposed" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_AsIs">
+    <bpmndi:BPMNPlane id="Plane_AsIs" bpmnElement="Collaboration_AsIs">
+      <bpmndi:BPMNShape id="Participant_NetCo_di" bpmnElement="Participant_NetCo" isHorizontal="true">
+        <dc:Bounds x="40" y="40" width="2120" height="620" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Requester_di" bpmnElement="Lane_Requester" isHorizontal="true">
+        <dc:Bounds x="70" y="40" width="2090" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ServiceDesk_di" bpmnElement="Lane_ServiceDesk" isHorizontal="true">
+        <dc:Bounds x="70" y="164" width="2090" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Network_di" bpmnElement="Lane_Network" isHorizontal="true">
+        <dc:Bounds x="70" y="288" width="2090" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Cab_di" bpmnElement="Lane_Cab" isHorizontal="true">
+        <dc:Bounds x="70" y="412" width="2090" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Platform_di" bpmnElement="Lane_Platform" isHorizontal="true">
+        <dc:Bounds x="70" y="536" width="2090" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Need_di" bpmnElement="Start_Need">
+        <dc:Bounds x="130" y="84" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="110" y="124" width="76" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Send_di" bpmnElement="Task_Send">
+        <dc:Bounds x="200" y="64" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Triage_di" bpmnElement="Task_Triage">
+        <dc:Bounds x="340" y="188" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Complete_di" bpmnElement="Gateway_Complete" isMarkerVisible="true">
+        <dc:Bounds x="490" y="201" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="470" y="255" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Complete_di" bpmnElement="Task_Complete">
+        <dc:Bounds x="460" y="64" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Analyse_di" bpmnElement="Task_Analyse">
+        <dc:Bounds x="590" y="312" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Normal_di" bpmnElement="Gateway_Normal" isMarkerVisible="true">
+        <dc:Bounds x="750" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="730" y="294" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cab_di" bpmnElement="Task_Cab">
+        <dc:Bounds x="830" y="436" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_CabJoin_di" bpmnElement="Gateway_CabJoin" isMarkerVisible="true">
+        <dc:Bounds x="990" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Firewall_di" bpmnElement="Task_Firewall">
+        <dc:Bounds x="1070" y="312" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Deploy_di" bpmnElement="Task_Deploy">
+        <dc:Bounds x="1070" y="560" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Vm_di" bpmnElement="Gateway_Vm" isMarkerVisible="true">
+        <dc:Bounds x="1210" y="573" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1190" y="542" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Vm_di" bpmnElement="Task_Vm">
+        <dc:Bounds x="1300" y="560" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_VmJoin_di" bpmnElement="Gateway_VmJoin" isMarkerVisible="true">
+        <dc:Bounds x="1450" y="573" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Test_di" bpmnElement="Task_Test">
+        <dc:Bounds x="1540" y="312" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Doc_di" bpmnElement="Task_Doc">
+        <dc:Bounds x="1700" y="560" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Close_di" bpmnElement="Task_Close">
+        <dc:Bounds x="1860" y="188" width="110" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Exposed_di" bpmnElement="End_Exposed">
+        <dc:Bounds x="2040" y="208" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2020" y="248" width="76" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="166" y="102" /><di:waypoint x="200" y="102" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="310" y="102" /><di:waypoint x="322" y="102" /><di:waypoint x="322" y="226" /><di:waypoint x="340" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="450" y="226" /><di:waypoint x="490" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="515" y="201" /><di:waypoint x="515" y="140" />
+        <bpmndi:BPMNLabel><dc:Bounds x="522" y="160" width="21" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="460" y="102" /><di:waypoint x="395" y="102" /><di:waypoint x="395" y="188" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="540" y="226" /><di:waypoint x="645" y="226" /><di:waypoint x="645" y="312" />
+        <bpmndi:BPMNLabel><dc:Bounds x="556" y="206" width="21" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="700" y="350" /><di:waypoint x="750" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="775" y="375" /><di:waypoint x="775" y="474" /><di:waypoint x="830" y="474" />
+        <bpmndi:BPMNLabel><dc:Bounds x="782" y="430" width="21" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="800" y="350" /><di:waypoint x="990" y="350" />
+        <bpmndi:BPMNLabel><dc:Bounds x="850" y="332" width="98" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="940" y="474" /><di:waypoint x="1015" y="474" /><di:waypoint x="1015" y="375" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1040" y="350" /><di:waypoint x="1070" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1125" y="388" /><di:waypoint x="1125" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1180" y="598" /><di:waypoint x="1210" y="598" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1260" y="598" /><di:waypoint x="1300" y="598" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1266" y="580" width="21" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="1235" y="623" /><di:waypoint x="1235" y="648" /><di:waypoint x="1475" y="648" /><di:waypoint x="1475" y="623" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1245" y="630" width="21" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="1410" y="598" /><di:waypoint x="1450" y="598" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17_di" bpmnElement="Flow_17">
+        <di:waypoint x="1500" y="598" /><di:waypoint x="1595" y="598" /><di:waypoint x="1595" y="388" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18">
+        <di:waypoint x="1650" y="350" /><di:waypoint x="1755" y="350" /><di:waypoint x="1755" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19_di" bpmnElement="Flow_19">
+        <di:waypoint x="1810" y="598" /><di:waypoint x="1915" y="598" /><di:waypoint x="1915" y="264" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
+        <di:waypoint x="1970" y="226" /><di:waypoint x="2040" y="226" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

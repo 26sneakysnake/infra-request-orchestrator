@@ -10,7 +10,7 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 à P6 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
+Phases P0 à P7 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
 comprend :
 - un agent IA de qualification, qui transforme le texte libre en formulaire, cite le référentiel et interroge le
   demandeur quand une information manque ;
@@ -26,6 +26,25 @@ comprend :
 
 Les résultats chiffrés sont dans [results/qualification.json](results/qualification.json) et
 [results/diagnosis.json](results/diagnosis.json), et le suivi détaillé dans [docs/PROGRESS.md](docs/PROGRESS.md).
+
+## Livrables de conseil
+
+Six documents courts (2 pages au plus chacun) dans [docs/](docs/) :
+
+| Document | Contenu |
+|---|---|
+| [01 Diagnostic de l'existant](docs/01-diagnostic-as-is.md) | Cartographie BPMN, irritants, priorisation de 8 processus |
+| [02 Architecture cible](docs/02-architecture-cible.md) | Processus cible, composants, intégration, Camunda, n8n ou scripts, agents |
+| [03 Feuille de route](docs/03-feuille-de-route.md) | Pitch de 5 minutes, trois vagues, indicateurs de sortie |
+| [04 Gouvernance](docs/04-gouvernance.md) | Rôles, cycle de vie du modèle, indicateurs, garde-fous IA |
+| [05 Guide opérationnel](docs/05-guide-operationnel.md) | Démarrer, suivre, traiter un incident, valider une remédiation |
+| [06 Kit de formation](docs/06-kit-formation.md) | Atelier de 2 h avec trois exercices et leurs corrigés |
+
+![Exposition d'un service, existant (hypothèse)](docs/img/expose_service_as_is.svg)
+
+![Exposition d'un service, processus cible exécuté par Camunda](docs/img/expose_service.svg)
+
+Les deux images sont produites par `make diagrams` depuis les modèles BPMN.
 
 ## Démarrer en local
 
@@ -103,7 +122,7 @@ sont simulées par le script.
 Ces valeurs sont des hypothèses de l'auteur ([hypotheses/as-is.yaml](hypotheses/as-is.yaml)) pour une entreprise
 fictive, pas une mesure. Les deux tableaux ne se soustraient pas : le laboratoire ne mesure pas l'attente humaine
 réelle (CAB, demandeur), qui fait l'essentiel du délai supposé. Aucun gain n'est donc affirmé. La première
-mesure à faire sur le terrain est un relevé de tickets réels.
+mesure à faire sur le terrain est un relevé de tickets réels ([diagnostic](docs/01-diagnostic-as-is.md)).
 
 ## Évaluation de l'agent de qualification
 

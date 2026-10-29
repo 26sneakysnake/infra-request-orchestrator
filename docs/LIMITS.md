@@ -76,6 +76,15 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
 - Le scénario « as-is » (`hypotheses/as-is.yaml`) est une **hypothèse** de l'auteur, pas une mesure. La mettre
   à côté des mesures situe un ordre de grandeur ; elle ne démontre aucun gain.
 
+## Livrables de conseil
+- Le diagnostic de l'existant n'est issu d'aucun entretien ni d'aucun ticket réel. C'est un traitement manuel
+  plausible pour une entreprise fictive, à valider sur le terrain avant tout usage.
+- Les scores de la matrice de priorisation sont déclaratifs, et faits pour être contestés en atelier.
+- La comparaison entre Camunda, n8n et des scripts est qualitative. Elle ne remplace pas un essai des outils sur
+  le processus visé, ni un chiffrage des licences avec les éditeurs.
+- Les diagrammes en SVG viennent d'un petit moteur de rendu maison, moins fidèle que Camunda Modeler. Les
+  fichiers BPMN restent la référence.
+
 ## Processus
 - Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile
   locale n'a pas d'adresse publique.

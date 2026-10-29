@@ -3,7 +3,7 @@
 COMPOSE := docker compose
 KUBECTL := kubectl --context kind-netco
 
-.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval eval-live eval-freeze eval-capture metrics readme
+.PHONY: all setup lint format test up down ps logs kind-up kind-down verify seed record deploy-bpmn workers e2e eval eval-live eval-freeze eval-capture metrics diagrams readme
 
 all: lint test
 
@@ -92,6 +92,10 @@ eval-capture:
 # Measures of the live e2e runs, read back from the Camunda history (local stack).
 metrics:
 	uv run python -m metrics.collect
+
+# SVG images of the BPMN models for the documents (docs/img/).
+diagrams:
+	uv run python -m diagrams.bpmn_svg
 
 readme:
 	$(error make $@ arrives in phase P8)

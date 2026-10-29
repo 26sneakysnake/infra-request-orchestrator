@@ -453,9 +453,9 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (130 tests) | vert | à venir |
+| `make lint test` (130 tests) | vert | vert : [run 40904344354](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904344354), commit `c627d44` |
 | 5 e2e en `live` (20 demandes), puis `make metrics` | vert | non : la CI rejoue les cassettes, et les durées en rejeu ne disent rien de la latence des agents |
-| `make eval` inchangé | vérifié | à venir |
+| `make eval` inchangé | vérifié | vert : job `eval` du même run |
 
 ### Écarts et incidents
 - **Données de test créées** : RITM0010073 à RITM0010092, CHG0030065 à CHG0030084, NETOPS-68 à NETOPS-87.
@@ -464,3 +464,52 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 ### Reste
 - Rien pour P6. Le README sera généré depuis `results/` par `make readme` en P8.
 - Suite : P7 (accord de Seif donné pour finir le projet).
+
+## P7 : Livrables de conseil
+
+### Fait
+- **Six documents** en français dans `docs/`, de 2 pages au plus :
+  - `01-diagnostic-as-is.md` : cartographie, 8 irritants, matrice de priorisation de 8 processus (fréquence ×
+    effort × risque, scores déclarés) ;
+  - `02-architecture-cible.md` : processus cible, composants (laboratoire et cible réelle), principes,
+    intégration, comparaison entre Camunda, n8n et des scripts (licences vérifiées dans la documentation des
+    éditeurs), résumé des agents ;
+  - `03-feuille-de-route.md` : pitch de 5 minutes, trois vagues avec prérequis, indicateurs de sortie et
+    risques, conditions d'arrêt ;
+  - `04-gouvernance.md` : RACI, cycle de vie du modèle, indicateurs, 9 garde-fous IA présents dans le code,
+    rituels ;
+  - `05-guide-operationnel.md` : démarrer, suivre, traiter un incident (table des symptômes réellement
+    rencontrés), valider une remédiation, entretien ;
+  - `06-kit-formation.md` : atelier de 2 h, trois exercices avec corrigés. Le premier se fait dans Camunda
+    Modeler ; le deuxième, sur la table DMN, a été vérifié contre la politique `FIRST` de la table réelle.
+- **Annexe** : le détail des choix des agents (P3 à P5) passe dans `docs/annexe-agents.md`, pour que le
+  document 02 tienne en 2 pages.
+- **Modèle de l'existant** : `bpmn/as-is/expose_service_as_is.bpmn`.
+  - Il est non exécutable et rangé dans un sous-dossier, donc jamais déployé.
+  - Il comporte 5 couloirs et 9 tâches manuelles, qui renvoient aux hypothèses AS-01 à AS-09.
+- **Diagrammes en image** : `make diagrams` (`src/diagrams/bpmn_svg.py`) dessine les deux modèles en SVG dans
+  `docs/img/`, sans navigateur ni Node.
+- **Tests** :
+  - le SVG est bien formé, chaque élément nommé est dessiné, et l'image est à jour par rapport au modèle ;
+  - le modèle de l'existant est non exécutable et relié aux hypothèses ;
+  - chaque livrable fait au plus 1 100 mots, ne contient aucun terme interdit, et ses liens relatifs existent.
+- **README** : une section « Livrables de conseil », avec les deux diagrammes.
+
+### Mesuré
+- Longueur des livrables : de 734 à 1 054 mots (plafond du test : 1 100).
+- Les chiffres cités par la feuille de route viennent de `results/metrics.json`. Les ordres de grandeur de
+  l'existant viennent de `hypotheses/as-is.yaml`, et leurs totaux sont recalculés par `make metrics`.
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (140 tests) | vert | à venir |
+| Rendu des deux SVG contrôlé à l'œil (capture par Edge sans interface) | vérifié | sans objet |
+
+### Écarts et incidents
+- Le document 02 dépassait 2 pages une fois complété : le détail des agents est passé en annexe.
+
+### Reste
+- À confirmer par Seif : il peut présenter le diagnostic et la feuille de route en 5 minutes, en s'appuyant sur
+  le pitch du document 03.
+- Suite : P8.
