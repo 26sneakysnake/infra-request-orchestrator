@@ -97,5 +97,6 @@ metrics:
 diagrams:
 	uv run python -m diagrams.bpmn_svg
 
+# README.md from docs/README.template.md and the figures of results/ (checked in CI).
 readme:
-	$(error make $@ arrives in phase P8)
+	uv run python -m report.readme

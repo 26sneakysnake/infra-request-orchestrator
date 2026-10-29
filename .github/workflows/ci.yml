@@ -33,6 +33,9 @@ jobs:
       - run: make setup
       - run: make eval
       - run: git diff --exit-code results/
+      # Every figure of the README comes from results/: regenerate it and fail on any drift.
+      - run: make readme
+      - run: git diff --exit-code README.md
 
   stack:
     # Starts Camunda + vcsim with docker compose and waits until every endpoint answers.

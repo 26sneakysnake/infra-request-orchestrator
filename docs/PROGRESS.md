@@ -456,6 +456,7 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 | `make lint test` (130 tests) | vert | vert : [run 40904344354](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904344354), commit `c627d44` |
 | 5 e2e en `live` (20 demandes), puis `make metrics` | vert | non : la CI rejoue les cassettes, et les durées en rejeu ne disent rien de la latence des agents |
 | `make eval` inchangé | vérifié | vert : job `eval` du même run |
+| e2e en rejeu avec `llmCostUsd` et le rapport par exécution | vert | vert : [run 40904344405](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904344405) |
 
 ### Écarts et incidents
 - **Données de test créées** : RITM0010073 à RITM0010092, CHG0030065 à CHG0030084, NETOPS-68 à NETOPS-87.
@@ -503,7 +504,7 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
 |---|---|---|
-| `make lint test` (140 tests) | vert | à venir |
+| `make lint test` (140 tests) | vert | vert : [run 40904692432](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40904692432), commit `ea07d8a` |
 | Rendu des deux SVG contrôlé à l'œil (capture par Edge sans interface) | vérifié | sans objet |
 
 ### Écarts et incidents
@@ -513,3 +514,52 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 - À confirmer par Seif : il peut présenter le diagnostic et la feuille de route en 5 minutes, en s'appuyant sur
   le pitch du document 03.
 - Suite : P8.
+
+## P8 : README et démo
+
+### Fait
+- **`make readme`** (`src/report/readme.py`) : le README est généré depuis `docs/README.template.md`.
+  - Chaque chiffre est un renvoi vers `results/qualification.json`, `results/diagnosis.json` ou
+    `results/metrics.json`. Il est écrit en notation française, et chaque proportion en k/n avec son intervalle
+    de Wilson.
+  - Le job CI `eval` régénère le README et échoue au moindre écart, et un test fait la même vérification en
+    local. Un chiffre ne peut donc plus diverger de sa source.
+- **Le README couvre désormais** :
+  - l'avertissement « fictif » en première section ;
+  - l'architecture (Mermaid) et le diagramme cible ;
+  - les captures ;
+  - les résultats des agents et du processus, avec l'hypothèse as-is à part ;
+  - les livrables, le démarrage et les commandes ;
+  - « Ce que ce projet ne montre pas » et les limites.
+- **Section démo du README corrigée.** Elle disait encore que la demande sans environnement était refusée. Depuis
+  P3, l'agent pose la question au demandeur.
+- **`docs/DEMO.md`** contient :
+  - la préparation de la veille et du jour même ;
+  - le déroulé minuté de 5 minutes, avec ce qu'on montre et ce qu'on dit ;
+  - la liste des captures à prendre et leur nom de fichier ;
+  - le plan B, avec la vidéo ;
+  - le nettoyage après la démo.
+- **Les captures** s'ajoutent d'elles-mêmes au README dès qu'elles sont déposées dans `docs/img/captures/`
+  (`make readme`).
+
+### Mesuré
+- Rien de nouveau : P8 met en forme les résultats de P3 à P6.
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (151 tests) | vert | à venir |
+| `make readme` sans écart avec le README commité | vert (test) | à venir (job `eval`) |
+| Démo complète en suivant `docs/DEMO.md` | **à faire par Seif** | sans objet |
+
+### Reste (pour Seif)
+1. Faire une répétition en suivant `docs/DEMO.md`.
+2. Prendre les 4 captures listées, les déposer dans `docs/img/captures/`, puis lancer `make readme` et
+   committer.
+3. Enregistrer la vidéo de 3 minutes du plan B, et mettre son lien dans `docs/DEMO.md`.
+
+P8 sera terminée quand la démo tournera chez Seif en suivant `docs/DEMO.md` sans aide.
+
+### Bilan du projet
+- **Phases** : P0 à P7 terminées et vertes en CI. P8 est terminée côté code et attend la répétition de Seif.
+- **Dépense LLM totale depuis P3** : 1,206 $ sur un budget de 3 $.
