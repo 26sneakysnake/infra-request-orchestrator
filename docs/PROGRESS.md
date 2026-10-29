@@ -548,7 +548,8 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
   et réapplique les zones. Le cas est ajouté au plan B de `docs/DEMO.md` et au guide opérationnel.
 - **Démo faite par Seif (29/10), en deux passages.**
   - Premier passage (RITM0010105 à RITM0010109) : bloqué par le bug de `kind-up`, puis interrompu avant les
-    approbations. RITM0010106 et RITM0010107 restent « en cours » et RITM0010108 « en attente » dans ServiceNow.
+    approbations. RITM0010106, RITM0010107 et RITM0010108 sont restées ouvertes, puis ont été fermées à la
+    clôture du projet (voir plus bas).
   - Second passage (RITM0010114 à RITM0010118), complet :
     - catalogue-api, paiement-front et reporting-batch sont closes (CHG0030102 à CHG0030104) ;
     - reporting-batch a suivi la panne injectée, le diagnostic, la validation dans Tasklist et la
@@ -580,10 +581,15 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 | `make kind-up` idempotent (commit `ca2cf30`) | vert : cluster existant gardé, zones réappliquées | vert : cluster créé de zéro, [ci 40916987258](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987258), [e2e 40916987340](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987340) |
 | Démo complète en suivant `docs/DEMO.md` | faite par Seif (second passage complet, voir plus haut) | sans objet |
 
+### Clôture du projet (29/10)
+- La dernière instance active (facturation-api, RITM0010117, en attente de réponse) a été annulée dans Camunda.
+- Les 4 demandes de démonstration restées ouvertes (RITM0010106, RITM0010107, RITM0010108 et RITM0010117) ont
+  été fermées en « Closed Incomplete » dans ServiceNow, avec une note de travail.
+- Le cluster kind et la pile ont été arrêtés (`make kind-down down`). Les volumes Camunda sont conservés :
+  `docker compose down -v` les supprime.
+
 ### Reste (facultatif)
-1. Enregistrer la vidéo de 3 minutes du plan B, et mettre son lien dans `docs/DEMO.md` (pas encore faite).
-2. Si besoin, fermer à la main dans ServiceNow les demandes restées ouvertes : RITM0010106, RITM0010107,
-   RITM0010108 et RITM0010117.
+- Enregistrer la vidéo de 3 minutes du plan B, et mettre son lien dans `docs/DEMO.md` (pas encore faite).
 
 ### Bilan du projet
 - **Phases** : P0 à P8 terminées. P0 à P8 sont vertes en CI, et la démo a tourné sur le PC de Seif.
