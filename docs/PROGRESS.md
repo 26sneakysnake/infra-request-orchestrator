@@ -542,6 +542,10 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
   - le nettoyage après la démo.
 - **Les captures** s'ajoutent d'elles-mêmes au README dès qu'elles sont déposées dans `docs/img/captures/`
   (`make readme`).
+- **Correctif trouvé pendant la répétition (29/10).** `make up kind-up deploy-bpmn` s'arrêtait sur `kind-up`
+  quand le cluster `netco` existait déjà, car `docker compose down -v` ne le supprime pas. Le processus n'était
+  donc pas déployé, et le poller recevait un 404 à chaque passage. `kind-up` garde désormais un cluster existant
+  et réapplique les zones. Le cas est ajouté au plan B de `docs/DEMO.md` et au guide opérationnel.
 
 ### Mesuré
 - Rien de nouveau : P8 met en forme les résultats de P3 à P6.

@@ -49,9 +49,10 @@ record: export CASSETTE_RECORD = 1
 record:
 	uv run pytest -m recorded
 
-# kind lab cluster with the NetCo network zones and their probes.
+# kind lab cluster with the NetCo network zones and their probes. An existing netco cluster is kept
+# (`docker compose down -v` does not remove it); `make kind-down` deletes it.
 kind-up:
-	kind create cluster --config infra/kind/cluster.yaml --wait 180s
+	$(if $(filter netco,$(shell kind get clusters)),@echo kind cluster netco already exists,kind create cluster --config infra/kind/cluster.yaml --wait 180s)
 	$(KUBECTL) apply -f infra/kind/zones.yaml
 	$(KUBECTL) wait --for=condition=Ready pod -l app.kubernetes.io/name=probe -A --timeout=240s
 

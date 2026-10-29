@@ -40,6 +40,7 @@ Un job en échec est relancé 3 fois, à 10 s d'intervalle. Ensuite, Operate aff
 | `CassetteMiss` | rejeu d'un prompt jamais enregistré (variables différentes de l'enregistrement) | en démo, passer en `NETCO_LLM_MODE=live` ; pour la CI, réenregistrer (voir plus bas) |
 | `BudgetExceeded` | plafond de dépense LLM atteint (`out/llm-spend.json`) | décision humaine : relever `NETCO_LLM_BUDGET_USD` ou attendre |
 | Instance bloquée sur un job `CREATED` | aucun worker ne tourne | relancer `make workers` |
+| Journal des workers : `Expected to find process definition with process ID 'expose_service'` | modèles non déployés (après `docker compose down -v`, par exemple) | `make deploy-bpmn`, sans arrêter les workers : la demande est rouverte et repart au passage suivant |
 | Vérification réseau en échec | panne réelle, ou panne injectée (`NETCO_INJECT_FAULT`) | suivre la tâche « Valider la remédiation » dans Tasklist |
 | Documentation de source `gabarit` | l'agent a écrit une valeur absente des faits, ou n'a pas répondu | rien d'urgent : le gabarit est complet ; lire `documentation.problems` |
 

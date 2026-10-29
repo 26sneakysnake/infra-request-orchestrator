@@ -64,6 +64,7 @@ Ne capturer ni identifiant ni mot de passe, ni l'adresse complète de l'instance
 |---|---|
 | ServiceNow en veille ou injoignable | Se connecter à l'instance pour la réveiller (2 à 3 min). Sinon, passer la vidéo. |
 | Docker ou kind ne démarre pas | Passer la vidéo de 3 minutes, puis le README (captures, résultats). |
+| Les workers répètent « Expected to find process definition … 'expose_service' » | Les modèles ne sont pas déployés. Lancer `make deploy-bpmn` dans un autre terminal, sans arrêter les workers : les demandes repartent dans les 10 s. |
 | Un agent ne répond pas (réseau, plafond atteint) | L'incident apparaît dans Operate : le montrer, c'est aussi la démo des relances. Puis passer la vidéo. |
 | Plus de temps que prévu | Sauter l'étape 3:15 (réponse du demandeur). |
 
