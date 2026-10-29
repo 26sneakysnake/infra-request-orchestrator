@@ -89,10 +89,9 @@ eval-freeze:
 eval-capture:
 	uv run python -m evals.capture_diagnosis
 
-# Targets of later phases (see PLAN.md).
-
+# Measures of the live e2e runs, read back from the Camunda history (local stack).
 metrics:
-	$(error make $@ arrives in phase P6)
+	uv run python -m metrics.collect
 
 readme:
 	$(error make $@ arrives in phase P8)

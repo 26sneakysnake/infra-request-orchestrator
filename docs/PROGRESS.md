@@ -404,3 +404,63 @@ L'échantillon est petit : il montre que le chemin fonctionne, pas un taux de r�
 - Rien pour P5 : en CI, la demande avec VM va au bout, et les deux fichiers sont joints au ticket Jira et au
   changement ServiceNow de chacune des 4 demandes.
 - Prochaine phase : P6, seulement avec l'accord de Seif.
+
+## P6 : Mesures
+
+### Fait
+- **`make metrics`** (`src/metrics/collect.py`) relit chaque instance dans l'historique Camunda : étapes datées
+  (`search_element_instances`) et variables. Il écrit `results/metrics.json` :
+  - la durée de bout en bout, et la durée hors attente humaine ;
+  - la durée de chaque étape, et la latence des agents ;
+  - la part des activités automatisées ;
+  - les demandes sans intervention humaine ;
+  - les interventions par type ;
+  - le coût LLM par demande ;
+  - les rédactions acceptées par le contrôle.
+
+  Les attentes humaines, simulées par le script e2e, sont publiées à part et retirées du temps de traitement.
+- **Échantillon déclaré** : les exécutions de l'e2e en mode `live`. Chaque e2e garde désormais son rapport dans
+  `out/e2e-runs/` (mode LLM, type de chaque demande). `results/metrics.json` liste les exécutions et les
+  demandes retenues.
+- **Coût complet par instance** : la variable `llmCostUsd` cumule tous les appels d'agent. Avant, la seconde
+  qualification d'une demande en texte libre écrasait le coût de la première.
+- **Hypothèses as-is** (`hypotheses/as-is.yaml`) : 9 étapes manuelles (AS-01 à AS-09), avec l'acteur, l'effort
+  et le délai en fourchette. Elles sont recopiées dans `results/metrics.json` sous l'étiquette « hypothèse
+  déclarée, non mesurée », avec leurs totaux.
+- **README** : une section « Mesures », qui sépare le tableau mesuré de l'hypothèse as-is. LIMITS : une section
+  « Mesures ».
+
+### Mesuré
+Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e avec de vrais appels LLM, soit
+20 demandes, 5 de chaque type.
+
+| Mesure | Résultat |
+|---|---|
+| Demandes terminées, tous contrôles e2e verts | 20/20 (Wilson 95 % : 0,839 à 1) |
+| Bout en bout, médiane (min à max) | 33,7 s (25,1 à 80,9) ; 26,0 s pour une standard, 76,5 s avec panne |
+| Hors attente humaine simulée, médiane | 30,1 s |
+| Latence médiane des agents | qualification 5,8 s (n = 25), diagnostic 6,3 s, documentation 10,3 s |
+| Activités automatisées | 210/225 |
+| Sans aucune intervention humaine | 5/20 (Wilson 95 % : 0,112 à 0,469) : les 5 standard |
+| Coût LLM par demande | médiane 0,0255 $, maximum 0,0387 $ (avec panne) |
+| Documentation acceptée par le contrôle, en conditions réelles | 20/20 (Wilson 95 % : 0,839 à 1) |
+
+- **Coût des 5 exécutions** : 0,534 $. Le total des `llmCostUsd` (0,5346 $) recoupe la hausse du registre de
+  dépense. Dépense cumulée depuis P3 : 1,206 $ sur 3 $.
+- **Reproductibilité** : `make metrics` relancé sur le même historique redonne un fichier identique à l'octet
+  près (`cmp`).
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (130 tests) | vert | à venir |
+| 5 e2e en `live` (20 demandes), puis `make metrics` | vert | non : la CI rejoue les cassettes, et les durées en rejeu ne disent rien de la latence des agents |
+| `make eval` inchangé | vérifié | à venir |
+
+### Écarts et incidents
+- **Données de test créées** : RITM0010073 à RITM0010092, CHG0030065 à CHG0030084, NETOPS-68 à NETOPS-87.
+- **Pas d'écart sur le budget de P6** : environ 1 h, dont 12 min d'exécutions live.
+
+### Reste
+- Rien pour P6. Le README sera généré depuis `results/` par `make readme` en P8.
+- Suite : P7 (accord de Seif donné pour finir le projet).

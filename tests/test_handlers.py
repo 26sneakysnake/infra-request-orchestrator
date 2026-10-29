@@ -214,18 +214,22 @@ def test_qualify_request_appends_the_reply_and_merges_the_form(deps: Deps) -> No
             "citations": [],
             "summary": "s",
         }
-        return Qualification(answer, "claude-sonnet-5-5", 1, {})
+        return Qualification(answer, "claude-sonnet-5-5", 1, {"output_tokens": 1000})
 
     deps.qualify = fake_qualify
     v = {
         "requestText": "Ouvrir facturation-api",
         "reply": "C'est pour la recette.",
         "serviceName": "",
+        "llmCostUsd": 0.01,  # the first round, before the question to the requester
     }
     result = handlers.qualify_request(v, deps)
     assert seen["text"].endswith("Réponse du demandeur : C'est pour la recette.")
     assert result["environment"] == "recette" and result["reply"] is None
     assert result["requestText"] == seen["text"]
+    # Both rounds are counted: the second one does not overwrite the cost of the first.
+    second = Qualification({}, "claude-sonnet-5-5", 1, {"output_tokens": 1000})
+    assert result["llmCostUsd"] == round(0.01 + second.cost_usd, 6)
 
 
 def test_ask_requester_posts_the_questions_and_waits(deps: Deps) -> None:

@@ -62,6 +62,20 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
 - Il n'y a pas de jeu d'évaluation dédié : la mesure porte sur le pilote et sur les 4 rédactions de l'e2e.
 - Les documents sont joints aux tickets, pas publiés dans une base de connaissances.
 
+## Mesures
+- L'échantillon, ce sont 5 exécutions de l'e2e avec de vrais appels LLM, soit 20 demandes. Leur mélange (un
+  quart de demandes standard, un quart avec VM, un quart en texte libre, un quart en panne) est celui du
+  scénario, pas celui d'un vrai portefeuille de demandes : les proportions (demandes sans intervention humaine,
+  part automatisée) en dépendent directement.
+- Les approbations, la réponse du demandeur et la validation de la remédiation sont simulées par le script en
+  quelques secondes. Leurs durées sont publiées à part, comme simulées, et retirées du temps de traitement.
+- Le chronomètre démarre quand l'instance Camunda est créée : l'interrogation de ServiceNow, toutes les 10 s,
+  n'est pas comptée.
+- Tout tourne sur un seul poste (kind, vcsim, Camunda en configuration légère) : les durées ne disent rien d'une
+  plateforme partagée et chargée.
+- Le scénario « as-is » (`hypotheses/as-is.yaml`) est une **hypothèse** de l'auteur, pas une mesure. La mettre
+  à côté des mesures situe un ordre de grandeur ; elle ne démontre aucun gain.
+
 ## Processus
 - Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile
   locale n'a pas d'adresse publique.

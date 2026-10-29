@@ -10,7 +10,7 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 à P5 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
+Phases P0 à P6 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
 comprend :
 - un agent IA de qualification, qui transforme le texte libre en formulaire, cite le référentiel et interroge le
   demandeur quand une information manque ;
@@ -71,6 +71,39 @@ la cause, les preuves et l'action proposées par l'agent.
 
 `make e2e` rejoue le scénario complet de façon automatique : approbation simulée, réponse simulée du
 demandeur, VM, panne injectée et remédiation validée par le script, documentation jointe aux deux tickets. `make kind-down` et `make down` arrêtent tout.
+
+## Mesures
+
+Source : [results/metrics.json](results/metrics.json). `make metrics` le produit à partir de l'historique Camunda
+de chaque instance (étapes datées, variables).
+
+### Mesuré en laboratoire
+L'échantillon compte 5 exécutions de l'e2e avec de vrais appels LLM, soit 20 demandes : 5 standard, 5 normales
+avec VM, 5 en texte libre et 5 avec une panne réseau. Tout tourne sur un seul poste, et les décisions humaines
+sont simulées par le script.
+
+| Mesure | Valeur |
+|---|---|
+| Demandes terminées | 20/20 (Wilson 95 % : 0,839 à 1) |
+| Durée de bout en bout, médiane (min à max) | 33,7 s (25,1 à 80,9) |
+| Médiane par type : standard, normale avec VM, texte libre, panne | 26,0 s, 29,2 s, 46,1 s, 76,5 s |
+| Temps de traitement hors attente humaine simulée, médiane | 30,1 s |
+| Latence médiane des agents : qualification, diagnostic, documentation | 5,8 s, 6,3 s, 10,3 s |
+| Activités automatisées | 210/225 |
+| Demandes sans aucune intervention humaine (les demandes standard) | 5/20 (Wilson 95 % : 0,112 à 0,469) |
+| Coût LLM par demande, médiane (maximum) | 0,0255 $ (0,0387 $) |
+| Documentation rédigée par l'agent et acceptée par le contrôle | 20/20 (Wilson 95 % : 0,839 à 1) |
+
+### Hypothèse « as-is » (non mesurée)
+| Demande | Étapes manuelles | Effort humain | Délai |
+|---|---|---|---|
+| Standard, sans VM | 7 | 185 min | 3 à 12 jours ouvrés |
+| Normale, avec VM | 9 | 240 min | 4 à 20 jours ouvrés |
+
+Ces valeurs sont des hypothèses de l'auteur ([hypotheses/as-is.yaml](hypotheses/as-is.yaml)) pour une entreprise
+fictive, pas une mesure. Les deux tableaux ne se soustraient pas : le laboratoire ne mesure pas l'attente humaine
+réelle (CAB, demandeur), qui fait l'essentiel du délai supposé. Aucun gain n'est donc affirmé. La première
+mesure à faire sur le terrain est un relevé de tickets réels.
 
 ## Évaluation de l'agent de qualification
 

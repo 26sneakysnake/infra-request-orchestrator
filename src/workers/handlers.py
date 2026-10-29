@@ -67,6 +67,12 @@ class Deps:
     create_vm: Callable[[str, str, str], dict[str, Any]] = ensure_vm
 
 
+def _spent(v: Variables, run: AgentRun | None) -> Variables:
+    """Running total of what the agents of this instance cost (every call, every round)."""
+    total = float(v.get("llmCostUsd") or 0) + (run.cost_usd if run else 0.0)
+    return {"llmCostUsd": round(total, 6)}
+
+
 def _exposure(v: Variables) -> str:
     zones = ", ".join(v["zones"])
     return f"{v['serviceName']} ({v['environment']}), port {v['port']}/tcp, zones {zones}"
@@ -79,8 +85,9 @@ def qualify_request(v: Variables, deps: Deps) -> Variables:
         text = f"{text}\n\nRéponse du demandeur : {v['reply']}"
     form = {name: v.get(name) for name in PROCESS_NAMES.values()}
     agent_form = {field: form[name] for field, name in PROCESS_NAMES.items()}
-    variables = merge(form, deps.qualify(text, agent_form))
-    return {**variables, "requestText": text, "reply": None}
+    run = deps.qualify(text, agent_form)
+    variables = merge(form, run)
+    return {**variables, "requestText": text, "reply": None, **_spent(v, run)}
 
 
 def ask_requester(v: Variables, deps: Deps) -> Variables:
@@ -218,7 +225,8 @@ def diagnose_failure(v: Variables, deps: Deps) -> Variables:
             "model": run.model,
             "turns": run.turns,
             "costUsd": round(run.cost_usd, 6),
-        }
+        },
+        **_spent(v, run),
     }
 
 
@@ -300,7 +308,8 @@ def document_service(v: Variables, deps: Deps) -> Variables:
             "files": list(files),
             "model": run.model if run else None,
             "costUsd": round(run.cost_usd, 6) if run else 0.0,
-        }
+        },
+        **_spent(v, run),
     }
 
 

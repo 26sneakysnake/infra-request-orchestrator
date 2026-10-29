@@ -1,0 +1,552 @@
+{
+  "sample": {
+    "description": "5 exécutions de l'e2e, appels LLM en mode live",
+    "llm_mode": "live",
+    "runs": [
+      "20261029-152855",
+      "20261029-153117",
+      "20261029-153341",
+      "20261029-153559",
+      "20261029-153827"
+    ],
+    "requests": [
+      {
+        "run": "20261029-152855",
+        "ritm": "RITM0010073",
+        "kind": "standard"
+      },
+      {
+        "run": "20261029-152855",
+        "ritm": "RITM0010074",
+        "kind": "normale_vm"
+      },
+      {
+        "run": "20261029-152855",
+        "ritm": "RITM0010075",
+        "kind": "texte_libre"
+      },
+      {
+        "run": "20261029-152855",
+        "ritm": "RITM0010076",
+        "kind": "panne"
+      },
+      {
+        "run": "20261029-153117",
+        "ritm": "RITM0010077",
+        "kind": "standard"
+      },
+      {
+        "run": "20261029-153117",
+        "ritm": "RITM0010078",
+        "kind": "normale_vm"
+      },
+      {
+        "run": "20261029-153117",
+        "ritm": "RITM0010079",
+        "kind": "texte_libre"
+      },
+      {
+        "run": "20261029-153117",
+        "ritm": "RITM0010080",
+        "kind": "panne"
+      },
+      {
+        "run": "20261029-153341",
+        "ritm": "RITM0010081",
+        "kind": "standard"
+      },
+      {
+        "run": "20261029-153341",
+        "ritm": "RITM0010082",
+        "kind": "normale_vm"
+      },
+      {
+        "run": "20261029-153341",
+        "ritm": "RITM0010083",
+        "kind": "texte_libre"
+      },
+      {
+        "run": "20261029-153341",
+        "ritm": "RITM0010084",
+        "kind": "panne"
+      },
+      {
+        "run": "20261029-153559",
+        "ritm": "RITM0010085",
+        "kind": "standard"
+      },
+      {
+        "run": "20261029-153559",
+        "ritm": "RITM0010086",
+        "kind": "normale_vm"
+      },
+      {
+        "run": "20261029-153559",
+        "ritm": "RITM0010087",
+        "kind": "texte_libre"
+      },
+      {
+        "run": "20261029-153559",
+        "ritm": "RITM0010088",
+        "kind": "panne"
+      },
+      {
+        "run": "20261029-153827",
+        "ritm": "RITM0010089",
+        "kind": "standard"
+      },
+      {
+        "run": "20261029-153827",
+        "ritm": "RITM0010090",
+        "kind": "normale_vm"
+      },
+      {
+        "run": "20261029-153827",
+        "ritm": "RITM0010091",
+        "kind": "texte_libre"
+      },
+      {
+        "run": "20261029-153827",
+        "ritm": "RITM0010092",
+        "kind": "panne"
+      }
+    ],
+    "by_kind": {
+      "standard": 5,
+      "normale_vm": 5,
+      "texte_libre": 5,
+      "panne": 5
+    },
+    "human_steps": "simulées par le script e2e : leurs durées ne sont pas des mesures"
+  },
+  "measured": {
+    "completed": {
+      "k": 20,
+      "n": 20,
+      "rate": 1.0,
+      "wilson95": [
+        0.8389,
+        1.0
+      ]
+    },
+    "end_to_end_s": {
+      "all": {
+        "n": 20,
+        "median": 33.7,
+        "min": 25.1,
+        "max": 80.9
+      },
+      "standard": {
+        "n": 5,
+        "median": 26.0,
+        "min": 25.1,
+        "max": 28.7
+      },
+      "normale_vm": {
+        "n": 5,
+        "median": 29.2,
+        "min": 27.3,
+        "max": 33.0
+      },
+      "texte_libre": {
+        "n": 5,
+        "median": 46.1,
+        "min": 34.3,
+        "max": 47.4
+      },
+      "panne": {
+        "n": 5,
+        "median": 76.5,
+        "min": 71.2,
+        "max": 80.9
+      }
+    },
+    "processing_s": {
+      "all": {
+        "n": 20,
+        "median": 30.1,
+        "min": 25.1,
+        "max": 79.5
+      },
+      "standard": {
+        "n": 5,
+        "median": 26.0,
+        "min": 25.1,
+        "max": 28.7
+      },
+      "normale_vm": {
+        "n": 5,
+        "median": 28.1,
+        "min": 26.4,
+        "max": 30.3
+      },
+      "texte_libre": {
+        "n": 5,
+        "median": 34.8,
+        "min": 29.9,
+        "max": 35.8
+      },
+      "panne": {
+        "n": 5,
+        "median": 74.0,
+        "min": 69.1,
+        "max": 79.5
+      }
+    },
+    "human_wait_s_simulated": {
+      "all": {
+        "n": 20,
+        "median": 1.3,
+        "min": 0,
+        "max": 11.6
+      },
+      "standard": {
+        "n": 5,
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "normale_vm": {
+        "n": 5,
+        "median": 1.0,
+        "min": 0.9,
+        "max": 2.7
+      },
+      "texte_libre": {
+        "n": 5,
+        "median": 10.9,
+        "min": 1.8,
+        "max": 11.6
+      },
+      "panne": {
+        "n": 5,
+        "median": 1.4,
+        "min": 0.7,
+        "max": 2.5
+      }
+    },
+    "agent_steps_s": {
+      "Task_QualifyRequest": {
+        "name": "Qualifier la demande (agent IA)",
+        "n": 25,
+        "median": 5.8,
+        "min": 3.0,
+        "max": 10.2
+      },
+      "Task_Diagnose": {
+        "name": "Diagnostiquer l'échec (agent IA)",
+        "n": 5,
+        "median": 6.3,
+        "min": 5.9,
+        "max": 7.6
+      },
+      "Task_Document": {
+        "name": "Rédiger et joindre la documentation (agent IA)",
+        "n": 20,
+        "median": 10.3,
+        "min": 8.9,
+        "max": 11.7
+      }
+    },
+    "steps_s": {
+      "Task_ApplyRemediation": {
+        "name": "Appliquer la remédiation (liste autorisée)",
+        "n": 5,
+        "median": 0.9,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "Task_ApproveChange": {
+        "name": "Approuver le changement",
+        "n": 5,
+        "median": 1.0,
+        "min": 0.9,
+        "max": 2.7
+      },
+      "Task_AskRequester": {
+        "name": "Demander les informations manquantes",
+        "n": 5,
+        "median": 0.5,
+        "min": 0.5,
+        "max": 0.5
+      },
+      "Task_ClassifyChange": {
+        "name": "Classer le changement",
+        "n": 20,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "Task_CloseTickets": {
+        "name": "Clôturer les tickets",
+        "n": 20,
+        "median": 2.0,
+        "min": 1.8,
+        "max": 2.3
+      },
+      "Task_CreateChange": {
+        "name": "Créer le changement ServiceNow",
+        "n": 20,
+        "median": 0.8,
+        "min": 0.7,
+        "max": 1.4
+      },
+      "Task_CreateJira": {
+        "name": "Créer le ticket Jira",
+        "n": 20,
+        "median": 1.7,
+        "min": 1.5,
+        "max": 2.4
+      },
+      "Task_CreateVm": {
+        "name": "Créer la VM (vcsim)",
+        "n": 5,
+        "median": 1.1,
+        "min": 1.1,
+        "max": 1.2
+      },
+      "Task_Diagnose": {
+        "name": "Diagnostiquer l'échec (agent IA)",
+        "n": 5,
+        "median": 6.3,
+        "min": 5.9,
+        "max": 7.6
+      },
+      "Task_Document": {
+        "name": "Rédiger et joindre la documentation (agent IA)",
+        "n": 20,
+        "median": 10.3,
+        "min": 8.9,
+        "max": 11.7
+      },
+      "Task_Provision": {
+        "name": "Provisionner sur Kubernetes",
+        "n": 20,
+        "median": 0.1,
+        "min": 0.0,
+        "max": 0.6
+      },
+      "Task_QualifyRequest": {
+        "name": "Qualifier la demande (agent IA)",
+        "n": 25,
+        "median": 5.8,
+        "min": 3.0,
+        "max": 10.2
+      },
+      "Task_ValidateRemediation": {
+        "name": "Valider la remédiation",
+        "n": 5,
+        "median": 1.4,
+        "min": 0.7,
+        "max": 2.5
+      },
+      "Task_ValidateRequest": {
+        "name": "Valider la demande (référentiel)",
+        "n": 20,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.6
+      },
+      "Task_VerifyExposure": {
+        "name": "Vérifier l'exposition",
+        "n": 25,
+        "median": 6.1,
+        "min": 4.1,
+        "max": 40.5
+      }
+    },
+    "automated_activities": {
+      "k": 210,
+      "n": 225,
+      "rate": 0.9333
+    },
+    "requests_without_human": {
+      "k": 5,
+      "n": 20,
+      "rate": 0.25,
+      "wilson95": [
+        0.1119,
+        0.4687
+      ]
+    },
+    "human_interventions_by_kind": {
+      "standard": {},
+      "normale_vm": {
+        "Task_ApproveChange": 5
+      },
+      "texte_libre": {
+        "Event_RequesterReply": 5
+      },
+      "panne": {
+        "Task_ValidateRemediation": 5
+      }
+    },
+    "llm_cost_usd": {
+      "all": {
+        "n": 20,
+        "median": 0.0255,
+        "min": 0.0202,
+        "max": 0.0387
+      },
+      "standard": {
+        "n": 5,
+        "median": 0.0211,
+        "min": 0.0202,
+        "max": 0.0296
+      },
+      "normale_vm": {
+        "n": 5,
+        "median": 0.0238,
+        "min": 0.023,
+        "max": 0.024
+      },
+      "texte_libre": {
+        "n": 5,
+        "median": 0.0282,
+        "min": 0.024,
+        "max": 0.0339
+      },
+      "panne": {
+        "n": 5,
+        "median": 0.032,
+        "min": 0.0287,
+        "max": 0.0387
+      },
+      "total": 0.5346
+    },
+    "documentation_by_agent": {
+      "k": 20,
+      "n": 20,
+      "rate": 1.0,
+      "wilson95": [
+        0.8389,
+        1.0
+      ]
+    }
+  },
+  "as_is_hypotheses": {
+    "nature": "hypothèse déclarée, non mesurée",
+    "source": "hypotheses/as-is.yaml",
+    "steps": [
+      {
+        "id": "AS-01",
+        "step": "Demande par e-mail ou ticket en texte libre",
+        "actor": "demandeur",
+        "effort_min": 15,
+        "delay_days": [
+          0,
+          0
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-02",
+        "step": "Tri par le service desk et allers-retours pour compléter la demande",
+        "actor": "service desk",
+        "effort_min": 20,
+        "delay_days": [
+          1,
+          3
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-03",
+        "step": "Analyse de conformité par l'équipe réseau (ports, zones, nommage)",
+        "actor": "équipe réseau",
+        "effort_min": 30,
+        "delay_days": [
+          1,
+          2
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-04",
+        "step": "Passage en CAB hebdomadaire",
+        "actor": "CAB",
+        "effort_min": 10,
+        "delay_days": [
+          0,
+          5
+        ],
+        "applies": "normal"
+      },
+      {
+        "id": "AS-05",
+        "step": "Règle de pare-feu et déploiement sur la plateforme de conteneurs, à la main",
+        "actor": "équipes réseau et plateforme",
+        "effort_min": 60,
+        "delay_days": [
+          1,
+          3
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-06",
+        "step": "Création de la VM sur la plateforme de virtualisation",
+        "actor": "équipe virtualisation",
+        "effort_min": 45,
+        "delay_days": [
+          1,
+          3
+        ],
+        "applies": "vm"
+      },
+      {
+        "id": "AS-07",
+        "step": "Test de flux manuel depuis les zones autorisées",
+        "actor": "équipe réseau",
+        "effort_min": 20,
+        "delay_days": [
+          0,
+          1
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-08",
+        "step": "Fiche de service et compte rendu de changement, souvent reportés",
+        "actor": "équipe plateforme",
+        "effort_min": 30,
+        "delay_days": [
+          0,
+          2
+        ],
+        "applies": "all"
+      },
+      {
+        "id": "AS-09",
+        "step": "Clôture du changement, du ticket et de la demande",
+        "actor": "service desk",
+        "effort_min": 10,
+        "delay_days": [
+          0,
+          1
+        ],
+        "applies": "all"
+      }
+    ],
+    "totals": {
+      "standard": {
+        "steps": 7,
+        "effort_min": 185,
+        "delay_days": [
+          3,
+          12
+        ],
+        "human_steps": 7
+      },
+      "normale_vm": {
+        "steps": 9,
+        "effort_min": 240,
+        "delay_days": [
+          4,
+          20
+        ],
+        "human_steps": 9
+      }
+    }
+  }
+}

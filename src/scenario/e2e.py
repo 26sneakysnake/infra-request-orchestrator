@@ -10,7 +10,8 @@
    with the two documentation files attached to both tickets, and the VM read back from vcsim.
 
 Request texts are fixed so that the agent's prompts match the recorded cassettes (CI replays them).
-Writes out/e2e-report.json. Exit code 0 only when every check passes.
+Writes out/e2e-report.json, and a copy per run in out/e2e-runs/ (the sample `make metrics` reads).
+Exit code 0 only when every check passes.
 """
 
 import json
@@ -25,6 +26,7 @@ from typing import Any
 
 import camunda_orchestration_sdk as sdk
 
+from agents.llm import llm_mode
 from integrations.config import JiraSettings, ServiceNowSettings
 from integrations.jira import JiraClient
 from integrations.seed import ensure_catalog_item, order_request
@@ -129,6 +131,15 @@ NAMESPACES = [
     "svc-facturation-api-recette",
     f"svc-{FAULTY_SERVICE}-dev",
 ]
+
+
+def kind(request: dict[str, Any]) -> str:
+    """The four request types of the scenario, used to group the measures."""
+    if request["fault"]:
+        return "panne"
+    if request["reply"]:
+        return "texte_libre"
+    return "normale_vm" if request["vm"] else "standard"
 
 
 def wait_for[T](probe: Callable[[], T | None], timeout: float, what: str, interval: float = 3) -> T:
@@ -251,7 +262,11 @@ def finished(client: sdk.CamundaClient, business_id: str) -> Any:
 def main() -> int:
     run_id = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
     OUT.mkdir(exist_ok=True)
-    report: dict[str, Any] = {"run": run_id, "started_at": datetime.now(UTC).isoformat()}
+    report: dict[str, Any] = {
+        "run": run_id,
+        "started_at": datetime.now(UTC).isoformat(),
+        "llm_mode": llm_mode(),
+    }
     camunda = camunda_client()
 
     cluster = Cluster()
@@ -352,6 +367,7 @@ def main() -> int:
             results.append(
                 {
                     "ritm": request["ritm"],
+                    "kind": kind(request),
                     "instance": request["instance"],
                     "change": variables["changeNumber"],
                     "jira": variables["jiraKey"],
@@ -374,9 +390,10 @@ def main() -> int:
 
     report["requests"] = results
     report["ok"] = all(c["ok"] for c in report["dmn"]) and all(r["ok"] for r in results)
-    (OUT / "e2e-report.json").write_text(
-        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    text = json.dumps(report, indent=2, ensure_ascii=False)
+    (OUT / "e2e-report.json").write_text(text, encoding="utf-8")
+    (OUT / "e2e-runs").mkdir(exist_ok=True)
+    (OUT / "e2e-runs" / f"{run_id}.json").write_text(text, encoding="utf-8")
     print(f"e2e {'OK' if report['ok'] else 'KO'}: report in out/e2e-report.json")
     return 0 if report["ok"] else 1
 

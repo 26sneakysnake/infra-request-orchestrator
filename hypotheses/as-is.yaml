@@ -1,0 +1,67 @@
+# Scénario « as-is » d'une exposition de service chez NetCo (entreprise fictive).
+#
+# HYPOTHÈSES DÉCLARÉES, NON MESURÉES. Ordres de grandeur choisis par l'auteur pour situer le laboratoire
+# face à un traitement manuel plausible ; ils ne décrivent aucune entreprise réelle et doivent être
+# remplacés par une mesure sur le terrain avant toute conclusion. `make metrics` les recopie tels quels
+# dans results/metrics.json, à part des mesures.
+#
+# effort_min : travail humain en minutes-personne ; delay_days : délai calendaire en jours ouvrés
+# (fourchette basse, haute) ; applies : all (toute demande), normal (changement soumis au CAB),
+# vm (demande avec VM).
+
+nature: hypothèse déclarée, non mesurée
+steps:
+  - id: AS-01
+    step: Demande par e-mail ou ticket en texte libre
+    actor: demandeur
+    effort_min: 15
+    delay_days: [0, 0]
+    applies: all
+  - id: AS-02
+    step: Tri par le service desk et allers-retours pour compléter la demande
+    actor: service desk
+    effort_min: 20
+    delay_days: [1, 3]
+    applies: all
+  - id: AS-03
+    step: Analyse de conformité par l'équipe réseau (ports, zones, nommage)
+    actor: équipe réseau
+    effort_min: 30
+    delay_days: [1, 2]
+    applies: all
+  - id: AS-04
+    step: Passage en CAB hebdomadaire
+    actor: CAB
+    effort_min: 10
+    delay_days: [0, 5]
+    applies: normal
+  - id: AS-05
+    step: Règle de pare-feu et déploiement sur la plateforme de conteneurs, à la main
+    actor: équipes réseau et plateforme
+    effort_min: 60
+    delay_days: [1, 3]
+    applies: all
+  - id: AS-06
+    step: Création de la VM sur la plateforme de virtualisation
+    actor: équipe virtualisation
+    effort_min: 45
+    delay_days: [1, 3]
+    applies: vm
+  - id: AS-07
+    step: Test de flux manuel depuis les zones autorisées
+    actor: équipe réseau
+    effort_min: 20
+    delay_days: [0, 1]
+    applies: all
+  - id: AS-08
+    step: Fiche de service et compte rendu de changement, souvent reportés
+    actor: équipe plateforme
+    effort_min: 30
+    delay_days: [0, 2]
+    applies: all
+  - id: AS-09
+    step: Clôture du changement, du ticket et de la demande
+    actor: service desk
+    effort_min: 10
+    delay_days: [0, 1]
+    applies: all
