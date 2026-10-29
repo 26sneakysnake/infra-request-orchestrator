@@ -546,9 +546,30 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
   quand le cluster `netco` existait déjà, car `docker compose down -v` ne le supprime pas. Le processus n'était
   donc pas déployé, et le poller recevait un 404 à chaque passage. `kind-up` garde désormais un cluster existant
   et réapplique les zones. Le cas est ajouté au plan B de `docs/DEMO.md` et au guide opérationnel.
+- **Démo faite par Seif (29/10), en deux passages.**
+  - Premier passage (RITM0010105 à RITM0010109) : bloqué par le bug de `kind-up`, puis interrompu avant les
+    approbations. RITM0010106 et RITM0010107 restent « en cours » et RITM0010108 « en attente » dans ServiceNow.
+  - Second passage (RITM0010114 à RITM0010118), complet :
+    - catalogue-api, paiement-front et reporting-batch sont closes (CHG0030102 à CHG0030104) ;
+    - reporting-batch a suivi la panne injectée, le diagnostic, la validation dans Tasklist et la
+      remédiation (CHG0030103, NETOPS-106) ;
+    - legacy-erp est refusée, et facturation-api (RITM0010117) attend la réponse du demandeur.
+- **Captures** : 5 écrans pris par Seif, dans `docs/img/captures/` et dans le README :
+  - l'approbation du CAB dans Tasklist ;
+  - la remédiation dans Tasklist ;
+  - la table DMN dans Operate ;
+  - le changement clos dans ServiceNow ;
+  - le ticket terminé dans Jira.
+
+  La vue d'une instance terminée dans Operate n'a pas été capturée. La liste prévue dans `docs/DEMO.md` est
+  alignée sur ces 5 écrans.
+- **Constaté pendant la démo** : le modèle ServiceNow « Change Registration » remplace la description courte du
+  changement par « Automated : Change ». C'est consigné dans `docs/LIMITS.md` ; la demande d'origine reste dans la
+  description.
 
 ### Mesuré
-- Rien de nouveau : P8 met en forme les résultats de P3 à P6.
+- Rien de nouveau pour `results/` : P8 met en forme les résultats de P3 à P6. La démo n'est pas comptée dans
+  l'échantillon des mesures.
 
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
@@ -557,16 +578,15 @@ Source : `results/metrics.json`. L'échantillon compte 5 exécutions de l'e2e av
 | `make readme` sans écart avec le README commité | vert (test) | vert : job `eval`, étape `git diff --exit-code README.md` |
 | e2e en rejeu | vert | vert : [run 40905489091](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40905489091) |
 | `make kind-up` idempotent (commit `ca2cf30`) | vert : cluster existant gardé, zones réappliquées | vert : cluster créé de zéro, [ci 40916987258](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987258), [e2e 40916987340](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40916987340) |
-| Démo complète en suivant `docs/DEMO.md` | **à faire par Seif** | sans objet |
+| Démo complète en suivant `docs/DEMO.md` | faite par Seif (second passage complet, voir plus haut) | sans objet |
 
-### Reste (pour Seif)
-1. Faire une répétition en suivant `docs/DEMO.md`.
-2. Prendre les 4 captures listées, les déposer dans `docs/img/captures/`, puis lancer `make readme` et
-   committer.
-3. Enregistrer la vidéo de 3 minutes du plan B, et mettre son lien dans `docs/DEMO.md`.
-
-P8 sera terminée quand la démo tournera chez Seif en suivant `docs/DEMO.md` sans aide.
+### Reste (facultatif)
+1. Enregistrer la vidéo de 3 minutes du plan B, et mettre son lien dans `docs/DEMO.md` (pas encore faite).
+2. Si besoin, fermer à la main dans ServiceNow les demandes restées ouvertes : RITM0010106, RITM0010107,
+   RITM0010108 et RITM0010117.
 
 ### Bilan du projet
-- **Phases** : P0 à P7 terminées et vertes en CI. P8 est verte en CI côté code et attend la répétition de Seif.
-- **Dépense LLM totale depuis P3** : 1,206 $ sur un budget de 3 $.
+- **Phases** : P0 à P8 terminées. P0 à P8 sont vertes en CI, et la démo a tourné sur le PC de Seif.
+- **Non fait** : la vidéo du plan B, et la capture d'une instance terminée dans Operate.
+- **Dépense LLM totale depuis P3** : 1,382 $ sur un budget de 3 $ (234 appels, `out/llm-spend.json`), démo
+  comprise.

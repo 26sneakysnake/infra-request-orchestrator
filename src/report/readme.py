@@ -24,13 +24,20 @@ PLACEHOLDER = re.compile(r"\{\{\s*(\w+)\.([\w.]+)\s*(?:\|\s*(\w+)\s*)?\}\}")
 CAPTURES_DIR = ROOT / "docs" / "img" / "captures"
 # Screenshots taken during the demo (docs/DEMO.md); a missing one is simply left out.
 CAPTURES = [
-    ("operate-instance.png", "Operate : une instance terminée, avec le chemin suivi"),
-    ("tasklist-remediation.png", "Tasklist : la remédiation proposée par l'agent, à valider"),
+    (
+        "tasklist-approval.png",
+        "Tasklist : l'approbation du CAB, avec la classe calculée par la table DMN",
+    ),
+    (
+        "tasklist-remediation.png",
+        "Tasklist : la remédiation proposée par l'agent (cause, preuves, runbook), à valider",
+    ),
+    ("operate-decision.png", "Operate : la table DMN qui classe le changement, et ses évaluations"),
     (
         "servicenow-change.png",
-        "ServiceNow : le changement clos, avec la fiche et le compte rendu joints",
+        "ServiceNow : le changement clos, avec la fiche de service et le compte rendu joints",
     ),
-    ("jira-issue.png", "Jira : le ticket de travaux terminé, relié au changement"),
+    ("jira-issue.png", "Jira : le ticket de travaux terminé, avec les deux documents joints"),
 ]
 HEADER = (
     "<!-- Généré par `make readme` depuis docs/README.template.md et results/*.json. "

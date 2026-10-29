@@ -52,8 +52,9 @@ Les prendre pendant la répétition, les enregistrer sous ces noms dans `docs/im
 
 | Fichier | Écran |
 |---|---|
-| `operate-instance.png` | Operate : l'instance terminée de `reporting-batch`, avec le chemin parcouru (la branche VM et la boucle de remédiation) |
+| `tasklist-approval.png` | Tasklist : la tâche « Approuver le changement » ouverte, avec la classe donnée par la table DMN |
 | `tasklist-remediation.png` | Tasklist : la tâche « Valider la remédiation » ouverte, avec la cause et les preuves |
+| `operate-decision.png` | Operate, onglet Decisions : la table « Classer le changement » et ses évaluations |
 | `servicenow-change.png` | ServiceNow : le changement clos, avec ses deux pièces jointes et ses notes de travail |
 | `jira-issue.png` | Jira : le ticket terminé, avec ses pièces jointes et le lien vers le changement |
 

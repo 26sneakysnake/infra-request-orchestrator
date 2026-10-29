@@ -91,7 +91,9 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
 - Dans l'e2e, l'approbation du CAB est **simulée** par le script, sans humain. En démonstration, elle se fait dans
   Tasklist.
 - Le changement ServiceNow suit le modèle « Change Registration » (changement automatisé, sans approbation
-  ServiceNow) : l'approbation a lieu dans Camunda.
+  ServiceNow) : l'approbation a lieu dans Camunda. Ce modèle remplace la description courte par « Automated :
+  Change » (constaté pendant la démo). La demande d'origine reste dans la description et dans le champ de
+  corrélation.
 - Il ne faut pas lancer `make workers` en local pendant un e2e en CI : les deux visent la même instance
   ServiceNow.
 - Chaque exécution de l'e2e crée de vrais enregistrements de test (demandes, changements, tickets Jira). Si

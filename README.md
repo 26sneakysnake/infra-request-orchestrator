@@ -45,7 +45,20 @@ Les étapes du processus :
 
 ## Captures
 
-Captures d'écran à prendre pendant la démo : voir [docs/DEMO.md](docs/DEMO.md).
+![Tasklist : l'approbation du CAB, avec la classe calculée par la table DMN](docs/img/captures/tasklist-approval.png)
+*Tasklist : l'approbation du CAB, avec la classe calculée par la table DMN*
+
+![Tasklist : la remédiation proposée par l'agent (cause, preuves, runbook), à valider](docs/img/captures/tasklist-remediation.png)
+*Tasklist : la remédiation proposée par l'agent (cause, preuves, runbook), à valider*
+
+![Operate : la table DMN qui classe le changement, et ses évaluations](docs/img/captures/operate-decision.png)
+*Operate : la table DMN qui classe le changement, et ses évaluations*
+
+![ServiceNow : le changement clos, avec la fiche de service et le compte rendu joints](docs/img/captures/servicenow-change.png)
+*ServiceNow : le changement clos, avec la fiche de service et le compte rendu joints*
+
+![Jira : le ticket de travaux terminé, avec les deux documents joints](docs/img/captures/jira-issue.png)
+*Jira : le ticket de travaux terminé, avec les deux documents joints*
 
 ## Résultats
 
