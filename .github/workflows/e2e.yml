@@ -1,7 +1,7 @@
 name: e2e
 
 # Runs the whole scenario against the real ServiceNow developer instance and Jira site: each run
-# creates 2 requests, 2 changes and 2 Jira issues there.
+# creates 4 requests, 4 changes and 4 Jira issues there, each with 2 Markdown attachments.
 on:
   workflow_dispatch:
   push:

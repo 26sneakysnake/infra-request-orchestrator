@@ -60,3 +60,26 @@ humain doit valider une remédiation. Le projet garde pourtant le worker, pour d
 
 Ce qui reste visible dans Operate : la tâche de diagnostic, la décision de l'opérateur, et les variables
 `diagnosis` (cause, preuves, runbook, coût) et `remediationsApplied`.
+
+## Agent de documentation : un seul appel, contrôlé, avec un gabarit en secours (P5)
+
+La rédaction n'a besoin d'aucun outil : tout ce que l'agent doit savoir est déjà dans les variables du
+processus. Le worker les met en forme dans un **dossier de faits** (demande, classe et approbation, objets
+Kubernetes, VM, vérification, incident et remédiation s'il y en a eu), et l'agent répond en un seul appel par un
+schéma à deux champs : `fiche_service` et `compte_rendu`.
+
+Trois garde-fous :
+- **des marqueurs** : les numéros de la demande, du changement et du ticket Jira, et la date, n'apparaissent
+  dans le dossier que sous la forme `{{ritmNumber}}`, `{{changeNumber}}`, `{{jiraKey}}` et `{{date}}`. Le
+  worker les remplace après la rédaction. L'agent ne peut donc pas se tromper de numéro, et le prompt reste le
+  même d'une exécution à l'autre, ce qui permet de le rejouer en CI ;
+- **un contrôle déterministe** : chaque valeur concrète du texte (entre backticks, adresses et réseaux,
+  `port/tcp`, identifiants, namespaces, tailles) doit figurer dans le dossier. Un numéro de ticket écrit en dur,
+  un marqueur inconnu ou un terme interdit (une plateforme que le laboratoire n'est pas) fait aussi échouer le
+  contrôle ;
+- **un gabarit** : si le contrôle échoue, ou si l'agent ne répond pas, les documents sont produits par un gabarit
+  déterministe. Une demande close a donc toujours sa documentation, et la variable `documentation` indique la
+  source (`agent` ou `gabarit`) et les valeurs refusées.
+
+La VM suit la même règle que Kubernetes : aucun agent n'y touche. Le worker `create-vm` la crée sur vcsim à
+partir du référentiel (VM-01), en parallèle du provisionnement Kubernetes.

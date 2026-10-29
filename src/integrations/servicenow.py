@@ -92,6 +92,15 @@ class ServiceNowClient:
             headers={"Content-Type": content_type},
         )
 
+    def attachments(self, table: str, sys_id: str) -> list[str]:
+        """File names already attached to a record."""
+        records = self._request(
+            "GET",
+            "/api/now/attachment",
+            params={"sysparm_query": f"table_name={table}^table_sys_id={sys_id}"},
+        )
+        return [r["file_name"] for r in records]
+
     # Service Catalog API
     def list_catalogs(self, limit: int = 10) -> list[dict[str, Any]]:
         return self._request(

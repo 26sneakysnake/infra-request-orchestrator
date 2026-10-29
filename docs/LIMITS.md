@@ -43,6 +43,25 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
   panne qui demande autre chose se termine par « corrigé moi-même » ou `escalate`.
 - Dans l'e2e, la validation humaine de la remédiation est simulée par le script.
 
+## Machines virtuelles (vcsim)
+- vcsim simule l'API vSphere : la VM existe dans l'inventaire, avec son dossier, sa taille, son réseau et son état
+  « allumée », mais elle n'exécute rien. Elle n'a ni système, ni disque utile, ni adresse IP, et aucun lien
+  réseau avec le service exposé sur kind.
+- L'inventaire est celui de vcsim par défaut : un datacenter, un cluster, un datastore, un seul réseau
+  (`VM Network`). Il n'y a ni placement, ni modèle de VM, ni personnalisation du système.
+- vcsim garde son inventaire en mémoire : un redémarrage du conteneur efface les VM créées.
+- Aucune VM n'est supprimée par le processus : le retrait d'un service n'est pas traité, ni pour la VM ni pour le
+  namespace.
+
+## Agent de documentation
+- Le contrôle vérifie que chaque valeur technique du texte figure dans les faits, pas que le texte est juste. Une
+  valeur présente dans les faits mais mal attribuée (une zone bloquée présentée comme autorisée), ou une phrase
+  fausse sans valeur concrète, passe le contrôle.
+- Les valeurs sont repérées par motifs : backticks, adresses et réseaux, `port/tcp`, identifiants, namespaces,
+  tailles. Une valeur écrite autrement, en toutes lettres par exemple, échappe au contrôle.
+- Il n'y a pas de jeu d'évaluation dédié : la mesure porte sur le pilote et sur les 4 rédactions de l'e2e.
+- Les documents sont joints aux tickets, pas publiés dans une base de connaissances.
+
 ## Processus
 - Les demandes arrivent par interrogation de ServiceNow toutes les 10 s. Il n'y a pas de webhook, car la pile
   locale n'a pas d'adresse publique.
@@ -54,7 +73,10 @@ Ce que le projet ne fait pas, ou fait de façon simplifiée. Complété à chaqu
   ServiceNow.
 - Chaque exécution de l'e2e crée de vrais enregistrements de test (demandes, changements, tickets Jira). Si
   l'instance ServiceNow est en veille, le job échoue dès la première étape (`make verify`).
-- Une vérification en échec ouvre une tâche humaine de correction. Le diagnostic assisté arrive en P4.
+- Une vérification en échec passe par le diagnostic de l'agent, puis par une validation humaine (voir plus
+  haut).
+- La VM et le namespace sont créés en parallèle, mais la vérification ne porte que sur l'exposition Kubernetes :
+  la VM est seulement relue dans vcsim par l'e2e.
 
 ## ServiceNow et Jira
 - ServiceNow tourne sur une instance développeur personnelle, réservée à l'apprentissage. ServiceNow peut la

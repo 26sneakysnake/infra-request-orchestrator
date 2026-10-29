@@ -10,19 +10,22 @@ BPMN et une table DMN décident, et un humain valide toute action corrective.
 
 ## État
 
-Phases P0 à P4 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
+Phases P0 à P5 : le processus BPMN tourne de bout en bout, de la demande ServiceNow jusqu'aux tickets clos. Il
 comprend :
 - un agent IA de qualification, qui transforme le texte libre en formulaire, cite le référentiel et interroge le
   demandeur quand une information manque ;
 - une table DMN ;
 - une approbation dans Tasklist ;
-- un vrai provisionnement sur un cluster kind local ;
+- un vrai provisionnement sur un cluster kind local et, quand la demande en réclame une, en parallèle, une VM
+  créée sur vcsim, le simulateur de l'API vSphere ;
 - en cas d'échec de la vérification réseau, un agent IA de diagnostic. Il est en lecture seule et propose une
-  action d'une liste fermée, qu'un humain valide avant que le processus ne l'applique.
+  action d'une liste fermée, qu'un humain valide avant que le processus ne l'applique ;
+- un agent IA de documentation, qui rédige la fiche de service et le compte rendu du changement. Un contrôle
+  automatique refuse toute valeur absente des variables du processus, et un gabarit prend alors le relais. Les
+  deux fichiers sont joints au ticket Jira et au changement ServiceNow.
 
-L'agent de documentation et la VM ne sont pas encore écrits. Les résultats chiffrés sont dans
-[results/qualification.json](results/qualification.json) et [results/diagnosis.json](results/diagnosis.json),
-et le suivi détaillé dans [docs/PROGRESS.md](docs/PROGRESS.md).
+Les résultats chiffrés sont dans [results/qualification.json](results/qualification.json) et
+[results/diagnosis.json](results/diagnosis.json), et le suivi détaillé dans [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Démarrer en local
 
@@ -54,8 +57,12 @@ make workers                  # workers et interrogation de ServiceNow (laisser 
 
 Dans Operate, on suit les 5 instances :
 - 1 standard, terminée sans approbation ;
-- 2 normales, en attente d'approbation dans Tasklist (groupe `cab`) ;
+- 2 normales, en attente d'approbation dans Tasklist (groupe `cab`). Après approbation, celle qui réclame une
+  VM la crée dans vcsim, dans le dossier `netco/recette` ;
 - 2 refusées par le référentiel, avec un commentaire dans ServiceNow.
+
+Chaque instance terminée laisse deux fichiers Markdown sur son ticket Jira et sur son changement ServiceNow : la
+fiche de service et le compte rendu du changement.
 
 Pour voir le diagnostic, il faut provoquer une panne sur un service avant `make workers`. Par exemple, en
 PowerShell : `$env:NETCO_INJECT_FAULT = "network_policy_zone:catalogue-api"`. Les variantes sont listées dans
@@ -63,7 +70,7 @@ PowerShell : `$env:NETCO_INJECT_FAULT = "network_policy_zone:catalogue-api"`. Le
 la cause, les preuves et l'action proposées par l'agent.
 
 `make e2e` rejoue le scénario complet de façon automatique : approbation simulée, réponse simulée du
-demandeur, panne injectée et remédiation validée par le script. `make kind-down` et `make down` arrêtent tout.
+demandeur, VM, panne injectée et remédiation validée par le script, documentation jointe aux deux tickets. `make kind-down` et `make down` arrêtent tout.
 
 ## Évaluation de l'agent de qualification
 

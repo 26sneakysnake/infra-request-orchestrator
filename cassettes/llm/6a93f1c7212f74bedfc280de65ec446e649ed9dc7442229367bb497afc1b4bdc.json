@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgWij5fwHDnd8RM7KxeJK",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"cause\":\"network_policy\",\"action\":\"reapply_network_policy\",\"runbook\":\"RB-01\",\"explanation\":\"Les pods sont prêts et le Service a un endpoint prêt, mais la NetworkPolicy n'autorise que la zone 'bureautique'. La demande validée attend la zone 'dev', qui est donc bloquée. Il faut réappliquer la NetworkPolicy conformément à la demande (zone dev, port 8080/TCP).\",\"evidence\":[\"zone dev : attendue joignable, observée bloquée (ÉCHEC)\",\"NetworkPolicy inventaire-api-ingress: pods app.kubernetes.io/name=inventaire-api, ingress from zones ['bureautique'] on ['8080/TCP']\",\"Demande validée : service inventaire-api, port 8080/tcp, zones autorisées attendues : dev.\",\"Service inventaire-api: ports 8080 -> targetPort 8080, selector app.kubernetes.io/name=inventaire-api, ready endpoints 1\"],\"confidence\":\"high\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2,
+   "cache_creation_input_tokens": 695,
+   "cache_read_input_tokens": 2449,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 695,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 357,
+     "cache_read_input_tokens": 2449,
+     "cache_creation_input_tokens": 695,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 695,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 357,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

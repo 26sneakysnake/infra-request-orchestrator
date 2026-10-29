@@ -338,6 +338,7 @@ dependencies = [
     { name = "kubernetes" },
     { name = "loguru" },
     { name = "python-dotenv" },
+    { name = "pyvmomi" },
     { name = "pyyaml" },
 ]
 
@@ -356,6 +357,7 @@ requires-dist = [
     { name = "kubernetes", specifier = ">=37,<38" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "python-dotenv", specifier = ">=1.2.4" },
+    { name = "pyvmomi", specifier = "==9.1.1.0" },
     { name = "pyyaml", specifier = ">=6.0.3" },
 ]
 
@@ -608,6 +610,14 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/74/26/2fbeedb218a787a5eea551c7532cac4e009f83d689dd2faa0d0353473f86/python_dotenv-1.2.4.tar.gz", hash = "sha256:f0d53e69935a851c0dcc78f3ab7aaccd8cabef0b92382b576b824212902873c0", size = 60824, upload-time = "2026-10-01T05:36:10Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/d1/38f3a3405989a89ac18390803e70c6ad7c7760da4f9b83cbeca0c44a0c72/python_dotenv-1.2.4-py3-none-any.whl", hash = "sha256:42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc", size = 23266, upload-time = "2026-10-01T05:36:08.633Z" },
+]
+
+[[package]]
+name = "pyvmomi"
+version = "9.1.1.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e0/18/044c8a0c8f6ac16642e65f4fac19653291c7f6c5ab61a3734c9f6066a87b/pyvmomi-9.1.1.0-py3-none-any.whl", hash = "sha256:76af3cba85573769daf4e6760aace32e7af34e1bbf343895b8c4798b6bc0e2d2", size = 557324, upload-time = "2026-09-03T11:42:04.524Z" },
 ]
 
 [[package]]

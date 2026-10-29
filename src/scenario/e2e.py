@@ -1,12 +1,13 @@
 """End-to-end scenario against the real stack and tools: python -m scenario.e2e
 
 1. The engine evaluates the change_class decision on the reference cases.
-2. Three requests are ordered in ServiceNow: a standard one, a normal one, and a free-text one
-   without environment.
+2. Four requests are ordered in ServiceNow: a standard one, a normal one with a VM, a free-text
+   one without environment, and one whose provisioning gets an injected network fault.
 3. The workers start, restricted to these requests (NETCO_POLL_ONLY).
 4. The normal change is approved in place of a CAB member (simulated approval, recorded as such),
    and the scenario answers the agent's question as the requester would, in a ServiceNow comment.
-5. Every instance must complete; then Jira, the ServiceNow change and the request are checked.
+5. Every instance must complete; then Jira, the ServiceNow change and the request are checked,
+   with the two documentation files attached to both tickets, and the VM read back from vcsim.
 
 Request texts are fixed so that the agent's prompts match the recorded cassettes (CI replays them).
 Writes out/e2e-report.json. Exit code 0 only when every check passes.
@@ -35,6 +36,7 @@ from integrations.servicenow import (
 )
 from k8s.faults import FAULTS
 from scenario.camunda import camunda_client
+from vsphere.vm import find_vm
 
 OUT = Path(__file__).resolve().parents[2] / "out"
 
@@ -86,6 +88,8 @@ REQUESTS = [
             "source_networks": "10.30.0.0/16",
             "exposure": "interne",
             "request_text": "Ouvrir PostgreSQL en recette au réseau data uniquement.",
+            "vm_required": True,
+            "vm_size": "M",
         },
         None,
         None,
@@ -253,6 +257,7 @@ def main() -> int:
                 "expected_class": expected_class,
                 "reply": reply,
                 "fault": fault,
+                "vm": bool(variables.get("vm_required")),
                 "ritm": created["ritm"],
                 "ritm_sys_id": created["ritm_sys_id"],
                 "t0": time.monotonic(),
@@ -300,6 +305,24 @@ def main() -> int:
                 "servicenow_request_closed": ritm["state"] == RITM_CLOSED_COMPLETE,
                 "jira_done": issue["fields"]["status"]["statusCategory"]["key"] == "done",
             }
+            documentation = variables.get("documentation") or {}
+            files = set(documentation.get("files") or [])
+            checks["documentation_on_jira"] = len(files) == 2 and files <= set(
+                jira.attachments(variables["jiraKey"])
+            )
+            checks["documentation_on_change"] = len(files) == 2 and files <= set(
+                sn.attachments("change_request", variables["changeSysId"])
+            )
+            vm = find_vm(variables["serviceName"], variables["environment"])
+            if request["vm"]:
+                checks["vm_powered_on_in_vcsim"] = (
+                    vm is not None
+                    and vm["powerState"] == "poweredOn"
+                    and (vm["cpu"], vm["memoryMb"]) == (2, 4096)
+                    and variables.get("vm", {}).get("name") == vm["name"]
+                )
+            else:
+                checks["no_vm_when_not_requested"] = vm is None and "vm" not in variables
             if request["reply"]:
                 checks["agent_asked_the_requester"] = variables.get("questionsAsked", 0) >= 1
             if request["fault"]:
@@ -317,6 +340,9 @@ def main() -> int:
                     "change": variables["changeNumber"],
                     "jira": variables["jiraKey"],
                     "change_class": variables["changeClass"],
+                    "documentation": documentation.get("source"),
+                    "documentation_problems": documentation.get("problems"),
+                    "vm": variables.get("vm"),
                     "seconds_to_complete": round(time.monotonic() - request["t0"], 1),
                     "checks": checks,
                     "ok": all(checks.values()),

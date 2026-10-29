@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from camunda_orchestration_sdk import JobError
 
+from agents.loop import AgentError, AgentRun
 from agents.qualification import Qualification
 from workers import handlers
 from workers.handlers import Deps
@@ -38,6 +39,12 @@ class FakeServiceNow:
     def record_url(self, table: str, sys_id: str) -> str:
         return f"https://sn.example/{table}.do?sys_id={sys_id}"
 
+    def attachments(self, table: str, sys_id: str) -> list[str]:
+        return [args[1] for kind, args in self.calls if kind == "attach"]
+
+    def attach(self, table: str, sys_id: str, filename: str, content: bytes) -> None:
+        self.calls.append(("attach", (sys_id, filename, content.decode("utf-8"))))
+
 
 class FakeJira:
     def __init__(self) -> None:
@@ -67,6 +74,12 @@ class FakeJira:
     def transition(self, key: str, category: str = "done") -> str:
         self.calls.append(("transition", (key, category)))
         return "Terminé"
+
+    def attachments(self, key: str) -> list[str]:
+        return [args[1] for kind, args in self.calls if kind == "attach"]
+
+    def attach(self, key: str, filename: str, content: bytes) -> None:
+        self.calls.append(("attach", (key, filename, content.decode("utf-8"))))
 
 
 class FakeCluster:
@@ -294,3 +307,73 @@ def test_quota_remediation_and_escalation(deps: Deps) -> None:
         handlers.apply_remediation(
             {**v, "diagnosis": {"action": "escalate", "cause": "other"}}, deps
         )
+
+
+DOCUMENTED = {
+    **VALIDATED,
+    "sourceNetworks": "10.20.0.0/16",
+    "jiraKey": "NETOPS-42",
+    "changeSysId": "chg-sys",
+    "changeNumber": "CHG0030010",
+    "provisionedResources": ["Namespace/svc-catalogue-api-dev"],
+    "verification": {"ok": True, "checks": [], "summary": "Règle réseau conforme"},
+}
+GOOD_DRAFT = {
+    "fiche_service": "# `catalogue-api`\nNamespace `svc-catalogue-api-dev`, port 8080/tcp.\n"
+    "Demande {{ritmNumber}}, ticket {{jiraKey}}.",
+    "compte_rendu": "# Changement {{changeNumber}}\nRéalisé le {{date}}.",
+}
+
+
+def _attached(deps: Deps) -> dict[str, list[tuple]]:
+    return {
+        "jira": [a for k, a in deps.jira.calls if k == "attach"],
+        "servicenow": [a for k, a in deps.servicenow.calls if k == "attach"],
+    }
+
+
+def test_checked_draft_is_attached_to_both_tickets_with_its_markers_filled(deps: Deps) -> None:
+    deps.draft = lambda dossier: AgentRun(GOOD_DRAFT, "claude-sonnet-5-5", 1)
+    out = handlers.document_service(DOCUMENTED, deps)["documentation"]
+    assert out["source"] == "agent" and out["problems"] == []
+    files = ["fiche-service-catalogue-api-dev.md", "compte-rendu-CHG0030010.md"]
+    assert out["files"] == files
+    attached = _attached(deps)
+    assert [(key, name) for key, name, _ in attached["jira"]] == [("NETOPS-42", f) for f in files]
+    assert [(sys_id, name) for sys_id, name, _ in attached["servicenow"]] == [
+        ("chg-sys", f) for f in files
+    ]
+    sheet = attached["jira"][0][2]
+    assert "RITM0010042" in sheet and "NETOPS-42" in sheet and "{{" not in sheet
+
+    # A retried job does not attach the same files again.
+    handlers.document_service(DOCUMENTED, deps)
+    assert len(_attached(deps)["jira"]) == 2 and len(_attached(deps)["servicenow"]) == 2
+
+
+def test_draft_with_an_invented_value_falls_back_to_the_template(deps: Deps) -> None:
+    invented = {**GOOD_DRAFT, "compte_rendu": "Ouvert depuis 192.168.1.0/24."}
+    deps.draft = lambda dossier: AgentRun(invented, "claude-sonnet-5-5", 1)
+    out = handlers.document_service(DOCUMENTED, deps)["documentation"]
+    assert out["source"] == "gabarit"
+    assert out["problems"] == ["valeur absente des faits : 192.168.1.0/24"]
+    report = _attached(deps)["servicenow"][1][2]
+    assert report.startswith("# Compte rendu du changement CHG0030010")
+
+
+def test_agent_without_answer_falls_back_to_the_template(deps: Deps) -> None:
+    def refuse(dossier: dict) -> AgentRun:
+        raise AgentError("the model declined the request")
+
+    deps.draft = refuse
+    out = handlers.document_service(DOCUMENTED, deps)["documentation"]
+    assert out["source"] == "gabarit" and out["model"] is None
+    assert len(_attached(deps)["jira"]) == 2
+
+
+def test_create_vm_passes_the_normalized_size(deps: Deps) -> None:
+    seen = []
+    deps.create_vm = lambda service, env, size: seen.append((service, env, size)) or {"name": "x"}
+    v = {**VALIDATED, "vmRequired": True, "vmSize": "m"}
+    assert handlers.create_vm(v, deps) == {"vm": {"name": "x"}}
+    assert seen == [("catalogue-api", "dev", "M")]

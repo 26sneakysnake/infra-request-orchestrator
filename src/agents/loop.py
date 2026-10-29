@@ -52,6 +52,8 @@ def run_tool_loop(
     extra: dict[str, Any] = {}
     if model in FALLBACK_MODELS:
         extra = {"betas": ["server-side-fallback-2026-07-01"], "fallbacks": "default"}
+    if tools:  # an agent without tools answers in a single request
+        extra["tools"] = tools
     messages: list[dict[str, Any]] = [{"role": "user", "content": first_message}]
     usage: Counter[str] = Counter()
     for turn in range(1, max_turns + 1):
@@ -61,7 +63,6 @@ def run_tool_loop(
             # Explicit breakpoint: tools + system prompt are cached once and shared by all requests;
             # the automatic one below caches the growing conversation within a request.
             system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
-            tools=tools,
             output_config={"effort": effort, "format": {"type": "json_schema", "schema": schema}},
             cache_control={"type": "ephemeral"},
             messages=messages,

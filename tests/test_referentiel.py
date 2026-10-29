@@ -6,7 +6,8 @@ from pathlib import Path
 from netco.rules import load_rules
 
 REFERENTIEL = Path(__file__).resolve().parents[1] / "referentiel"
-MARKDOWN = "\n".join(p.read_text(encoding="utf-8") for p in REFERENTIEL.glob("*.md"))
+# Sub-folders included: infrastructure/ holds rules the qualification agent does not search.
+MARKDOWN = "\n".join(p.read_text(encoding="utf-8") for p in REFERENTIEL.rglob("*.md"))
 
 
 def test_every_port_and_zone_is_documented() -> None:

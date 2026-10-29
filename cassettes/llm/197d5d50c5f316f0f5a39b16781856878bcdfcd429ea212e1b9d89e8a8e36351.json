@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgWijob5PtaMssFWziVJG",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"fiche_service\":\"# Fiche service : `inventaire-api`\\n\\n## Identité\\n- Service : `inventaire-api`\\n- Environnement : `dev`\\n- Exposition : `interne`\\n- Plateforme : Kubernetes sur kind (cluster local du laboratoire)\\n\\n## Accès\\n- Namespace : `svc-inventaire-api-dev`\\n- Port : `8080/tcp`\\n- Adresse interne : `inventaire-api.svc-inventaire-api-dev.svc.cluster.local:8080`\\n- Image : `traefik/whoami:v1.12.0`\\n\\n## Flux autorisés\\n- Zone `dev` : réseau source `10.20.0.0/16`\\n- Le port n'est pas classé sensible.\\n\\n## Objets Kubernetes\\n- `Namespace/svc-inventaire-api-dev`\\n- `Deployment/inventaire-api`\\n- `Service/inventaire-api`\\n- `NetworkPolicy/inventaire-api-ingress`\\n\\n## Vérification\\n- Résultat : Règle réseau conforme, obtenu à la tentative 2 sur `2`.\\n- Sonde depuis la zone `dev` : joignable attendu, joignable constaté.\\n- Sonde depuis la zone `data` : bloquée attendu, bloquée constaté.\\n\\n## Références\\n- Demande : {{ritmNumber}}\\n- Changement : {{changeNumber}}\\n- Ticket Jira : {{jiraKey}}\\n- Date : {{date}}\\n\",\"compte_rendu\":\"# Compte rendu du changement {{changeNumber}}\\n\\n## Contexte\\nLa demande {{ritmNumber}} porte sur l'exposition interne du service `inventaire-api` en environnement `dev`, sur le port `8080/tcp`, depuis le réseau source `10.20.0.0/16`. Plateforme : Kubernetes sur kind (cluster local du laboratoire). Ticket Jira : {{jiraKey}}. Date : {{date}}.\\n\\n## Classe et approbation\\n- Classe : `standard`\\n- Approbation : pré-approuvé (changement standard, CHG-01)\\n\\n## Opérations réalisées\\n1. Création des objets dans le namespace `svc-inventaire-api-dev` : `Namespace/svc-inventaire-api-dev`, `Deployment/inventaire-api` (image `traefik/whoami:v1.12.0`), `Service/inventaire-api` et `NetworkPolicy/inventaire-api-ingress`.\\n2. Première vérification réseau : en échec.\\n3. Diagnostic de la cause : `network_policy`, selon le runbook `RB-01`.\\n4. Action `reapply_network_policy` validée par un opérateur dans Camunda Tasklist, puis appliquée.\\n5. Seconde vérification réseau : conforme.\\n\\n## Vérification\\n- Résultat : Règle réseau conforme, après `2` tentatives.\\n- Zone `dev` : joignable attendu, joignable constaté.\\n- Zone `data` : bloquée attendu, bloquée constaté.\\n- Adresse interne : `inventaire-api.svc-inventaire-api-dev.svc.cluster.local:8080`\\n\\n## Incident et remédiation\\n- Constat : première vérification réseau en échec.\\n- Cause : les pods sont prêts et le Service a un endpoint prêt, mais la NetworkPolicy n'autorisait que la zone `bureautique`. La demande validée attend la zone `dev`, qui était donc bloquée.\\n- Remédiation : réapplication de la NetworkPolicy conformément à la demande (zone `dev`, port `8080/tcp`), action `reapply_network_policy`.\\n- Validation : le commentaire de validation indique une validation simulée par le scénario e2e (aucun humain impliqué).\\n\\n## Conclusion\\nLe service `inventaire-api` est exposé en `dev` conformément à la demande, après réapplication de la NetworkPolicy.\\n\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 951,
+   "cache_read_input_tokens": 1032,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 951,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 1409,
+     "cache_read_input_tokens": 1032,
+     "cache_creation_input_tokens": 951,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 951,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 1409,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

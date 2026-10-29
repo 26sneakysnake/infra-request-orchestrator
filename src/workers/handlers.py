@@ -9,12 +9,14 @@ the job), so the handlers that create records look for the record of a previous 
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import date
 from typing import Any, Protocol
 
 from camunda_orchestration_sdk import JobError
 
 from agents.diagnosis import diagnose, grounded
-from agents.loop import AgentRun
+from agents.documentation import check_values, draft, facts, fill, template
+from agents.loop import AgentError, AgentRun
 from agents.qualification import PROCESS_NAMES, Qualification, merge, qualify
 from integrations.jira import JiraClient
 from integrations.servicenow import (
@@ -26,6 +28,7 @@ from integrations.servicenow import (
 from k8s.faults import inject, requested_fault
 from k8s.manifests import exposure_objects
 from netco.rules import load_rules, validate
+from vsphere.vm import ensure_vm
 
 Variables = dict[str, Any]
 # Comments the process posts to the requester start with this marker; the poller treats any later
@@ -60,6 +63,8 @@ class Deps:
     cluster: ClusterOps
     qualify: Callable[[str, dict[str, Any]], Qualification] = qualify
     diagnose: Callable[[dict[str, Any], str], AgentRun] = diagnose
+    draft: Callable[[dict[str, Any]], AgentRun] = draft
+    create_vm: Callable[[str, str, str], dict[str, Any]] = ensure_vm
 
 
 def _exposure(v: Variables) -> str:
@@ -186,6 +191,11 @@ def provision_k8s(v: Variables, deps: Deps) -> Variables:
     return result
 
 
+def create_vm(v: Variables, deps: Deps) -> Variables:
+    """Runs alongside Kubernetes provisioning when the request asks for a VM (vcsim in the lab)."""
+    return {"vm": deps.create_vm(v["serviceName"], v["environment"], str(v["vmSize"]).upper())}
+
+
 def diagnose_failure(v: Variables, deps: Deps) -> Variables:
     """The agent reads a read-only snapshot of the namespace and proposes one allowed action."""
     request = {"service": v["serviceName"], "port": v["port"], "zones": v["zones"]}
@@ -249,6 +259,51 @@ def verify_exposure(v: Variables, deps: Deps) -> Variables:
     return variables
 
 
+def document_service(v: Variables, deps: Deps) -> Variables:
+    """The agent drafts the service sheet and the change report from the facts of the process.
+
+    A draft with a value absent from the facts is replaced by the template. Both files are
+    attached to the Jira issue and to the change, once each even if the job is retried.
+    """
+    dossier = facts(v)
+    run: AgentRun | None = None
+    try:
+        run = deps.draft(dossier)
+        documents = {name: str(run.answer[name]) for name in ("fiche_service", "compte_rendu")}
+        problems = [p for text in documents.values() for p in check_values(text, dossier)]
+    except AgentError as error:
+        problems = [f"pas de réponse exploitable de l'agent : {error}"]
+    if problems:
+        documents = template(dossier)
+    values = {
+        "ritmNumber": v["ritmNumber"],
+        "changeNumber": v["changeNumber"],
+        "jiraKey": v["jiraKey"],
+        "date": date.today().isoformat(),
+    }
+    files = {
+        f"fiche-service-{v['serviceName']}-{v['environment']}.md": documents["fiche_service"],
+        f"compte-rendu-{v['changeNumber']}.md": documents["compte_rendu"],
+    }
+    on_jira = set(deps.jira.attachments(v["jiraKey"]))
+    on_change = set(deps.servicenow.attachments("change_request", v["changeSysId"]))
+    for name, text in files.items():
+        content = fill(text, values).encode("utf-8")
+        if name not in on_jira:
+            deps.jira.attach(v["jiraKey"], name, content)
+        if name not in on_change:
+            deps.servicenow.attach("change_request", v["changeSysId"], name, content)
+    return {
+        "documentation": {
+            "source": "gabarit" if problems else "agent",
+            "problems": problems,
+            "files": list(files),
+            "model": run.model if run else None,
+            "costUsd": round(run.cost_usd, 6) if run else 0.0,
+        }
+    }
+
+
 def close_tickets(v: Variables, deps: Deps) -> Variables:
     summary = f"Service exposé : {_exposure(v)}. Vérification : {v['verification']['summary']}."
     deps.jira.add_comment(v["jiraKey"], summary)
@@ -271,8 +326,10 @@ HANDLERS: dict[str, Callable[[Variables, Deps], Variables]] = {
     "create-sn-change": create_sn_change,
     "create-jira-issue": create_jira_issue,
     "provision-k8s": provision_k8s,
+    "create-vm": create_vm,
     "verify-exposure": verify_exposure,
     "diagnose-failure": diagnose_failure,
     "apply-remediation": apply_remediation,
+    "document-service": document_service,
     "close-tickets": close_tickets,
 }

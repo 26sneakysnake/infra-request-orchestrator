@@ -34,6 +34,7 @@ JOB_TIMEOUT_MS = {
     "verify-exposure": 180_000,
     "diagnose-failure": 180_000,
     "qualify-request": 120_000,
+    "document-service": 120_000,
 }
 DEFAULT_JOB_TIMEOUT_MS = 60_000
 

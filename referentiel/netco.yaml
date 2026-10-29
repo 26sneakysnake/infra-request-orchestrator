@@ -30,3 +30,12 @@ zones:   # ZONE-01, ZONE-02
   finance: 10.40.12.0/24
   bureautique: 10.50.0.0/16
   internet: 0.0.0.0/0
+
+vm:   # VM-01 (referentiel/infrastructure/vm.md)
+  sizes:
+    S: {cpu: 1, memory_mb: 2048}
+    M: {cpu: 2, memory_mb: 4096}
+    L: {cpu: 4, memory_mb: 8192}
+  folder_template: "netco/{environment}"
+  name_template: "{service}-{environment}-vm"
+  network: VM Network

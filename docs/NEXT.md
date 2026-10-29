@@ -20,3 +20,8 @@ Notées pour plus tard, volontairement non traitées : un seul processus bien fa
   nœud), et cas où la bonne réponse est `escalate`.
 - Retour d'expérience : conserver les diagnostics validés ou corrigés par les opérateurs, pour enrichir les
   runbooks et le jeu d'évaluation.
+- Retrait d'un service : suppression de la VM et du namespace, avec son propre changement.
+- VM plus réaliste, hors vcsim : clone d'un modèle, adresse IP attribuée par un IPAM, personnalisation du
+  système, et vérification de la joignabilité de la VM.
+- Documentation publiée dans une base de connaissances (ServiceNow Knowledge ou Confluence) plutôt qu'en pièce
+  jointe, et évaluation de sa fidélité sur un jeu de dossiers, avec un juge pour les erreurs d'attribution.

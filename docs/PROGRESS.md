@@ -320,3 +320,60 @@ Source : `results/diagnosis.json`. Modèle Claude Sonnet 5.5, effort `medium`, 1
 - Rien pour P4 : `results/diagnosis.json` donne la cause et l'action justes 10 fois sur 10, et le job e2e couvre
   une panne.
 - Prochaine phase : P5, seulement avec l'accord de Seif.
+
+## P5 : VM et agent de documentation
+
+### Fait
+- **Référentiel** : règle VM-01 (`referentiel/infrastructure/vm.md`, tailles S, M et L dans `netco.yaml`). La
+  validation refuse une VM demandée sans taille connue. La règle est rangée dans un sous-dossier que l'agent de
+  qualification ne parcourt pas : ses cassettes et `results/qualification.json` sont restés identiques.
+- **VM sur vcsim** (`src/vsphere/vm.py`, pyVmomi 9.1.1.0) :
+  - dossier `netco/<environnement>`, VM `<service>-<environnement>-vm`, taille du référentiel, carte réseau sur
+    `VM Network`, démarrage ;
+  - idempotent : une VM existante est renvoyée telle quelle.
+- **Agent de documentation** (`src/agents/documentation.py`, Sonnet 5.5, effort `low`) :
+  - un seul appel, sans outil, à partir d'un dossier de faits tiré des variables du processus ;
+  - numéros de demande, de changement et de ticket, et date, passés en marqueurs remplacés après la rédaction ;
+  - contrôle déterministe des valeurs (backticks, adresses, `port/tcp`, identifiants, namespaces, tailles,
+    numéros en dur, marqueurs inconnus, termes interdits) ;
+  - gabarit déterministe en secours, si le contrôle échoue ou si l'agent ne répond pas.
+- **Processus** :
+  - après le ticket Jira, une passerelle parallèle lance le provisionnement Kubernetes et, si `vmRequired`,
+    « Créer la VM (vcsim) » ; la vérification attend les deux branches ;
+  - après la vérification, « Rédiger et joindre la documentation (agent IA) » joint `fiche-service-…md` et
+    `compte-rendu-CHG….md` au ticket Jira et au changement ServiceNow, sans doublon si le job est rejoué ;
+  - la boucle d'agent commune accepte une liste d'outils vide, sans changer les requêtes des deux autres
+    agents : `make eval` reste identique.
+- **e2e** : la demande normale `reporting-db` réclame une VM de taille M. Le scénario relit la VM dans vcsim et
+  vérifie les deux pièces jointes sur Jira et sur le changement, pour les 4 demandes.
+
+### Mesuré
+Rédactions acceptées par le contrôle, sans repli sur le gabarit : 5/5 (Wilson 95 % : 0,566 à 1). Ce sont le
+pilote (une demande avec VM et incident) et les 4 demandes de l'e2e enregistré. L'échantillon est petit : il
+montre que le chemin fonctionne, pas un taux de réussite.
+
+- **Coût** :
+  - 0,013 $ à 0,019 $ par rédaction ;
+  - 0,088 $ pour l'e2e enregistré : 4 rédactions, plus la nouvelle qualification de `reporting-db` ;
+  - dépense cumulée depuis P3 : 0,652 $ sur 3 $ (127 appels).
+- **Durée de l'e2e** (sur le PC de Seif) : 54 à 63 s par demande en rejeu ; 66 à 85 s à l'enregistrement.
+
+### Vérifié où
+| Vérification | PC de Seif (Windows) | GitHub Actions |
+|---|---|---|
+| `make lint test` (127 tests) | vert | à venir |
+| `make eval` rejoué, `results/` inchangé après la modification de la boucle et l'ajout de VM-01 | vérifié avec `git status` | à venir |
+| `vsphere/vm.py` contre vcsim : création, démarrage, idempotence, relecture | vérifié | via l'e2e |
+| `make e2e` avec VM et documentation : enregistrement, puis rejeu complet sans cassette manquante | vert (deux exécutions) | à venir |
+
+### Écarts et incidents
+- **pyVmomi et vcsim** : vcsim renvoie un champ `runtime.faultToleranceState` vide, que pyVmomi 9.1 ne sait pas
+  lire, ce qui fait échouer `vm.runtime` et `vm.summary`. Le code lit les propriétés une à une par chemin
+  (`runtime.powerState`, `config.hardware.numCPU`…), via le PropertyCollector.
+- **L'identifiant de la VM** est exclu du dossier de faits : il change d'une exécution à l'autre et casserait le
+  rejeu.
+- **Données de test créées** : RITM0010045 à RITM0010052, CHG0030037 à CHG0030044, NETOPS-40 à NETOPS-47.
+
+### Reste
+- Rien pour P5 une fois la CI verte.
+- Prochaine phase : P6, seulement avec l'accord de Seif.

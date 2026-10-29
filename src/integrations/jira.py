@@ -119,6 +119,11 @@ class JiraClient:
             headers={"X-Atlassian-Token": "no-check"},
         )
 
+    def attachments(self, key: str) -> list[str]:
+        """File names already attached to an issue."""
+        fields = self.get_issue(key, ["attachment"])["fields"]
+        return [a["filename"] for a in fields.get("attachment") or []]
+
     def add_remote_link(self, key: str, url: str, title: str) -> dict[str, Any]:
         """Link the issue to a record in another tool (shown under "Web links").
 

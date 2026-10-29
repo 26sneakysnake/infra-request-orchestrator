@@ -70,9 +70,16 @@ def test_sensitive_port_is_flagged() -> None:
         ({"sourceNetworks": "192.168.1.0/24"}, "ZONE-01"),
         ({"sourceNetworks": "pas-un-reseau"}, "ZONE-01"),
         ({"sourceNetworks": "0.0.0.0/0"}, "ZONE-02"),
+        ({"vmRequired": True, "vmSize": ""}, "VM-01"),
+        ({"vmRequired": True, "vmSize": "XL"}, "VM-01"),
     ],
 )
 def test_each_rule_rejects_with_its_identifier(overrides: dict[str, str], rule: str) -> None:
     result = validate(_form(**overrides))
     assert not result.valid
     assert any(reason.startswith(rule) for reason in result.reasons), result.reasons
+
+
+def test_vm_size_is_only_checked_when_a_vm_is_requested() -> None:
+    assert validate(_form(vmRequired=False, vmSize="")).valid
+    assert validate(_form(vmRequired=True, vmSize="m")).valid

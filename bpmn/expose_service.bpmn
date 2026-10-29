@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_expose_service" targetNamespace="http://bpmn.io/schema/bpmn" exporter="infra-request-orchestrator" exporterVersion="0.1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
   <bpmn:process id="expose_service" name="Exposition d'un service (NetCo)" isExecutable="true">
-    <bpmn:documentation>Demande d'exposition d'un service sur le réseau NetCo (entreprise fictive), de la demande ServiceNow aux tickets clos. Phase P4 : qualification par un agent IA avec relance du demandeur ; en cas d'échec de la vérification, diagnostic par un agent IA, validation humaine, puis action de la liste autorisée.</bpmn:documentation>
+    <bpmn:documentation>Demande d'exposition d'un service sur le réseau NetCo (entreprise fictive), de la demande ServiceNow aux tickets clos. Phase P5 : qualification par un agent IA avec relance du demandeur ; VM sur vcsim en parallèle de Kubernetes quand la demande en réclame une ; en cas d'échec de la vérification, diagnostic par un agent IA, validation humaine, puis action de la liste autorisée ; documentation rédigée par un agent IA, contrôlée, puis jointe aux tickets.</bpmn:documentation>
     <bpmn:startEvent id="StartEvent_RequestReceived" name="Demande reçue (ServiceNow)">
       <bpmn:outgoing>Flow_ToJoinQualify</bpmn:outgoing>
     </bpmn:startEvent>
@@ -138,14 +138,42 @@
         <zeebe:taskDefinition type="create-jira-issue" retries="3" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_ToCreateJira</bpmn:incoming>
-      <bpmn:outgoing>Flow_ToProvision</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToFork</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:parallelGateway id="Gateway_Fork">
+      <bpmn:incoming>Flow_ToFork</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToProvision</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToVmGateway</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_VmRequired" name="VM demandée ?" default="Flow_NoVm">
+      <bpmn:incoming>Flow_ToVmGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_VmRequired</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NoVm</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_CreateVm" name="Créer la VM (vcsim)">
+      <bpmn:documentation>Crée la VM sur vcsim, le simulateur de l'API vSphere du laboratoire : dossier, taille et réseau du référentiel (VM-01). Idempotent.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-vm" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_VmRequired</bpmn:incoming>
+      <bpmn:outgoing>Flow_VmCreated</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_VmJoin">
+      <bpmn:incoming>Flow_VmCreated</bpmn:incoming>
+      <bpmn:incoming>Flow_NoVm</bpmn:incoming>
+      <bpmn:outgoing>Flow_VmToJoin</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="Gateway_Join">
+      <bpmn:incoming>Flow_ProvisionToJoin</bpmn:incoming>
+      <bpmn:incoming>Flow_VmToJoin</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToRetryGateway</bpmn:outgoing>
+    </bpmn:parallelGateway>
     <bpmn:serviceTask id="Task_Provision" name="Provisionner sur Kubernetes">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="provision-k8s" retries="3" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_ToProvision</bpmn:incoming>
-      <bpmn:outgoing>Flow_ToRetryGateway</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ProvisionToJoin</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_RetryVerify">
       <bpmn:incoming>Flow_ToRetryGateway</bpmn:incoming>
@@ -158,7 +186,7 @@
         <zeebe:taskDefinition type="verify-exposure" retries="3" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_ToVerify</bpmn:incoming>
-      <bpmn:outgoing>Flow_ToClose</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToDocument</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_VerificationFailed" name="Vérification en échec" attachedToRef="Task_VerifyExposure">
       <bpmn:extensionElements>
@@ -198,6 +226,14 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_ApplyRemediation</bpmn:incoming>
       <bpmn:outgoing>Flow_RemediationToVerify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Document" name="Rédiger et joindre la documentation (agent IA)">
+      <bpmn:documentation>L'agent rédige la fiche de service et le compte rendu du changement à partir des variables du processus. Un contrôle déterministe refuse toute valeur absente de ces variables ; le gabarit prend alors le relais. Les deux fichiers sont joints au ticket Jira et au changement ServiceNow.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="document-service" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToDocument</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToClose</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Task_CloseTickets" name="Clôturer les tickets">
       <bpmn:extensionElements>
@@ -244,8 +280,17 @@
     <bpmn:sequenceFlow id="Flow_ToEndRefused" sourceRef="Task_RejectRefused" targetRef="End_Refused" />
     <bpmn:sequenceFlow id="Flow_ToCreateChange" sourceRef="Gateway_JoinApproval" targetRef="Task_CreateChange" />
     <bpmn:sequenceFlow id="Flow_ToCreateJira" sourceRef="Task_CreateChange" targetRef="Task_CreateJira" />
-    <bpmn:sequenceFlow id="Flow_ToProvision" sourceRef="Task_CreateJira" targetRef="Task_Provision" />
-    <bpmn:sequenceFlow id="Flow_ToRetryGateway" sourceRef="Task_Provision" targetRef="Gateway_RetryVerify" />
+    <bpmn:sequenceFlow id="Flow_ToFork" sourceRef="Task_CreateJira" targetRef="Gateway_Fork" />
+    <bpmn:sequenceFlow id="Flow_ToProvision" sourceRef="Gateway_Fork" targetRef="Task_Provision" />
+    <bpmn:sequenceFlow id="Flow_ToVmGateway" sourceRef="Gateway_Fork" targetRef="Gateway_VmRequired" />
+    <bpmn:sequenceFlow id="Flow_VmRequired" name="oui" sourceRef="Gateway_VmRequired" targetRef="Task_CreateVm">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=vmRequired = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_NoVm" name="non" sourceRef="Gateway_VmRequired" targetRef="Gateway_VmJoin" />
+    <bpmn:sequenceFlow id="Flow_VmCreated" sourceRef="Task_CreateVm" targetRef="Gateway_VmJoin" />
+    <bpmn:sequenceFlow id="Flow_VmToJoin" sourceRef="Gateway_VmJoin" targetRef="Gateway_Join" />
+    <bpmn:sequenceFlow id="Flow_ProvisionToJoin" sourceRef="Task_Provision" targetRef="Gateway_Join" />
+    <bpmn:sequenceFlow id="Flow_ToRetryGateway" sourceRef="Gateway_Join" targetRef="Gateway_RetryVerify" />
     <bpmn:sequenceFlow id="Flow_ToVerify" sourceRef="Gateway_RetryVerify" targetRef="Task_VerifyExposure" />
     <bpmn:sequenceFlow id="Flow_ToDiagnose" sourceRef="Event_VerificationFailed" targetRef="Task_Diagnose" />
     <bpmn:sequenceFlow id="Flow_ToValidateRemediation" sourceRef="Task_Diagnose" targetRef="Task_ValidateRemediation" />
@@ -255,7 +300,8 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_ManualFixed" name="corrigé à la main" sourceRef="Gateway_Remediation" targetRef="Gateway_RetryVerify" />
     <bpmn:sequenceFlow id="Flow_RemediationToVerify" sourceRef="Task_ApplyRemediation" targetRef="Gateway_RetryVerify" />
-    <bpmn:sequenceFlow id="Flow_ToClose" sourceRef="Task_VerifyExposure" targetRef="Task_CloseTickets" />
+    <bpmn:sequenceFlow id="Flow_ToDocument" sourceRef="Task_VerifyExposure" targetRef="Task_Document" />
+    <bpmn:sequenceFlow id="Flow_ToClose" sourceRef="Task_Document" targetRef="Task_CloseTickets" />
     <bpmn:sequenceFlow id="Flow_ToEndExposed" sourceRef="Task_CloseTickets" targetRef="End_Exposed" />
   </bpmn:process>
   <bpmn:message id="Message_RequesterReply" name="requester-reply">
@@ -385,57 +431,57 @@
         <dc:Bounds x="1600" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_Provision_di" bpmnElement="Task_Provision">
-        <dc:Bounds x="1760" y="160" width="100" height="80" />
+        <dc:Bounds x="1840" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_RetryVerify_di" bpmnElement="Gateway_RetryVerify" isMarkerVisible="true">
-        <dc:Bounds x="1915" y="175" width="50" height="50" />
+        <dc:Bounds x="2215" y="175" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_VerifyExposure_di" bpmnElement="Task_VerifyExposure">
-        <dc:Bounds x="2010" y="160" width="100" height="80" />
+        <dc:Bounds x="2310" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_VerificationFailed_di" bpmnElement="Event_VerificationFailed">
-        <dc:Bounds x="2042" y="222" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="2068" y="262" width="72" height="27" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2342" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2368" y="262" width="72" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_Diagnose_di" bpmnElement="Task_Diagnose">
-        <dc:Bounds x="2010" y="300" width="100" height="80" />
+        <dc:Bounds x="2310" y="300" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_ValidateRemediation_di" bpmnElement="Task_ValidateRemediation">
-        <dc:Bounds x="2010" y="420" width="100" height="80" />
+        <dc:Bounds x="2310" y="420" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_Remediation_di" bpmnElement="Gateway_Remediation" isMarkerVisible="true">
-        <dc:Bounds x="1915" y="435" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1900" y="492" width="80" height="27" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2215" y="435" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2200" y="492" width="80" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_ApplyRemediation_di" bpmnElement="Task_ApplyRemediation">
-        <dc:Bounds x="1770" y="420" width="100" height="80" />
+        <dc:Bounds x="2070" y="420" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_ToDiagnose_di" bpmnElement="Flow_ToDiagnose">
-        <di:waypoint x="2060" y="258" /><di:waypoint x="2060" y="300" />
+        <di:waypoint x="2360" y="258" /><di:waypoint x="2360" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToValidateRemediation_di" bpmnElement="Flow_ToValidateRemediation">
-        <di:waypoint x="2060" y="380" /><di:waypoint x="2060" y="420" />
+        <di:waypoint x="2360" y="380" /><di:waypoint x="2360" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToRemediationGateway_di" bpmnElement="Flow_ToRemediationGateway">
-        <di:waypoint x="2010" y="460" /><di:waypoint x="1965" y="460" />
+        <di:waypoint x="2310" y="460" /><di:waypoint x="2265" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ApplyRemediation_di" bpmnElement="Flow_ApplyRemediation">
-        <di:waypoint x="1915" y="460" /><di:waypoint x="1870" y="460" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1884" y="442" width="18" height="14" /></bpmndi:BPMNLabel>
+        <di:waypoint x="2215" y="460" /><di:waypoint x="2170" y="460" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2184" y="442" width="18" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ManualFixed_di" bpmnElement="Flow_ManualFixed">
-        <di:waypoint x="1940" y="435" /><di:waypoint x="1940" y="225" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1948" y="380" width="55" height="27" /></bpmndi:BPMNLabel>
+        <di:waypoint x="2240" y="435" /><di:waypoint x="2240" y="225" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2248" y="380" width="55" height="27" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_RemediationToVerify_di" bpmnElement="Flow_RemediationToVerify">
-        <di:waypoint x="1820" y="420" /><di:waypoint x="1820" y="280" /><di:waypoint x="1940" y="280" /><di:waypoint x="1940" y="225" />
+        <di:waypoint x="2120" y="420" /><di:waypoint x="2120" y="280" /><di:waypoint x="2240" y="280" /><di:waypoint x="2240" y="225" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_CloseTickets_di" bpmnElement="Task_CloseTickets">
-        <dc:Bounds x="2170" y="160" width="100" height="80" />
+        <dc:Bounds x="2630" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_Exposed_di" bpmnElement="End_Exposed">
-        <dc:Bounds x="2332" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="2313" y="225" width="74" height="14" /></bpmndi:BPMNLabel>
+        <dc:Bounds x="2792" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2773" y="225" width="74" height="14" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_ToValidGateway_di" bpmnElement="Flow_ToValidGateway">
         <di:waypoint x="660" y="200" /><di:waypoint x="715" y="200" />
@@ -483,19 +529,64 @@
         <di:waypoint x="1540" y="200" /><di:waypoint x="1600" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToProvision_di" bpmnElement="Flow_ToProvision">
-        <di:waypoint x="1700" y="200" /><di:waypoint x="1760" y="200" />
+        <di:waypoint x="1785" y="200" /><di:waypoint x="1840" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToRetryGateway_di" bpmnElement="Flow_ToRetryGateway">
-        <di:waypoint x="1860" y="200" /><di:waypoint x="1915" y="200" />
+        <di:waypoint x="2165" y="200" /><di:waypoint x="2215" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToVerify_di" bpmnElement="Flow_ToVerify">
-        <di:waypoint x="1965" y="200" /><di:waypoint x="2010" y="200" />
+        <di:waypoint x="2265" y="200" /><di:waypoint x="2310" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToClose_di" bpmnElement="Flow_ToClose">
-        <di:waypoint x="2110" y="200" /><di:waypoint x="2170" y="200" />
+        <di:waypoint x="2570" y="200" /><di:waypoint x="2630" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToEndExposed_di" bpmnElement="Flow_ToEndExposed">
-        <di:waypoint x="2270" y="200" /><di:waypoint x="2332" y="200" />
+        <di:waypoint x="2730" y="200" /><di:waypoint x="2792" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_Fork_di" bpmnElement="Gateway_Fork">
+        <dc:Bounds x="1735" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_VmRequired_di" bpmnElement="Gateway_VmRequired" isMarkerVisible="true">
+        <dc:Bounds x="1795" y="35" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1784" y="8" width="72" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CreateVm_di" bpmnElement="Task_CreateVm">
+        <dc:Bounds x="1890" y="20" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_VmJoin_di" bpmnElement="Gateway_VmJoin" isMarkerVisible="true">
+        <dc:Bounds x="2035" y="35" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Join_di" bpmnElement="Gateway_Join">
+        <dc:Bounds x="2115" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Document_di" bpmnElement="Task_Document">
+        <dc:Bounds x="2470" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_ToFork_di" bpmnElement="Flow_ToFork">
+        <di:waypoint x="1700" y="200" /><di:waypoint x="1735" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToVmGateway_di" bpmnElement="Flow_ToVmGateway">
+        <di:waypoint x="1760" y="175" /><di:waypoint x="1760" y="60" /><di:waypoint x="1795" y="60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_VmRequired_di" bpmnElement="Flow_VmRequired">
+        <di:waypoint x="1845" y="60" /><di:waypoint x="1890" y="60" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1859" y="42" width="18" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NoVm_di" bpmnElement="Flow_NoVm">
+        <di:waypoint x="1820" y="85" /><di:waypoint x="1820" y="130" /><di:waypoint x="2060" y="130" /><di:waypoint x="2060" y="85" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1828" y="112" width="20" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_VmCreated_di" bpmnElement="Flow_VmCreated">
+        <di:waypoint x="1990" y="60" /><di:waypoint x="2035" y="60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_VmToJoin_di" bpmnElement="Flow_VmToJoin">
+        <di:waypoint x="2085" y="60" /><di:waypoint x="2140" y="60" /><di:waypoint x="2140" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ProvisionToJoin_di" bpmnElement="Flow_ProvisionToJoin">
+        <di:waypoint x="1940" y="200" /><di:waypoint x="2115" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToDocument_di" bpmnElement="Flow_ToDocument">
+        <di:waypoint x="2410" y="200" /><di:waypoint x="2470" y="200" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

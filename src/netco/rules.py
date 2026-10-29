@@ -62,6 +62,13 @@ def validate(form: dict[str, Any], rules: dict[str, Any] | None = None) -> Valid
 
     port = _check_port(str(form.get("ports") or ""), exposure, rules, reasons)
     zones = _check_zones(str(form.get("sourceNetworks") or ""), exposure, rules, reasons)
+    size = str(form.get("vmSize") or "").strip().upper()
+    if form.get("vmRequired") and size not in rules["vm"]["sizes"]:
+        reasons.append(
+            f"VM-01 : taille de VM « {size} » inconnue (S, M ou L)"
+            if size
+            else "VM-01 : VM demandée sans taille (S, M ou L)"
+        )
 
     if reasons:
         return Validation(valid=False, reasons=reasons)
