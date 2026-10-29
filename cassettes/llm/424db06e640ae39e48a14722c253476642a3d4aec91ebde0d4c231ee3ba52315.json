@@ -1,0 +1,51 @@
+{
+ "model": "claude-sonnet-5-5",
+ "status": 200,
+ "response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgWk6VAWaYebhnEg8sErf",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"fiche_service\":\"# Fiche service `inventaire-api`\\n\\n## Identité\\n- Service : `inventaire-api`\\n- Environnement : `dev`\\n- Exposition : `interne`\\n- Plateforme : Kubernetes sur kind (cluster local du laboratoire)\\n\\n## Accès\\n- Namespace : `svc-inventaire-api-dev`\\n- Port : `8080/tcp`\\n- Adresse interne : `inventaire-api.svc-inventaire-api-dev.svc.cluster.local:8080`\\n- Image : `traefik/whoami:v1.12.0`\\n\\n## Flux autorisés\\n- Zone `dev` : réseau source `10.20.0.0/16`\\n- Le port n'est pas classé sensible.\\n\\n## Objets Kubernetes\\n- `Namespace/svc-inventaire-api-dev`\\n- `Deployment/inventaire-api`\\n- `Service/inventaire-api`\\n- `NetworkPolicy/inventaire-api-ingress`\\n\\n## Vérification\\n- Résultat : Règle réseau conforme, obtenu à la tentative `2`.\\n- Sonde depuis la zone `dev` : attendu joignable, constaté joignable.\\n- Sonde depuis la zone `data` : attendu bloquée, constaté bloquée.\\n\\n## Références\\n- Demande : {{ritmNumber}}\\n- Changement : {{changeNumber}}\\n- Ticket Jira : {{jiraKey}}\\n- Date : {{date}}\\n\",\"compte_rendu\":\"# Compte rendu du changement {{changeNumber}}\\n\\n## Contexte\\nLa demande {{ritmNumber}} porte sur l'exposition du service `inventaire-api` en environnement `dev`, en exposition `interne`, sur le port `8080/tcp`, depuis le réseau source `10.20.0.0/16`. Le changement a été réalisé le {{date}} sur Kubernetes sur kind (cluster local du laboratoire). Ticket Jira : {{jiraKey}}.\\n\\n## Classe et approbation\\n- Classe : `standard`\\n- Approbation : pré-approuvé (changement standard, CHG-01)\\n\\n## Opérations réalisées\\n1. Création du namespace `svc-inventaire-api-dev` (`Namespace/svc-inventaire-api-dev`).\\n2. Déploiement de `Deployment/inventaire-api` avec l'image `traefik/whoami:v1.12.0`.\\n3. Création de `Service/inventaire-api`, accessible à l'adresse `inventaire-api.svc-inventaire-api-dev.svc.cluster.local:8080`.\\n4. Application de `NetworkPolicy/inventaire-api-ingress`.\\n5. Première vérification réseau : échec.\\n6. Remédiation par réapplication de la NetworkPolicy (voir incident).\\n7. Nouvelle vérification réseau, conforme à la tentative `2`.\\n\\n## Vérification\\n- Résultat : Règle réseau conforme.\\n- Zone `dev` : attendu joignable, constaté joignable.\\n- Zone `data` : attendu bloquée, constaté bloquée.\\n\\n## Incident et remédiation\\n- Constat : première vérification réseau en échec.\\n- Cause diagnostiquée : `network_policy`, selon le runbook `RB-01`.\\n- Explication : le pod est prêt et le Service a un endpoint prêt, mais la NetworkPolicy n'autorisait que la zone `bureautique`. La demande validée prévoit la zone `dev`, qui était donc bloquée à tort.\\n- Action proposée : `reapply_network_policy`, avec la zone `dev` sur `8080/tcp`.\\n- Validation : action validée par un opérateur dans Camunda Tasklist, puis appliquée. Commentaire de validation : validation simulée par le scénario e2e (aucun humain impliqué).\\n- Action appliquée : `reapply_network_policy`.\\n\\n## Conclusion\\nLe service `inventaire-api` est exposé en `dev` conformément à la demande, après réapplication de la NetworkPolicy et vérification conforme.\\n\"}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 4,
+   "cache_creation_input_tokens": 1990,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 1990,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "iterations": [
+    {
+     "input_tokens": 4,
+     "output_tokens": 1459,
+     "cache_read_input_tokens": 0,
+     "cache_creation_input_tokens": 1990,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 1990,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "type": "message",
+     "model": null
+    }
+   ],
+   "output_tokens": 1459,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

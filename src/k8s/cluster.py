@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from kubernetes import client, config, dynamic
+from kubernetes.client.exceptions import ApiException
 from kubernetes.stream import stream
 
 PROBE_POD = "probe"
@@ -62,8 +63,23 @@ class Cluster:
 
         return collect(self, namespace, service, request, verification)
 
-    def delete_namespace(self, name: str) -> None:
-        self.core.delete_namespace(name)
+    def delete_namespace(self, name: str, timeout: float = 120.0) -> None:
+        """Delete a namespace if it exists, and wait until it is gone."""
+        try:
+            self.core.delete_namespace(name)
+        except ApiException as exc:
+            if exc.status != 404:
+                raise
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            try:
+                self.core.read_namespace(name)
+            except ApiException as exc:
+                if exc.status == 404:
+                    return
+                raise
+            time.sleep(2)
+        raise TimeoutError(f"namespace {name} still exists after {timeout:.0f} s")
 
     def wait_ready(self, namespace: str, name: str, timeout: float = 120.0) -> bool:
         deadline = time.monotonic() + timeout

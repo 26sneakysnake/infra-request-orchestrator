@@ -344,19 +344,27 @@ Source : `results/diagnosis.json`. Modèle Claude Sonnet 5.5, effort `medium`, 1
     `compte-rendu-CHG….md` au ticket Jira et au changement ServiceNow, sans doublon si le job est rejoué ;
   - la boucle d'agent commune accepte une liste d'outils vide, sans changer les requêtes des deux autres
     agents : `make eval` reste identique.
-- **e2e** : la demande normale `reporting-db` réclame une VM de taille M. Le scénario relit la VM dans vcsim et
-  vérifie les deux pièces jointes sur Jira et sur le changement, pour les 4 demandes.
+- **e2e** :
+  - la demande normale `reporting-db` réclame une VM de taille M ;
+  - le scénario relit la VM dans vcsim et vérifie les deux pièces jointes sur Jira et sur le changement, pour
+    les 4 demandes ;
+  - il part de namespaces neufs : il supprime d'abord ceux de ses 4 services (voir les incidents).
 
 ### Mesuré
-Rédactions acceptées par le contrôle, sans repli sur le gabarit : 5/5 (Wilson 95 % : 0,566 à 1). Ce sont le
-pilote (une demande avec VM et incident) et les 4 demandes de l'e2e enregistré. L'échantillon est petit : il
-montre que le chemin fonctionne, pas un taux de réussite.
+Rédactions acceptées par le contrôle, sans repli sur le gabarit : 6/6 (Wilson 95 % : 0,610 à 1). Elles se
+répartissent ainsi :
+- le pilote : une demande avec VM et incident ;
+- les 4 demandes du premier e2e enregistré ;
+- la nouvelle rédaction de la demande en panne, après le correctif.
+
+L'échantillon est petit : il montre que le chemin fonctionne, pas un taux de réussite.
 
 - **Coût** :
-  - 0,013 $ à 0,019 $ par rédaction ;
-  - 0,088 $ pour l'e2e enregistré : 4 rédactions, plus la nouvelle qualification de `reporting-db` ;
-  - dépense cumulée depuis P3 : 0,652 $ sur 3 $ (127 appels).
-- **Durée de l'e2e** (sur le PC de Seif) : 54 à 63 s par demande en rejeu ; 66 à 85 s à l'enregistrement.
+  - 0,013 $ à 0,020 $ par rédaction ;
+  - 0,088 $ pour le premier e2e enregistré (4 rédactions, plus la nouvelle qualification de `reporting-db`), puis
+    0,020 $ pour le second ;
+  - dépense cumulée depuis P3 : 0,672 $ sur 3 $ (128 appels).
+- **Durée de l'e2e** (sur le PC de Seif) : 54 à 63 s par demande en rejeu ; 54 à 85 s à l'enregistrement.
 
 ### Vérifié où
 | Vérification | PC de Seif (Windows) | GitHub Actions |
@@ -364,15 +372,33 @@ montre que le chemin fonctionne, pas un taux de réussite.
 | `make lint test` (127 tests) | vert | à venir |
 | `make eval` rejoué, `results/` inchangé après la modification de la boucle et l'ajout de VM-01 | vérifié avec `git status` | à venir |
 | `vsphere/vm.py` contre vcsim : création, démarrage, idempotence, relecture | vérifié | via l'e2e |
-| `make e2e` avec VM et documentation : enregistrement, puis rejeu complet sans cassette manquante | vert (deux exécutions) | à venir |
+| `make e2e` avec VM et documentation, sur namespaces neufs : enregistrement, puis rejeu complet sans cassette manquante | vert | à venir |
 
 ### Écarts et incidents
+- **Premier e2e rouge en CI** ([run 40896757960](https://github.com/26sneakysnake/infra-request-orchestrator/actions/runs/40896757960),
+  commit `2bda90b`) :
+  - **ce qui s'est passé** : les 3 demandes sans panne, dont celle avec VM, sont allées au bout. La demande en
+    panne s'est arrêtée après la remédiation, sans pièce jointe ;
+  - **la cause** : en local, le namespace de la panne existait déjà. L'instantané lu par le diagnostic
+    différait donc de celui du cas D01, que la CI reproduit sur son cluster neuf. Le diagnostic a rejoué une
+    autre cassette avec une autre explication, et cette explication entre dans le dossier de faits de la
+    documentation. La rédaction enregistrée en local n'existait donc pas pour la CI ;
+  - **le correctif** : l'e2e supprime d'abord les namespaces de ses services (`Cluster.delete_namespace`, qui
+    attend la suppression, désormais partagé avec la capture des cas). La rédaction a été réenregistrée sur des
+    namespaces neufs, et l'ancienne cassette supprimée ;
+  - **la leçon** : le dossier de faits de la documentation dépend de tout ce que les agents ont écrit avant lui.
+    Un écart en amont se propage donc jusqu'à la dernière cassette.
+- **Commit poussé avec un lint rouge** (`8938a2c`, ligne trop longue) : le code de sortie de `make lint test`
+  était masqué par un `| tail` dans ma commande. Le correctif `2bda90b` a suivi aussitôt. Désormais, le statut
+  de `make` est vérifié avant tout commit.
 - **pyVmomi et vcsim** : vcsim renvoie un champ `runtime.faultToleranceState` vide, que pyVmomi 9.1 ne sait pas
   lire, ce qui fait échouer `vm.runtime` et `vm.summary`. Le code lit les propriétés une à une par chemin
   (`runtime.powerState`, `config.hardware.numCPU`…), via le PropertyCollector.
 - **L'identifiant de la VM** est exclu du dossier de faits : il change d'une exécution à l'autre et casserait le
   rejeu.
-- **Données de test créées** : RITM0010045 à RITM0010052, CHG0030037 à CHG0030044, NETOPS-40 à NETOPS-47.
+- **Données de test créées** : RITM0010045 à RITM0010068, CHG0030037 à CHG0030060, NETOPS-40 à NETOPS-63. Cela
+  représente 4 e2e locaux et 2 runs CI. Les 2 runs CI, sur `8938a2c` et `2bda90b`, ont été tous deux exécutés,
+  car je ne pouvais pas annuler le premier sans jeton GitHub.
 
 ### Reste
 - Rien pour P5 une fois la CI verte.

@@ -34,6 +34,7 @@ from integrations.servicenow import (
     RITM_PENDING,
     ServiceNowClient,
 )
+from k8s.cluster import Cluster
 from k8s.faults import FAULTS
 from scenario.camunda import camunda_client
 from vsphere.vm import find_vm
@@ -116,6 +117,17 @@ REQUESTS = [
         None,
         FAULT,
     ),
+]
+
+
+# Every run starts from fresh namespaces, as on the new kind cluster of CI. A namespace left by an
+# earlier run changes the snapshot the diagnosis agent reads, then everything the agents write
+# after it, so the recorded answers would no longer replay.
+NAMESPACES = [
+    "svc-catalogue-api-dev",
+    "svc-reporting-db-recette",
+    "svc-facturation-api-recette",
+    f"svc-{FAULTY_SERVICE}-dev",
 ]
 
 
@@ -241,6 +253,10 @@ def main() -> int:
     OUT.mkdir(exist_ok=True)
     report: dict[str, Any] = {"run": run_id, "started_at": datetime.now(UTC).isoformat()}
     camunda = camunda_client()
+
+    cluster = Cluster()
+    for namespace in NAMESPACES:
+        cluster.delete_namespace(namespace)
 
     report["dmn"] = evaluate_dmn(camunda)
     print(f"DMN: {sum(c['ok'] for c in report['dmn'])}/{len(report['dmn'])} cases as expected")

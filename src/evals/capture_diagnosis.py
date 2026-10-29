@@ -8,12 +8,10 @@ Run once when the case set is created (needs `make kind-up`); --print shows snap
 
 import argparse
 import sys
-import time
 from pathlib import Path
 from typing import Any
 
 import yaml
-from kubernetes.client.exceptions import ApiException
 
 from k8s.cluster import Cluster
 from k8s.faults import FAULTS, inject
@@ -37,35 +35,13 @@ SPECS = [
 READY_TIMEOUT_S = 45.0
 
 
-def _wait_deleted(cluster: Cluster, namespace: str, timeout: float = 120.0) -> None:
-    deadline = time.monotonic() + timeout
-    while time.monotonic() < deadline:
-        try:
-            cluster.core.read_namespace(namespace)
-        except ApiException as exc:
-            if exc.status == 404:
-                return
-            raise
-        time.sleep(2)
-    raise TimeoutError(f"namespace {namespace} still exists after {timeout:.0f} s")
-
-
-def _delete(cluster: Cluster, namespace: str) -> None:
-    try:
-        cluster.delete_namespace(namespace)
-    except ApiException as exc:
-        if exc.status != 404:
-            raise
-    _wait_deleted(cluster, namespace)
-
-
 def capture(cluster: Cluster, case_id: str, variant: str, service: str, environment: str,
             port: int, zones: list[str]) -> dict[str, Any]:  # fmt: skip
     namespace = load_rules()["naming"]["namespace_template"].format(
         service=service, environment=environment
     )
     request = {"service": service, "namespace": namespace, "port": port, "zones": zones}
-    _delete(cluster, namespace)
+    cluster.delete_namespace(namespace)
     objects = inject(
         exposure_objects(namespace, service, environment, port, zones), variant, request
     )
@@ -75,7 +51,7 @@ def capture(cluster: Cluster, case_id: str, variant: str, service: str, environm
     if verification["ok"]:
         raise RuntimeError(f"{case_id}: fault {variant} did not break the verification")
     snapshot = collect(cluster, namespace, service, request, verification)
-    _delete(cluster, namespace)
+    cluster.delete_namespace(namespace)
     fault = FAULTS[variant]
     return {
         "id": case_id,
